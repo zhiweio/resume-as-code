@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content="YAMLResume (https://yamlresume.dev)" />
+    <title>Wang Zhiwei Resume</title>
+    <style>
+      :root {
+        --text-font-size: 16px;
+      }
+
+      /* Modified from: https://www.joshwcomeau.com/css/custom-css-reset/ */
+
+      /* 1. Use a more-intuitive box-sizing model */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* 2. Remove default margin */
+      *:not(dialog) {
+        margin: 0;
+      }
+
+      body {
+        /* 3. Improve text rendering */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      :root {
+        --border-color: #d0d0d0;
+
+        /* text colors */
+        --text-color-primary: #000000;
+        --text-color-secondary: #333333;
+
+        /* spacing */
+        --spacing-xss: 2px;
+        --spacing-xs: 4px;
+        --spacing-sm: 8px;
+        --spacing-md: 12px;
+        --spacing-lg: 16px;
+        --spacing-xl: 24px;
+        --spacing-xxl: 40px;
+        --spacing-xxxl: 80px;
+
+        /* font sizes */
+        --font-size-xs: 0.8rem;
+        --font-size-sm: 0.9rem;
+        --font-size-md: 1rem;
+        --font-size-lg: 1.1rem;
+        --font-size-xl: 1.25rem;
+        --font-size-xxl: 2.5rem;
+
+        /* line heights */
+        --line-height-base: 1.5;
+        --line-height-tight: 1.375;
+
+        /* layout */
+        --page-max-width: 900px;
+      }
+
+      html {
+        font-size: var(--text-font-size);
+      }
+
+      body {
+        /* font & text */
+        color: var(--text-color-primary);
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+          Cantarell, sans-serif;
+        /* this variable is defined by `typography.fontSize` in resume html layout */
+        text-autospace: normal;
+
+        /* layout */
+        line-height: var(--line-height-base);
+        max-width: var(--page-max-width);
+        margin: 0 auto;
+        padding: var(--spacing-xxxl) var(--spacing-xxl);
+      }
+
+      /* header */
+      .resume-header {
+        margin-bottom: var(--spacing-xxl);
+        text-align: center;
+      }
+
+      .resume-name {
+        font-size: var(--font-size-xxl);
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .resume-headline {
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--spacing-md);
+      }
+
+      /* contact info */
+      .resume-contact-info {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        column-gap: var(--spacing-lg);
+        row-gap: var(--spacing-xs);
+        margin-top: var(--spacing-sm);
+      }
+
+      .resume-icon {
+        margin-right: var(--spacing-sm);
+        vertical-align: middle;
+      }
+
+      /* links: modern typographic style */
+      a {
+        color: var(--text-color-primary);
+        text-decoration: underline;
+        text-decoration-color: var(--border-color);
+        text-underline-offset: 3px;
+        text-decoration-thickness: 1px;
+        text-decoration-skip-ink: auto;
+        transition: text-decoration-color 0.2s;
+      }
+
+      a:hover {
+        text-decoration-color: var(--text-color-primary);
+      }
+
+      /* sections */
+      .resume-section {
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .resume-section-title {
+        font-size: var(--font-size-xl);
+        font-weight: 500;
+        margin-bottom: var(--spacing-md);
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: var(--spacing-xs);
+      }
+
+      /* entries */
+      .resume-entry {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .resume-entry:last-child {
+        margin-bottom: 0;
+      }
+
+      .resume-entry-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .resume-entry-title {
+        font-weight: 500;
+        margin-bottom: var(--spacing-xss);
+      }
+
+      .resume-entry-summary p,
+      .resume-summary-content p {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      /* lists */
+      .resume-entry-summary ul,
+      .resume-entry-summary ol,
+      .resume-summary-content ul,
+      .resume-summary-content ol {
+        padding-left: var(--spacing-lg);
+        list-style-type: circle;
+      }
+
+      .resume-entry-summary li,
+      .resume-summary-content li {
+        line-height: var(--line-height-tight);
+      }
+
+      /* labeled lists (courses, keywords, etc.) */
+      .resume-labeled-list span {
+        font-weight: 500;
+      }
+
+      /* skills grid */
+      .resume-skill-item,
+      .resume-language-item {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .resume-skill-name,
+      .resume-language-name {
+        font-weight: 500;
+      }
+
+      .resume-skill-level,
+      .resume-language-fluency {
+        font-weight: 400;
+      }
+
+      /* mobile */
+      @media (max-width: 768px) {
+        body {
+          padding: var(--spacing-xl);
+        }
+
+        .resume-header {
+          margin-bottom: var(--spacing-xl);
+        }
+
+        .resume-contact-info {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .resume-entry-header {
+          flex-wrap: wrap;
+        }
+
+        .resume-skill-item,
+        .resume-language-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="resume-header">
+      <h1 class="resume-name">Wang Zhiwei</h1>
+      <div class="resume-contact-info">
+        <span class="resume-contact-item"
+          ><span class="resume-icon">📧</span
+          ><a href="mailto:nocoding188@gmail.com" class="resume-contact-link"
+            >nocoding188@gmail.com</a
+          ></span
+        >
+        <span class="resume-contact-item"
+          ><span class="resume-icon">📞</span>+86 199 8888 8888</span
+        >
+        <span class="resume-contact-item"
+          ><span class="resume-icon">🔗</span
+          ><a href="https://zhiweio.me" class="resume-contact-link"
+            >https://zhiweio.me</a
+          ></span
+        >
+      </div>
+
+      <div class="resume-contact-info resume-profiles-info">
+        <span class="resume-contact-item"
+          >GitHub:
+          <a href="https://github.com/zhiweio" class="resume-contact-link"
+            >zhiweio</a
+          ></span
+        >
+      </div>
+    </header>
+    <section class="resume-section" data-section="summary">
+      <h2 class="resume-section-title">Basics</h2>
+      <div class="resume-section-content">
+        <div class="resume-summary-content">
+          <ul>
+            <li>
+              <p>
+                Senior Data Engineer with 7 years of experience specializing in
+                designing and deploying distributed big data systems on AWS and
+                Azure cloud environments.
+              </p>
+            </li>
+            <li>
+              <p>
+                Expert in architecting scalable data platforms using Apache
+                Spark, Flink, and EMR, with deep expertise in cloud migration,
+                CI/CD automation, and infrastructure as code.
+              </p>
+            </li>
+            <li>
+              <p>
+                Proven track record of steering cross-functional teams and
+                external partners to deliver mission-critical projects,
+                including Enterprise Data Warehouse migrations and Customer Data
+                Platforms.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="resume-section" data-section="education">
+      <h2 class="resume-section-title">Education</h2>
+      <div class="resume-section-content">
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Suzhou University of Science and Technology
+              </div>
+              <div class="resume-entry-organization">
+                Bachelor, Computer Science and Technology
+              </div>
+            </div>
+            <div class="resume-entry-date">Sep 2015–Jul 2019</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Awarded Third Prize in the 4th National University Cloud
+                  Computing Application Innovation Competition (2018).
+                </p>
+              </li>
+              <li>
+                <p>
+                  Project: &quot;Implementation of Large-scale Distributed
+                  Functional Dependency Mining Algorithm Based on Spark&quot;.
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="resume-section" data-section="work">
+      <h2 class="resume-section-title">Work</h2>
+      <div class="resume-section-content">
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Cognizant Technology Solutions Shanghai Co. Ltd.
+              </div>
+              <div class="resume-entry-organization">Senior Data Engineer</div>
+            </div>
+            <div class="resume-entry-date">Dec 2022–Present</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Led the comprehensive migration of a 10TB+ legacy data
+                  warehouse to AWS, utilizing AWS Glue and DMS to reduce query
+                  latency by 40% and infrastructure costs by 25%.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Architected a unified Customer Data Platform (CDP) integrating
+                  data from Salesforce, Databricks, and legacy systems,
+                  achieving a 360-degree customer view and improving campaign
+                  targeting by 30%.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Refactored core data processing workflows in Databricks using
+                  advanced partitioning and caching, reducing daily processing
+                  time from 6 hours to 2.5 hours.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Designed a custom Master Data Management (MDM) solution on
+                  Azure, implementing automated data quality checks that reduced
+                  discrepancies by 95%.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="resume-labeled-list">
+            <span>Keywords</span>: AWS, Azure, Cloud Migration, Spark,
+            Databricks, Python
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Patsnap Information Technology (Suzhou) Co. Ltd.
+              </div>
+              <div class="resume-entry-organization">Data Engineer</div>
+            </div>
+            <div class="resume-entry-date">Jun 2021–Nov 2022</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Architected a real-time wide table system using Flink, Kafka,
+                  and TiCDC to provide up-to-the-minute insights on enterprise
+                  financing, solving critical compatibility issues in the
+                  open-source ecosystem.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Designed a custom Spark Diff engine to synchronize over 500
+                  million daily records to TiDB, achieving minute-level
+                  processing and ensuring efficient incremental updates.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Built a scalable data lake solution on AWS S3 and Athena to
+                  handle 1.8 billion global patent records, supporting TB-scale
+                  data processing for financial risk analysis.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Developed &#39;Guardian&#39;, a custom continuous delivery
+                  tool integrated with GitLab CI/CD, automating deployments and
+                  improving reliability across 10+ localized client projects.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="resume-labeled-list">
+            <span>Keywords</span>: Flink, Spark, TiDB, AWS, Kafka, CI/CD
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">Intsig Information Co., Ltd.</div>
+              <div class="resume-entry-organization">Data Engineer</div>
+            </div>
+            <div class="resume-entry-date">Jun 2019–Jun 2021</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Engineered a high-throughput real-time data pipeline using
+                  Redis and Kafka, processing over 100 billion data points to
+                  ensure sub-second freshness for 230 million entities.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Architected a Python-based ETL optimization library that
+                  standardized incremental update logic across 1000+ dimensions,
+                  reducing boilerplate code by 90%.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Led the DevOps transformation by migrating to GitLab and
+                  implementing CI/CD pipelines, reducing release times from
+                  hours to minutes.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="resume-labeled-list">
+            <span>Keywords</span>: Python, Redis, Kafka, ETL, DevOps
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="resume-section" data-section="skills">
+      <h2 class="resume-section-title">Skills</h2>
+      <div class="resume-section-content">
+        <div class="resume-skill-item">
+          <div class="resume-skill-name">
+            Cloud &amp; Infrastructure<span class="resume-skill-level"
+              >: Expert</span
+            >
+          </div>
+          <div>
+            <div class="resume-labeled-list">
+              <span>Keywords</span>: AWS (Redshift, Glue, EMR), Azure (Synapse,
+              Cosmos DB), Docker, Terraform (IaC), CI/CD (GitLab, GitHub
+              Actions)
+            </div>
+          </div>
+        </div>
+        <div class="resume-skill-item">
+          <div class="resume-skill-name">
+            Big Data &amp; Streaming<span class="resume-skill-level"
+              >: Expert</span
+            >
+          </div>
+          <div>
+            <div class="resume-labeled-list">
+              <span>Keywords</span>: Apache Spark, Apache Flink, Kafka,
+              Databricks, Airflow &amp; DolphinScheduler
+            </div>
+          </div>
+        </div>
+        <div class="resume-skill-item">
+          <div class="resume-skill-name">
+            Databases &amp; Storage<span class="resume-skill-level"
+              >: Advanced</span
+            >
+          </div>
+          <div>
+            <div class="resume-labeled-list">
+              <span>Keywords</span>: PostgreSQL &amp; MySQL, TiDB (Distributed
+              SQL), MongoDB &amp; DynamoDB, Redis, Data Warehousing (Redshift)
+            </div>
+          </div>
+        </div>
+        <div class="resume-skill-item">
+          <div class="resume-skill-name">
+            Languages &amp; Development<span class="resume-skill-level"
+              >: Advanced</span
+            >
+          </div>
+          <div>
+            <div class="resume-labeled-list">
+              <span>Keywords</span>: Python, SQL, Shell Scripting, Java/Scala
+              (Spark/Flink)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="resume-section" data-section="certificates">
+      <h2 class="resume-section-title">Certificates</h2>
+      <div class="resume-section-content">
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                AWS Certified Data Analytics – Specialty
+              </div>
+              <div class="resume-entry-organization">AWS</div>
+            </div>
+            <div class="resume-entry-date">Jan 2024</div>
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                AWS Certified Developer - Associate
+              </div>
+              <div class="resume-entry-organization">AWS</div>
+            </div>
+            <div class="resume-entry-date">Sep 2024</div>
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Microsoft Certified Azure Data Engineer Associate
+              </div>
+              <div class="resume-entry-organization">Microsoft</div>
+            </div>
+            <div class="resume-entry-date">Jun 2024</div>
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Databricks Certified Data Engineer Associate
+              </div>
+              <div class="resume-entry-organization">Databricks</div>
+            </div>
+            <div class="resume-entry-date">Mar 2023</div>
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                PingCAP Certified TiDB Professional
+              </div>
+              <div class="resume-entry-organization">PingCAP</div>
+            </div>
+            <div class="resume-entry-date">Mar 2022</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="resume-section" data-section="projects">
+      <h2 class="resume-section-title">Projects</h2>
+      <div class="resume-section-content">
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Bayer Customer Data Platform (CDP)
+              </div>
+              <div class="resume-entry-description">
+                Cloud-native ecosystem unifying fragmented customer data across
+                the enterprise.
+              </div>
+            </div>
+            <div class="resume-entry-date">Dec 2022–Present</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Established a robust infrastructure foundation using Terraform
+                  and GitHub Actions, reducing deployment time by 60% and
+                  ensuring 99.9% uptime.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Designed a serverless orchestration workflow using AWS Step
+                  Functions and EventBridge to coordinate ETL jobs across
+                  heterogeneous data sources.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Implemented a cost-effective, auto-scaling data processing
+                  pipeline using AWS Glue and Lambda, optimizing compute costs
+                  by 40%.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="resume-labeled-list">
+            <span>Keywords</span>: AWS, Terraform, Glue, Lambda, Step Functions
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Bayer Enterprise Data Warehouse Migration to AWS
+              </div>
+              <div class="resume-entry-description">
+                Strategic modernization of a legacy 10TB+ Enterprise Data
+                Warehouse to Amazon Redshift.
+              </div>
+            </div>
+            <div class="resume-entry-date">Nov 2022–May 2022</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Architected a resilient, self-healing migration pipeline using
+                  AWS Step Functions, reducing engineering overhead by 80%.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Developed a custom Python migration utility (dm4) to automate
+                  DDL translation for over 2,000 tables with 99% accuracy.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Engineered a memory-resident data transfer pipeline using UNIX
+                  streams, accelerating 10TB data transfer by 300% compared to
+                  traditional methods.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="resume-labeled-list">
+            <span>Keywords</span>: AWS Redshift, Python, Migration, UNIX Shell
+          </div>
+        </div>
+        <div class="resume-entry">
+          <div class="resume-entry-header">
+            <div>
+              <div class="resume-entry-title">
+                Retail Master Data Management Platform
+              </div>
+              <div class="resume-entry-description">
+                Comprehensive MDM system leveraging Azure and Power Platform.
+              </div>
+            </div>
+            <div class="resume-entry-date">May 2025–Dec 2025</div>
+          </div>
+          <div class="resume-entry-summary">
+            <ul>
+              <li>
+                <p>
+                  Designed a billion-scale data architecture using Azure Cosmos
+                  DB and Synapse Analytics to manage massive historical data
+                  retention.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Established a robust data bridge between Azure operational
+                  systems and AWS analytical warehouses using Synapse Link and
+                  custom adapters.
+                </p>
+              </li>
+              <li>
+                <p>
+                  Optimized data ingestion pipelines using Azure Blob Storage
+                  and parallelized Dataflows, achieving a 30x performance gain.
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="resume-labeled-list">
+            <span>Keywords</span>: Azure, Cosmos DB, Synapse Analytics, Data
+            Integration
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

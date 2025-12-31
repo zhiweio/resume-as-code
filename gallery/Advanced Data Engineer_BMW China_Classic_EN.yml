@@ -1,0 +1,208 @@
+locale:
+  language: en
+
+layouts:
+  - engine: latex
+    sections:
+      aliases:
+        basics: "Basics"
+        education: "Education"
+        work: "Work Experience"
+        projects: "Projects"
+        certificates: "Certificates"
+        skills: "Skills"
+        languages: "Languages"
+        interests: "Interests"
+      order:
+        - basics
+        - education
+        - work
+        - skills
+        - certificates
+        - projects
+        - languages
+        - interests
+    page:
+      margins:
+        top: 1.5cm
+        left: 1.5cm
+        right: 1.5cm
+        bottom: 1.5cm
+      showPageNumbers: true
+    template: moderncv-classic
+    typography:
+      fontSize: 11pt
+  - engine: markdown
+  - engine: html
+    template: calm
+    typography:
+      fontSize: 16px
+
+content:
+  basics:
+    name: Wang Zhiwei
+    phone: "+86 199 8888 8888"
+    email: nocoding188@gmail.com
+    url: https://zhiweio.me
+    summary: |
+      - Senior Data Engineer with 7 years of experience specializing in designing and deploying distributed big data systems on AWS and Azure cloud environments.
+      - Expert in architecting scalable data platforms using Apache Spark, Flink, and EMR, with deep expertise in cloud migration, CI/CD automation, and infrastructure as code.
+      - Proven track record of steering cross-functional teams and external partners to deliver mission-critical projects, including Enterprise Data Warehouse migrations and Customer Data Platforms.
+  profiles:
+    - network: GitHub
+      url: https://github.com/zhiweio
+      username: zhiweio
+  education:
+    - institution: Suzhou University of Science and Technology
+      degree: Bachelor
+      area: Computer Science and Technology
+      startDate: Sep 1, 2015
+      endDate: Jul 1, 2019
+      summary: |
+        - Awarded Third Prize in the 4th National University Cloud Computing Application Innovation Competition (2018).
+        - Project: "Implementation of Large-scale Distributed Functional Dependency Mining Algorithm Based on Spark".
+
+  work:
+    - name: Cognizant Technology Solutions Shanghai Co. Ltd.
+      position: Senior Data Engineer
+      startDate: Dec 2022
+      endDate:
+      summary: |
+        - Led the comprehensive migration of a 10TB+ legacy data warehouse to AWS, utilizing AWS Glue and DMS to reduce query latency by 40% and infrastructure costs by 25%.
+        - Architected a unified Customer Data Platform (CDP) integrating data from Salesforce, Databricks, and legacy systems, achieving a 360-degree customer view and improving campaign targeting by 30%.
+        - Refactored core data processing workflows in Databricks using advanced partitioning and caching, reducing daily processing time from 6 hours to 2.5 hours.
+        - Designed a custom Master Data Management (MDM) solution on Azure, implementing automated data quality checks that reduced discrepancies by 95%.
+      keywords:
+        - "AWS"
+        - "Azure"
+        - "Cloud Migration"
+        - "Spark"
+        - "Databricks"
+        - "Python"
+    - name: Patsnap Information Technology (Suzhou) Co. Ltd.
+      position: Data Engineer
+      startDate: Jun 2021
+      endDate: Nov 2022
+      summary: |
+        - Architected a real-time wide table system using Flink, Kafka, and TiCDC to provide up-to-the-minute insights on enterprise financing, solving critical compatibility issues in the open-source ecosystem.
+        - Designed a custom Spark Diff engine to synchronize over 500 million daily records to TiDB, achieving minute-level processing and ensuring efficient incremental updates.
+        - Built a scalable data lake solution on AWS S3 and Athena to handle 1.8 billion global patent records, supporting TB-scale data processing for financial risk analysis.
+        - Developed 'Guardian', a custom continuous delivery tool integrated with GitLab CI/CD, automating deployments and improving reliability across 10+ localized client projects.
+      keywords:
+        - "Flink"
+        - "Spark"
+        - "TiDB"
+        - "AWS"
+        - "Kafka"
+        - "CI/CD"
+    - name: Intsig Information Co., Ltd.
+      position: Data Engineer
+      startDate: Jun 2019
+      endDate: Jun 2021
+      summary: |
+        - Engineered a high-throughput real-time data pipeline using Redis and Kafka, processing over 100 billion data points to ensure sub-second freshness for 230 million entities.
+        - Architected a Python-based ETL optimization library that standardized incremental update logic across 1000+ dimensions, reducing boilerplate code by 90%.
+        - Led the DevOps transformation by migrating to GitLab and implementing CI/CD pipelines, reducing release times from hours to minutes.
+      keywords:
+        - "Python"
+        - "Redis"
+        - "Kafka"
+        - "ETL"
+        - "DevOps"
+
+  skills:
+    - name: Cloud & Infrastructure
+      level: Expert
+      keywords:
+        - "AWS (Redshift, Glue, EMR)"
+        - "Azure (Synapse, Cosmos DB)"
+        - "Docker"
+        - "Terraform (IaC)"
+        - "CI/CD (GitLab, GitHub Actions)"
+    - name: Big Data & Streaming
+      level: Expert
+      keywords:
+        - "Apache Spark"
+        - "Apache Flink"
+        - "Kafka"
+        - "Databricks"
+        - "Airflow & DolphinScheduler"
+    - name: Databases & Storage
+      level: Advanced
+      keywords:
+        - "PostgreSQL & MySQL"
+        - "TiDB (Distributed SQL)"
+        - "MongoDB & DynamoDB"
+        - "Redis"
+        - "Data Warehousing (Redshift)"
+    - name: Languages & Development
+      level: Advanced
+      keywords:
+        - "Python"
+        - "SQL"
+        - "Shell Scripting"
+        - "Java/Scala (Spark/Flink)"
+
+  certificates:
+    - name: AWS Certified Data Analytics – Specialty
+      url:
+      issuer: "AWS"
+      date: "Jan, 2024"
+    - name: AWS Certified Developer - Associate
+      url:
+      issuer: "AWS"
+      date: "Sep, 2024"
+    - name: Microsoft Certified Azure Data Engineer Associate
+      url:
+      issuer: "Microsoft"
+      date: "Jun, 2024"
+    - name: Databricks Certified Data Engineer Associate
+      url:
+      issuer: "Databricks"
+      date: "Mar, 2023"
+    - name: PingCAP Certified TiDB Professional
+      url:
+      issuer: "PingCAP"
+      date: "Mar, 2022"
+
+  projects:
+    - name: Bayer Customer Data Platform (CDP)
+      description: Cloud-native ecosystem unifying fragmented customer data across the enterprise.
+      startDate: Dec 2022
+      endDate:
+      summary: |
+        - Established a robust infrastructure foundation using Terraform and GitHub Actions, reducing deployment time by 60% and ensuring 99.9% uptime.
+        - Designed a serverless orchestration workflow using AWS Step Functions and EventBridge to coordinate ETL jobs across heterogeneous data sources.
+        - Implemented a cost-effective, auto-scaling data processing pipeline using AWS Glue and Lambda, optimizing compute costs by 40%.
+      keywords:
+        - "AWS"
+        - "Terraform"
+        - "Glue"
+        - "Lambda"
+        - "Step Functions"
+    - name: Bayer Enterprise Data Warehouse Migration to AWS
+      description: Strategic modernization of a legacy 10TB+ Enterprise Data Warehouse to Amazon Redshift.
+      startDate: Nov 2022
+      endDate: May 2022
+      summary: |
+        - Architected a resilient, self-healing migration pipeline using AWS Step Functions, reducing engineering overhead by 80%.
+        - Developed a custom Python migration utility (dm4) to automate DDL translation for over 2,000 tables with 99% accuracy.
+        - Engineered a memory-resident data transfer pipeline using UNIX streams, accelerating 10TB data transfer by 300% compared to traditional methods.
+      keywords:
+        - "AWS Redshift"
+        - "Python"
+        - "Migration"
+        - "UNIX Shell"
+    - name: Retail Master Data Management Platform
+      description: Comprehensive MDM system leveraging Azure and Power Platform.
+      startDate: May 2025
+      endDate: Dec 2025
+      summary: |
+        - Designed a billion-scale data architecture using Azure Cosmos DB and Synapse Analytics to manage massive historical data retention.
+        - Established a robust data bridge between Azure operational systems and AWS analytical warehouses using Synapse Link and custom adapters.
+        - Optimized data ingestion pipelines using Azure Blob Storage and parallelized Dataflows, achieving a 30x performance gain.
+      keywords:
+        - "Azure"
+        - "Cosmos DB"
+        - "Synapse Analytics"
+        - "Data Integration"
