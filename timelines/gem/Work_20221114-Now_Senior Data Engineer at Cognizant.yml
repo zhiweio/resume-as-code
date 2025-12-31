@@ -1,0 +1,14 @@
+timeline:
+  - title: Senior Data Engineer at Cognizant
+    type: work
+    company/institution: Cognizant Technology Solutions Shanghai Co. Ltd.
+    startDate: Dec 1, 2022
+    endDate: ""
+    content: |
+      Served as a technical lead and Senior Data Engineer for Bayer, a global life sciences client, driving digital transformation through large-scale cloud migration and modern data architecture initiatives. Spearheaded the design and implementation of critical data systems including Customer Data Platforms (CDP) and Master Data Management (MDM) solutions. Acted as the primary liaison between business stakeholders and technical teams, ensuring data integrity, scalability, and alignment with strategic business goals within the AWS and Azure ecosystems.
+    achievements:
+      - "Honors & Recognition: Recognized for consistent high performance and innovation in a challenging enterprise environment; awarded the 'China Region Outstanding Employee' for two consecutive years (2023, 2024) and the prestigious '2024 APAC Bluebolt Innovation Award' for delivering a breakthrough data integration solution."
+      - "Cloud Migration Leadership: Faced with an aging legacy data warehouse that limited scalability and performance, led the comprehensive migration strategy to a modern AWS cloud infrastructure. Orchestrated the end-to-end migration of over 3,000 tables and 10TB+ of historical data, utilizing AWS Glue and DMS. Resulted in a 40% reduction in query latency and a 25% decrease in infrastructure maintenance costs."
+      - "CDP Architecture & Development: To address fragmented customer data across 8+ disparate systems (including Salesforce, Databricks, AliHealth, and legacy SQL databases), architected a unified Customer Data Platform (CDP). Developed robust ETL pipelines using Python and Spark to ingest and harmonize billions of records daily. Achieved a 360-degree customer view that empowered the marketing team to increase campaign targeting accuracy by 30%."
+      - "Master Data Management System: Identified critical inconsistencies in retail master data that caused reporting errors; designed a custom MDM solution leveraging the Microsoft Power Platform and Azure Data Lake. Implemented automated data quality checks and version control workflows. Reduced data discrepancies by 95% and streamlined the data stewardship process, saving the operations team 20+ hours per week."
+      - "Data Pipeline Optimization: Challenged with slow daily processing jobs that delayed business reporting, refactored core data processing workflows using advanced partitioning and caching strategies in Databricks. Reduced daily processing time from 6 hours to 2.5 hours, ensuring 99.9% data availability and timely insights for decision-making."

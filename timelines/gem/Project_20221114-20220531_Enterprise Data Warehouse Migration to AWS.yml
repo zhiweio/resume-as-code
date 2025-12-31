@@ -1,0 +1,14 @@
+timeline:
+  - title: Bayer Enterprise Data Warehouse Migration to AWS
+    type: project
+    company/institution: Cognizant Technology Solutions Shanghai Co. Ltd.
+    startDate: Nov 14, 2022
+    endDate: May 31, 2022
+    content: |
+      Spearheaded the strategic modernization of a legacy 10TB+ Enterprise Data Warehouse, migrating from on-premise SQL Server to a cloud-native Amazon Redshift architecture. The project aimed to resolve scalability bottlenecks and high licensing costs by re-platforming to a columnar, massively parallel processing (MPP) environment. Delivered a fully automated, serverless migration factory that ensured data integrity, minimized downtime, and established a foundation for next-generation analytics.
+    achievements:
+      - "**Serverless Event-Driven Orchestration**: Architected a resilient, self-healing migration pipeline to automate complex workflows. Leveraged AWS Step Functions to orchestrate dependencies between S3 events, Lambda triggers, and RDS staging environments, transforming a manual, error-prone process into a 'one-click' operation that reduced engineering overhead by 80%."
+      - "**Custom Python Migration Engine (`dm4`)**: Developed a proprietary migration utility to bridge compatibility gaps between T-SQL and Redshift SQL. Utilized the `sqlglot` library for abstract syntax tree (AST) parsing to achieve 99% automated DDL translation accuracy for over 2,000 tables, and deployed the tool via AWS Systems Manager (SSM) to ensure secure, audit-logged execution without direct SSH access."
+      - "**High-Throughput Stream Processing**: Overcame severe disk I/O bottlenecks by engineering a memory-resident data transfer pipeline. Constructed a UNIX-based stream utilizing named pipes to chain `bcp` extraction, `split` chunking, `lzop` compression, and `aws s3 cp` multi-part uploads. This zero-disk-write approach saturated network bandwidth, accelerating the 10TB data transfer by 300% compared to traditional staging methods."
+      - "**Redshift Schema Optimization**: Designed performant target schemas by analyzing query patterns to define optimal Distribution Keys (DISTKEY) and Sort Keys. Replaced SQL Server indexes with Redshift's columnar compression encodings, resulting in a 40% reduction in storage footprint and a 5x improvement in complex analytical query performance."
+      - "**Data Integrity & Validation Framework**: Implemented a rigorous automated validation suite to certify migration success. Developed scripts to perform row count verification and checksum comparisons between source and target systems, ensuring 100% data fidelity for critical financial and operational reporting datasets."

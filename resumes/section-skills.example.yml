@@ -1,0 +1,31 @@
+skills:
+  # Valid skill level options:
+  #
+  # - 'Novice'
+  # - 'Beginner'
+  # - 'Intermediate'
+  # - 'Advanced'
+  # - 'Expert'
+  # - 'Master'
+  - name: Web Development
+    level: Expert
+    keywords:
+      - Python
+      - Ruby
+      - CSS
+      - React
+      - JavaScript
+  - name: DevOps
+    level: Intermediate
+    keywords:
+      - Python
+      - Kubernetes
+      - Docker
+      - Shell
+      - Ansible
+  - name: Design
+    level: Intermediate
+    keywords:
+      - Sketch
+      - Figma
+      - Photoshop

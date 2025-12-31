@@ -1,0 +1,26 @@
+title: Data Solution Architect
+summary: |
+  This role requires a senior-level expert to design comprehensive data solutions (OLTP, OLAP, integration) and lead key data projects. The candidate must bridge the gap between technical architecture and business needs, managing both the technical design and the project delivery team.
+skills:
+  technical:
+    - "Data Architecture (OLTP, OLAP, ETL/ELT)"
+    - "Cloud Platforms (AWS, Azure, Google Cloud)"
+    - "Big Data Technologies (Hadoop, Spark, Kafka)"
+    - "Database Systems (SQL, NoSQL)"
+    - "Data Integration & Pipelines"
+    - "Non-functional Requirements (Scalability, Security, Performance)"
+  soft:
+    - "Stakeholder Management"
+    - "Cross-functional Collaboration"
+    - "Technical Communication (Translation to non-technical)"
+    - "Problem-solving"
+    - "Project Management (Scope, Cost, Risk, Quality)"
+analysis:
+  projects: |
+    Requires a proven track record of designing and delivering end-to-end data solutions for large-scale projects. The role involves taking ownership of solution design and delivery for key data projects, ensuring they are on time and within scope.
+  management: |
+    Significant management responsibility is required. The role involves managing daily operations of data project teams, including scope, cost, risk, quality, and escalations. It also requires ensuring adherence to best practices in project management and data governance.
+  industry: |
+    Experience with CRM and ERP systems integration is preferred, suggesting a need for understanding enterprise business processes. Knowledge of data governance and compliance standards is also required.
+  experience: |
+    Requires a minimum of 10 years of experience in data architecture or data engineering. The candidate must have a Bachelor’s or Master’s degree in a related field and a history of delivering large-scale solutions.

@@ -1,0 +1,15 @@
+timeline:
+  - title: Data Engineer
+    type: work
+    company/institution: Intsig Information Co., Ltd.
+    startDate: Jun 16, 2019
+    endDate: Jun 16, 2021
+    content: |
+      Spearheaded data engineering initiatives for Qixinbao, a leading enterprise business intelligence platform with 230M+ entities. Architected and optimized high-throughput ETL pipelines, developed developer productivity tools, and modernized the DevOps infrastructure, significantly improving data freshness and team efficiency.
+    achievements:
+      - "Engineered and maintained a high-throughput real-time data pipeline using Redis, Kafka, and Supervisor, processing over 100 billion data points to ensure sub-second data freshness for 230 million enterprise entities."
+      - "Designed and implemented complex data models for 1000+ business dimensions including equity, judicial, and credit data, supporting rapid feature iteration for both B2B and B2C product lines."
+      - "Architected Python-based ETL optimization library inspired by `dataclasses` and set theory, which standardized incremental update logic across 1000+ data dimensions, reducing boilerplate code by 90% and accelerating new data onboarding."
+      - "Developed high-performance data ingestion tool supporting MySQL, MongoDB, and file sources with features like breakpoint resumption and rate limiting, enabling efficient full-table scans and concurrent data cleaning via Redis queues."
+      - "Built automation tool that parses Excel data dictionaries to generate DDL statements, eliminating manual SQL errors and ensuring synchronization between product documentation and database schemas."
+      - "Led the DevOps transformation by migrating the codebase from SVN to GitLab and implementing CI/CD pipelines for automated Python package testing and deployment, reducing release times from hours to minutes."

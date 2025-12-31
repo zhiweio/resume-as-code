@@ -1,0 +1,26 @@
+education:
+  - institution: Suzhou University of Science and Technology
+    # Valid degree options:
+    #
+    # - 'Middle School'
+    # - 'High School'
+    # - 'Diploma'
+    # - 'Associate'
+    # - 'Bachelor'
+    # - 'Master'
+    # - 'Doctor'
+    degree: Bachelor
+    area: Computer Science and Technology
+    # Should be a valid date string that can be parsed by `new Date(dateStr)`
+    # in JavaScript, eg. '2020-01', '2020-02-03', 'Jul 1, 2023' etc.
+    #
+    # The date part would be removed in the final output as most of the time
+    # people won't really care about the exact date for your working
+    # experience or education background, etc.
+    # ref: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date
+    startDate: Sep 1, 2015
+    # Leave endDate blank to indicate "Present"
+    endDate: Jul 1, 2019
+    summary: |
+      - Awarded Third Prize in the 4th National University Cloud Computing Application Innovation Competition (2018).
+      - Project: "Implementation of Large-scale Distributed Functional Dependency Mining Algorithm Based on Spark".

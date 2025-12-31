@@ -1,0 +1,21 @@
+certificates:
+  - name: AWS Certified Data Analytics – Specialty
+    url: ""
+    issuer: ""
+    date: ""
+  - name: AWS Certified Developer - Associate
+    url: ""
+    issuer: ""
+    date: ""
+  - name: Microsoft Certified Azure Data Engineer Associate
+    url: ""
+    issuer: ""
+    date: ""
+  - name: Databricks Certified Data Engineer Associate
+    url: ""
+    issuer: ""
+    date: ""
+  - name: PingCAP Certified TiDB Professional
+    url: ""
+    issuer: ""
+    date: ""
