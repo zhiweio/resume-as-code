@@ -17,7 +17,7 @@ Output format:
 - You MUST output valid YAML format.
 - The structure should be a list of work experience items under a `work` key.
 - Each item should have:
-  - `name`: Company Name
+  - `name`: Company Name. **MUST be exactly the same as `company/institution` in the source timeline. Do not abbreviate or change.**
   - `url`: Company URL (optional, omit or leave empty if unknown. DO NOT use empty string `""`)
   - `position`: Job Title
   - `startDate`: Start Date (MMM YYYY or YYYY-MM-DD)
