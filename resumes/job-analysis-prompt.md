@@ -18,6 +18,7 @@ Your task is to deeply analyze target job information, extracting not only skill
 - The structure should be a single object.
 - Fields:
   - `title`: The job title.
+  - `company`: The company name.
   - `summary`: A brief summary of the role (multiline string).
   - `skills`: Object with `technical` and `soft` lists.
   - `analysis`: Object with `projects`, `management`, `industry`, and `experience` fields (all multiline strings).
@@ -26,6 +27,7 @@ Your task is to deeply analyze target job information, extracting not only skill
 
 ```yaml
 title: Senior Software Engineer
+company: Tech Corp
 summary: |
   Role summary here...
 skills:

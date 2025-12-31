@@ -15,10 +15,10 @@ Output format:
 - The structure should be a list of work experience items under a `work` key.
 - Each item should have:
   - `name`: Company Name
-  - `url`: Company URL (optional, empty string if unknown)
+  - `url`: Company URL (optional, omit or leave empty if unknown. DO NOT use empty string `""`)
   - `position`: Job Title
   - `startDate`: Start Date (MMM YYYY or YYYY-MM-DD)
-  - `endDate`: End Date (MMM YYYY, YYYY-MM-DD, or empty string for Present)
+  - `endDate`: End Date (MMM YYYY or YYYY-MM-DD). **For current roles, leave this field empty (null) or omit it. DO NOT use the string "Present" or empty string `""`.**
   - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points.
   - `keywords`: List of key skills or domains.
 
@@ -30,7 +30,7 @@ work:
     url: https://company.com
     position: Job Title
     startDate: Jan 2020
-    endDate: Dec 2022
+    endDate: # Leave empty for Present
     summary: |
       - Achievement 1 with metrics.
       - Achievement 2 with metrics.

@@ -1,14 +1,14 @@
-Using session context (personal info, projects, work experience, skills, certifications, open-source), write a conceptual highlight summary.
+Using session context (personal info, projects, work experience, skills, certifications, open-source) and the Job Description analysis, write a targeted professional summary.
 
 Important requirements:
 
-- **Adapt to Experience Level**:
-  - **Entry Level (0-1y)**: Highlight potential, strong CS fundamentals, academic achievements, internships, and passion for technology.
-  - **Mid-Level (1-5y)**: Highlight execution ability, stack proficiency, engineering practices, and contributions to team goals.
-  - **Senior Level (6+y)**: Focus on value creation, business problem decomposition, systemic trade-offs, stability/growth, and leadership.
-- **Tone**: Natural, professional, authentic tone; avoid exaggeration; no bullet-list or laundry list.
-- **Format**: Prefer one short paragraph, ≤ 120 words; optimize for recruiter readability and role fit.
-- **Avoid**: Explicit numbers, percentages, counts, or quantified metrics in this summary section.
+- **Format**: Use 3-4 concise bullet points.
+- **Content Strategy**:
+  - **Point 1 (Identity & Match)**: Current role/level + key years of experience + primary match to JD (e.g., "Senior Data Engineer with 6+ years of experience specializing in...").
+  - **Point 2 (Technical Core)**: Highlight specific tech stack mastery and engineering capabilities relevant to the role.
+  - **Point 3 (Impact/Soft Skills)**: Focus on problem-solving, leadership, business value, or collaboration.
+- **Tone**: Professional, confident, and objective.
+- **Avoid**: Generic fluff (e.g., "Hard worker"). Be specific.
 
 Output format:
 
@@ -20,7 +20,9 @@ Example format:
 
 ```yaml
 summary: |
-  Highly skilled software engineer with extensive experience in...
+  - Senior Data Engineer with 7+ years of experience building scalable ETL pipelines and data warehouses on AWS.
+  - Proficient in Python, SQL, and Spark, with a track record of optimizing data processing efficiency by 40%.
+  - Proven ability to lead cross-functional teams and translate business requirements into technical solutions.
 ```
 
 Return the polished content in professional language suitable for professional profiles.

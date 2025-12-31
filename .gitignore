@@ -149,3 +149,10 @@ packages/client/public/sw.js
 *.tex
 packages/cli/*.pdf
 packages/cli/resources/*.pdf
+
+# Generated resumes
+resumes/gem/*.yml
+resumes/gem/*.yaml
+resumes/gem/*.tex
+resumes/gem/*.md
+resumes/gem/*.html

@@ -11,10 +11,10 @@ Output format:
 - The structure should be a list of project items under a `projects` key.
 - Each item should have:
   - `name`: Project Name
-  - `url`: Project URL (optional)
+  - `url`: Project URL (optional, omit or leave empty if unknown. DO NOT use empty string `""`)
   - `description`: Brief description (single line)
   - `startDate`: Start Date (MMM YYYY)
-  - `endDate`: End Date (MMM YYYY)
+  - `endDate`: End Date (MMM YYYY). **For current projects, leave this field empty (null) or omit it. DO NOT use the string "Present" or empty string `""`.**
   - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points.
   - `keywords`: List of technologies or domains.
 
@@ -26,7 +26,7 @@ projects:
     url: https://project.url
     description: Brief description of the project
     startDate: Jan 2023
-    endDate: Present
+    endDate: # Leave empty for Present
     summary: |
       - Achievement 1: Description with specific metrics.
       - Achievement 2: Description with specific metrics.

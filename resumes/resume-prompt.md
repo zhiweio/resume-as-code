@@ -39,6 +39,33 @@ Your task is to generate high-quality resume content based on matched timeline e
   - **Result Closure**: Closing the loop on results (stability, growth).
   - **Collaboration**: Cross-functional leadership and translating technical value.
 
+### Rich Text Formatting Rules
+
+The output content (specifically `summary` fields) supports a **limited set of Markdown syntax**. You MUST strictly adhere to these rules:
+
+- **Supported Syntax**:
+  - **Bold**: `**text**` (Use for key achievements or metrics)
+  - **Italic**: `*text*` (Use for emphasis)
+  - **Links**: `[text](url)` (Use for project links or credentials)
+  - **Lists**:
+    - Unordered: `- item`
+    - Ordered: `1. item`
+    - Nested: Indent with spaces.
+
+- **Strictly FORBIDDEN Syntax**:
+  - Headings (`#`, `##`)
+  - Blockquotes (`>`)
+  - Images (`![alt](url)`)
+  - Horizontal Rules (`---`)
+  - Tables
+
+### Target Platform Context
+
+The generated content will be compiled by `yamlresume`.
+
+- **Locale**: The final resume will specify a locale (e.g., `en` or `zh`). Ensure content language matches the target locale.
+- **Layouts**: The content will be rendered into PDF (LaTeX), HTML, and Markdown. Ensure text is clean and compatible with multiple renderers.
+
 ### Important Notes
 
 - **Achievements**: Descriptions should be specific and quantified with numbers and results.

@@ -30,5 +30,8 @@
     "overrides": {
       "form-data": "^4.0.4"
     }
+  },
+  "dependencies": {
+    "yamlresume": "^0.9.1"
   }
 }
