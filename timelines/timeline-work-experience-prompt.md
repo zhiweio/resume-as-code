@@ -28,6 +28,10 @@ Output format:
 - Each item should have `title`, `type` (set to 'work'), `company/institution`, `startDate`, `endDate`, `content` (multiline string using |), and `achievements` (list of strings).
 - `content` should be a high-level summary.
 - `achievements` should be specific bullet points using the STAR methodology.
+- `keywords` should be a comprehensive list of ALL technical skills, tools, platforms, and methodologies used or inferred.
+- **Authenticity & Inference**:
+  - **Strictly Forbidden**: Do NOT invent skills or tech stacks that are completely absent from the provided text.
+  - **Allowed Inference**: If the text implies experience with a broader platform or ecosystem (e.g., "AWS", "Azure", "Big Data processing"), you MAY infer and include specific related services or tools that are standard in such environments (e.g., inferring "Step Functions" or "Blob Storage" if general AWS/Azure usage is evident).
 - **IMPORTANT**: You MUST wrap each achievement string in double quotes (`"`) to avoid YAML parsing issues with special characters like colons (`:`).
 
 Example format:
@@ -44,6 +48,10 @@ timeline:
     achievements:
       - 'Achievement 1 using STAR: Description here.'
       - 'Achievement 2 using STAR: Description here.'
+    keywords:
+      - 'Keyword1'
+      - 'Keyword2'
+      - 'Keyword3'
 ```
 
 Return the polished content in professional, concise language suitable for a resume.

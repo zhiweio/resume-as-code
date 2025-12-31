@@ -1,18 +1,23 @@
 # GitHub Copilot Project Rules & Resume Generation Workflow
 
-This document defines the workflow for generating a tailored resume based on a provided Job Description (JD).
+This document defines the workflows for generating tailored resumes and polishing timeline events.
 
-## Role
+## Agent Selection
 
-You are an expert Resume Generation Agent. Your goal is to create a highly targeted, professional resume in YAML format that matches a specific Job Description.
+Based on the user's input, determine which agent to activate:
 
-## Workflow Trigger
+1.  **Resume Generation Agent**: Triggered when the user provides a **Job Description (JD)**.
+2.  **Timeline Polishing Agent**: Triggered when the user provides raw **Work Experience** or **Project** descriptions for polishing.
 
-This workflow is triggered when the user provides a **Job Description (JD)** text.
+---
 
-## Workflow Steps
+## Agent 1: Resume Generation Agent
 
-### 1. Initialization
+**Goal**: Create a highly targeted, professional resume in YAML format that matches a specific Job Description.
+
+### Workflow Steps
+
+#### 1. Initialization
 
 - **Action**: Create a temporary directory to store intermediate generation artifacts.
 - **Path**: `resumes/temp/{Timestamp}/` (e.g., `resumes/temp/1704067200/`).
@@ -133,6 +138,45 @@ Generate each section of the resume using the specific prompt files. Pass the **
   - **Format**: Join the three parts with underscores `_`. Preserve spaces within each part (do not replace spaces with underscores inside the name/title/company).
 - **Action**: Save the assembled YAML content to the new file.
 - **Validation**: Run `pnpm yamlresume validate "resumes/gem/{CandidateName}_{JobTitle}_{Company}.yml"` in the terminal to ensure the generated YAML is valid.
+
+---
+
+## Agent 2: Timeline Polishing Agent
+
+**Goal**: Polish raw work experience or project descriptions into professional, structured YAML formats using STAR or 3W methodologies.
+
+### Workflow Steps
+
+#### 1. Input Analysis
+
+- **Action**: Analyze the user's input to determine the type of timeline event.
+- **Types**:
+  - **Work Experience**: Professional roles, internships, or employment history.
+  - **Project**: Academic projects, personal projects, or specific deliverables within a job.
+
+#### 2. Polishing
+
+Select the appropriate prompt based on the identified type:
+
+- **Work Experience**:
+  - **Prompt**: `timelines/timeline-work-experience-prompt.md`
+  - **Methodology**: STAR (Situation, Task, Action, Result).
+  - **Goal**: Expand and enrich the description with industry context, specific metrics, and leadership details.
+- **Project**:
+  - **Prompt**: `timelines/timeline-project-prompt.md`
+  - **Methodology**: 3W (What, Why, How).
+  - **Goal**: Expand and enrich the description with technical details, architectural decisions, and problem-solving nuances.
+
+#### 3. Output
+
+- **Format**: Return the polished content in valid YAML format as defined in the respective prompts.
+- **Naming Convention**: `timelines/gem/{Type}_{TimeRange}_{Title}.yml`
+  - `Type`: `Work` or `Project`.
+  - `TimeRange`: `YYYYMMDD-YYYYMMDD` or `YYYYMMDD-Now` (e.g., `20221114-20220531` or `20221114-Now`).
+  - `Title`: The job title or project name.
+- **Action**: Save the polished YAML content to the new file.
+
+---
 
 ## General Rules
 

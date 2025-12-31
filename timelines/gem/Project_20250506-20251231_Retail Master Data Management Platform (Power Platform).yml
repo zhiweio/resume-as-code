@@ -1,15 +1,34 @@
 timeline:
   - title: Retail Master Data Management Platform (Power Platform)
     type: project
-    company/institution: Cognizant Technology Solutions Shanghai Co. Ltd.
+    company/institution: Cognizant
     startDate: May 06, 2025
     endDate: Dec 31, 2025
     content: |
-      Architected and delivered an enterprise-grade Retail Master Data Management (MDM) platform to centralize fragmented retail data, replacing manual Excel workflows with a governed, version-controlled system. The solution leveraged a hybrid architecture of Microsoft Power Platform (Model-driven Apps, PCF) and Azure Cosmos DB to handle billion-scale datasets with high performance. By implementing a metadata-driven design and cross-cloud synchronization, the platform bridged operational data entry with analytical reporting in AWS and Azure, ensuring data consistency and near real-time availability across the retail ecosystem.
+      Architected and developed a comprehensive Retail Master Data Management System leveraging the Microsoft Power Platform ecosystem to centralize and govern retail data assets. The solution integrated Power Apps (Model-driven & Canvas), Dataverse, and Azure Cloud Services (Storage, Synapse Analytics) to replace fragmented Excel-based workflows with a robust, version-controlled, and scalable platform. It bridged the gap between operational data entry and analytical data lakes, ensuring data consistency and accessibility for store managers and operations teams.
     achievements:
+      - "**Enterprise Low-Code Architecture**: Designed and deployed a multi-environment (DEV/UAT/PROD) Power Platform solution on Azure China. Implemented Application Lifecycle Management (ALM) strategies using Power Platform Pipelines and GitHub Actions to manage solution promotion and ensure governance across environments."
       - "**Billion-Scale Data Architecture with Cosmos DB**: Designed a high-performance storage layer using Azure Cosmos DB partitioned by data version to support massive historical data retention. Leveraged Cosmos DB's horizontal scaling to manage billions of records, ensuring sub-second response times for current state queries while maintaining a complete audit trail of historical versions for rollback capabilities."
+      - "**Advanced Custom PCF Controls**: Engineered high-performance React/TypeScript component using Fluent UI v8. This control extended Model-driven App capabilities with features like Excel-like grid editing, client-side file parsing (`xlsx`), bulk data validation, and granular version history management."
       - "**Metadata-Driven 'Zero Code' Framework**: Engineered a dynamic, configuration-based application framework to eliminate development bottlenecks. Utilized Dataverse as a metadata repository where frontend applications and backend Dataflow ETL jobs dynamically fetch schema definitions via OData APIs, enabling the creation and modification of tables purely through configuration without code deployment."
-      - "**Cross-Cloud Real-Time Data Synchronization**: Established a robust data bridge between Azure operational systems and AWS analytical warehouses to unify data across a multi-cloud landscape. Implemented real-time incremental synchronization from Dataverse to Azure Data Lake Gen2 via Synapse Link, and developed custom adapters to integrate with AWS Data Warehouse pipelines, ensuring data consistency across cloud boundaries."
-      - "**Granular Security & Governance Model**: Implemented a comprehensive Role-Based Access Control (RBAC) system to enforce strict data governance. Leveraged Dataverse Security Roles for fine-grained table-level permissions, allowing administrators to manage user access and authorization through simple configuration interfaces rather than complex code."
-      - "**Advanced PCF Controls for Data Operations**: Developed sophisticated custom Power Apps Component Framework (PCF) controls (`DataPortalControl`) using React, TypeScript, and Fluent UI v8. Provided a seamless, Excel-like user experience for complex bulk operations, featuring client-side Excel parsing (`xlsx`), secure direct-to-blob uploads via SAS tokens, and intuitive UI for data rollback and history inspection."
+      - "**Automated ETL & Dataflow Engineering**: Developed a Python-based CLI tool (`generate_dataflows.py`) utilizing Jinja2 templates to auto-generate complex Power Query (M) scripts. This automation standardized the ETL logic for batch data ingestion, incremental updates, and rollbacks, significantly reducing manual maintenance overhead."
+      - "**Cross-Cloud Data Synchronization**: Established a robust data bridge between Azure operational systems and AWS analytical warehouses to unify data across a multi-cloud landscape. Implemented real-time incremental synchronization from Dataverse to Azure Data Lake Gen2 via Synapse Link, and developed custom adapters to integrate with AWS Data Warehouse pipelines, ensuring data consistency across cloud boundaries."
+      - "**Security & Compliance**: Enforced a Zero Trust security model using Azure RBAC, Storage Firewalls, and Dataverse Security Roles. Implemented custom SAS token generation logic to secure browser-based storage access, ensuring strict data isolation and compliance with enterprise security standards."
       - "**High-Performance ETL & Ingestion Pipeline**: Optimized data ingestion pipelines to overcome OData API throughput limitations, reducing data load times for massive datasets. Transitioned from row-by-row processing to a bulk load architecture using Azure Blob Storage and parallelized Dataflows, achieving a 30x performance gain (increasing throughput from 3MB/s to over 100MB/s)."
+    keywords:
+      - "Power Platform"
+      - "Power Apps"
+      - "Dataverse"
+      - "Azure Synapse Link"
+      - "Azure Synapse Analytics"
+      - "Azure Cosmos DB"
+      - "Azure Blob Storage"
+      - "PCF (Power Apps Component Framework)"
+      - "React"
+      - "TypeScript"
+      - "Azure Data Lake Gen2"
+      - "Power Query"
+      - "Dataflow"
+      - "Python"
+      - "Jinja2"
+      - "Fluent UI"
