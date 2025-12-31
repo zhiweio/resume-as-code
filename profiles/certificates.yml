@@ -2,20 +2,20 @@ certificates:
   - name: AWS Certified Data Analytics – Specialty
     url:
     issuer: "AWS"
-    date:
+    date: "Jan, 2024"
   - name: AWS Certified Developer - Associate
     url:
     issuer: "AWS"
-    date:
+    date: "Sep, 2024"
   - name: Microsoft Certified Azure Data Engineer Associate
     url:
     issuer: "Microsoft"
-    date:
+    date: "Jun, 2024"
   - name: Databricks Certified Data Engineer Associate
     url:
     issuer: "Databricks"
-    date:
+    date: "Mar, 2023"
   - name: PingCAP Certified TiDB Professional
     url:
     issuer: "PingCAP"
-    date:
+    date: "Mar, 2022"
