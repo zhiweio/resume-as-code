@@ -12,44 +12,58 @@ This workflow is triggered when the user provides a **Job Description (JD)** tex
 
 ## Workflow Steps
 
-### 1. Job Analysis
+### 1. Initialization
+
+- **Action**: Create a temporary directory to store intermediate generation artifacts.
+- **Path**: `resumes/temp/{Timestamp}/` (e.g., `resumes/temp/1704067200/`).
+
+### 2. Job Analysis
 
 - **Action**: Analyze the provided JD to extract key requirements, skills, and role details.
 - **Tool**: Use the prompt defined in `resumes/job-analysis-prompt.md`.
 - **Input**: The user-provided JD.
-- **Output**: A YAML object containing `title`, `summary`, `skills`, and `analysis`.
+- **Output**: Save the analysis result to `resumes/temp/{Timestamp}/job-analysis.yml`.
 
-### 2. Context Gathering & Timeline Matching
+### 3. Context Gathering & Timeline Matching
 
 - **Action**: Gather candidate information and select relevant experience.
 - **Sources**:
-  - **Profile**: Read `profiles/profile.yml`.
-  - **Education**: Read `education/education.yml`.
-  - **Certificates**: Read `certificates/certificates.yml`.
+  - **Basics**: Read `profiles/basics.yml`.
+  - **Education**: Read `profiles/education.yml`.
+  - **Certificates**: Read `profiles/certificates.yml`.
   - **Timelines**: Read all files in `timelines/gem/`.
-- **Matching**: Based on the **Job Analysis** results (Step 1), select the most relevant Work Experience and Project files from `timelines/gem/`. Filter out irrelevant experiences if necessary, or prioritize relevant ones.
+- **Matching**: Based on the **Job Analysis** results (Step 2), select the most relevant Work Experience and Project files from `timelines/gem/`. Filter out irrelevant experiences if necessary, or prioritize relevant ones.
 
-### 3. Section Generation
+### 4. Section Generation
 
-Generate each section of the resume using the specific prompt files. Pass the **Job Analysis** and **Matched Context** (Profile, Education, Selected Timelines) to each prompt.
+Generate each section of the resume using the specific prompt files. Pass the **Job Analysis** and **Matched Context** (Profile, Education, Selected Timelines) to each prompt. Save the output of each section to the temporary directory.
 
 - **Personal Summary**:
   - **Prompt**: `resumes/section-personal-summary-prompt.md`
-  - **Goal**: Generate a concise professional summary tailored to the role.
+  - **Output**: `resumes/temp/{Timestamp}/section-personal-summary.yml`
 - **Skills**:
   - **Prompt**: `resumes/section-skills-prompt.md`
-  - **Goal**: Generate a list of technical and soft skills, ordered by relevance to the JD.
+  - **Output**: `resumes/temp/{Timestamp}/section-skills.yml`
 - **Work Experience**:
   - **Prompt**: `resumes/section-work-prompt.md`
-  - **Goal**: Transform selected Work timelines into bullet points highlighting achievements relevant to the JD.
+  - **Output**: `resumes/temp/{Timestamp}/section-work.yml`
 - **Projects**:
   - **Prompt**: `resumes/section-projects-prompt.md`
-  - **Goal**: Transform selected Project timelines into bullet points highlighting technical challenges and results relevant to the JD.
+  - **Output**: `resumes/temp/{Timestamp}/section-projects.yml`
 
-### 4. Resume Assembly
+### 5. Resume Assembly
 
-- **Action**: Assemble the generated sections into a final resume YAML file.
-- **Template**: Follow the structure of `resumes/resume.example.yml`.
+- **Action**: Assemble the final resume using the intermediate files from `resumes/temp/{Timestamp}/`.
+- **Sources**:
+  - `profiles/basics.yml` (Basics)
+  - `profiles/education.yml`
+  - `profiles/certificates.yml`
+  - `resumes/temp/{Timestamp}/section-personal-summary.yml`
+  - `resumes/temp/{Timestamp}/section-skills.yml`
+  - `resumes/temp/{Timestamp}/section-work.yml`
+  - `resumes/temp/{Timestamp}/section-projects.yml`
+- **Constraint**: DO NOT read or use any `*.example.yml` files.
+- **Template**: Follow the structure of `resumes/resume.example.yml` (Structure ONLY, do not read content).
 - **Structure**:
 
   ```yaml
@@ -59,6 +73,25 @@ Generate each section of the resume using the specific prompt files. Pass the **
 
   layouts:
     - engine: latex
+      sections:
+        aliases:
+          basics: Basics
+          education: Education
+          work: Work Experience
+          projects: Projects
+          certificates: Certificates
+          skills: Skills
+          languages: Languages
+          interests: Interests
+        order:
+          - basics
+          - education
+          - work
+          - skills
+          - certificates
+          - projects
+          - languages
+          - interests
       page:
         margins:
           top: 2.5cm
@@ -81,19 +114,19 @@ Generate each section of the resume using the specific prompt files. Pass the **
 
   content:
     basics:
-      # ... properties from profiles/profile.yml
+      # ... properties from profiles/basics.yml
       summary: ... # Generated Personal Summary (Merged here)
-    education: ... # From education/education.yml
-    certificates: ... # From certificates/certificates.yml (if applicable)
+    education: ... # From profiles/education.yml
+    certificates: ... # From profiles/certificates.yml (if applicable)
     skills: ... # Generated Skills
     work: ... # Generated Work Experience
     projects: ... # Generated Projects
   ```
 
-### 5. Final Output
+### 6. Final Output
 
 - **Naming Convention**: `resumes/gem/{CandidateName}_{JobTitle}_{Company}.yml`
-  - `CandidateName`: From `profiles/profile.yml` (basics.name).
+  - `CandidateName`: From `profiles/basics.yml` (basics.name).
   - `JobTitle`: From Job Analysis (`title`).
   - `Company`: From Job Analysis (`company`).
   - **Format**: Join the three parts with underscores `_`. Preserve spaces within each part (do not replace spaces with underscores inside the name/title/company).

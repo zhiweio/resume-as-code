@@ -9,6 +9,7 @@ Important requirements:
   - **Point 3 (Impact/Soft Skills)**: Focus on problem-solving, leadership, business value, or collaboration.
 - **Tone**: Professional, confident, and objective.
 - **Avoid**: Generic fluff (e.g., "Hard worker"). Be specific.
+- **Authenticity**: Ensure all claims are supported by the candidate's actual experience. Do not fabricate skills to match the JD. Reasonable inference based on broader platform experience is permitted (e.g., inferring specific AWS services if general AWS experience is present).
 
 Output format:
 

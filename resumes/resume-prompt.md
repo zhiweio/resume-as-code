@@ -68,6 +68,7 @@ The generated content will be compiled by `yamlresume`.
 
 ### Important Notes
 
+- **Forbidden Sources**: Do NOT read or use content from `*.example.yml` files. Use only the provided session context and generated intermediate files.
 - **Achievements**: Descriptions should be specific and quantified with numbers and results.
 - **Skills**: Descriptions should be comprehensive ability summaries, reflecting years of experience, proficiency level, and application scenarios.
 - **Formatting**: Each skill description should be a complete sentence. Avoid listing specific technology names as tags.

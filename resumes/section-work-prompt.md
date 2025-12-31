@@ -8,6 +8,9 @@ Important requirements:
   - **Senior Level (6+y)**: Focus on core projects, business problem decomposition, result closure, cross-functional collaboration, and technical strategy.
 - **Quantification**: Achievement descriptions should be specific and quantified with numbers and results.
 - **Relevance**: Prioritize and order content by job relevance; highlight parts most relevant to the target position.
+- **Authenticity & Inference**:
+  - **Strictly Forbidden**: Do NOT invent skills or tech stacks that are completely absent from the candidate's timeline/profile, even if the JD requires them.
+  - **Allowed Inference**: If the candidate has demonstrated experience with a broader platform or ecosystem (e.g., "AWS", "Azure", "Big Data processing") in their timeline, you MAY infer and include specific related services mentioned in the JD (e.g., inferring "Step Functions" or "Blob Storage" if general AWS/Azure usage is evident and relevant context exists).
 
 Output format:
 

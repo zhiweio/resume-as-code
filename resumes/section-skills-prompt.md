@@ -11,6 +11,10 @@ Important requirements:
 - **Avoid**: Quantified wording (numbers, percentages, counts); no KPI-style phrasing.
 - **Structure**: Order by role relevance, most relevant first; suggest 4–6 items.
 - **Keywords**: Must be short tags (≤ 32 characters). Do NOT use long sentences as keywords.
+- **Detailing**: When listing broad tech stacks (e.g., AWS, Azure, CI/CD), use parentheses to list specific relevant tools or services if applicable (e.g., "AWS (Redshift, Glue)", "CI/CD (GitLab, Jenkins)").
+- **Authenticity & Inference**:
+  - **Strictly Forbidden**: Do NOT invent skills or tech stacks that are completely absent from the candidate's timeline/profile, even if the JD requires them.
+  - **Allowed Inference**: If the candidate has demonstrated experience with a broader platform or ecosystem (e.g., "AWS", "Azure", "Big Data processing") in their timeline, you MAY infer and include specific related services mentioned in the JD (e.g., inferring "Step Functions" or "Blob Storage" if general AWS/Azure usage is evident and relevant context exists).
 
 Output format:
 
@@ -24,14 +28,19 @@ Example format:
 
 ```yaml
 skills:
-  - name: Programming Languages
+  - name: Cloud & Infrastructure
     level: Expert
     keywords:
-      - 'Java'
-      - 'Python'
-      - 'C++'
-      - 'JavaScript'
-      - 'TypeScript'
+      - 'AWS (Redshift, Glue, EMR)'
+      - 'Azure (Synapse, Cosmos DB)'
+      - 'Terraform (IaC)'
+      - 'Docker & Kubernetes'
+  - name: Big Data & Streaming
+    level: Expert
+    keywords:
+      - 'Apache Spark'
+      - 'Apache Flink'
+      - 'Kafka'
 ```
 
 Return the polished content in professional language suitable for professional profiles.
