@@ -5,6 +5,7 @@ Important requirements:
 - **Format**: Use 3-4 concise bullet points.
 - **Content Strategy**:
   - **Point 1 (Identity & Match)**: Current role/level + key years of experience + primary match to JD (e.g., "Senior Data Engineer with 6+ years of experience specializing in...").
+    - **Experience Rounding**: Round up experience years slightly for better presentation (e.g., 3.5 years -> "4 years", 3.2 years -> "3+ years").
   - **Point 2 (Technical Core)**: Highlight specific tech stack mastery and engineering capabilities relevant to the role.
   - **Point 3 (Impact/Soft Skills)**: Focus on problem-solving, leadership, business value, or collaboration.
 - **Tone**: Professional, confident, and objective.

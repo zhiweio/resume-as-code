@@ -64,6 +64,7 @@ Generate each section of the resume using the specific prompt files. Pass the **
   - `resumes/temp/{Timestamp}/section-projects.yml`
 - **Constraint**: DO NOT read or use any `*.example.yml` files.
 - **Template**: Follow the structure of `resumes/resume.example.yml` (Structure ONLY, do not read content).
+- **Section Order**: The `content` section MUST strictly follow the order defined in `layouts.sections.order` (basics -> education -> work -> skills -> certificates -> projects).
 - **Structure**:
 
   ```yaml
@@ -117,9 +118,9 @@ Generate each section of the resume using the specific prompt files. Pass the **
       # ... properties from profiles/basics.yml
       summary: ... # Generated Personal Summary (Merged here)
     education: ... # From profiles/education.yml
-    certificates: ... # From profiles/certificates.yml (if applicable)
-    skills: ... # Generated Skills
     work: ... # Generated Work Experience
+    skills: ... # Generated Skills
+    certificates: ... # From profiles/certificates.yml (if applicable)
     projects: ... # Generated Projects
   ```
 
