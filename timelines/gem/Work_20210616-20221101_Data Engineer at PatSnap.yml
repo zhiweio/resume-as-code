@@ -36,3 +36,6 @@ timeline:
       - "DynamoDB"
       - "Linux"
       - "Data Modeling"
+      - "Java"
+      - "Scala"
+      - "ElasticSearch"

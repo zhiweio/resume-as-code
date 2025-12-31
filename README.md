@@ -108,11 +108,8 @@ Use the YAMLResume CLI to compile your resume into PDF or HTML.
 # Validate the generated resume
 pnpm yamlresume validate "resumes/gem/Your_Resume.yml"
 
-# Export to PDF
-pnpm yamlresume export "resumes/gem/Your_Resume.yml" --format pdf --theme moderncv-banking
-
-# Export to HTML
-pnpm yamlresume export "resumes/gem/Your_Resume.yml" --format html --theme calm
+# Build the resume to PDF, HTML, and Markdown
+pnpm yamlresume build "resumes/gem/Your_Resume.yml"
 ```
 
 ## 🛠️ Development

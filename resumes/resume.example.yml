@@ -133,13 +133,13 @@ layouts:
   - engine: latex
     page:
       margins:
-        top: 2.5cm
+        top: 1.5cm
         left: 1.5cm
         right: 1.5cm
-        bottom: 2.5cm
+        bottom: 1.5cm
       showPageNumbers: true
     # Use `yamlresume templates list` to get the list of available templates
-    template: moderncv-banking
+    template: moderncv-classic
     typography:
       # LaTeX engine only supports 10pt, 11pt, and 12pt
       fontSize: 11pt

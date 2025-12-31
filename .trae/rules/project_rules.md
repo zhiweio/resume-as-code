@@ -1,4 +1,4 @@
-# GitHub Copilot Project Rules & Resume Generation Workflow
+# Trae Project Rules & Resume Generation Workflow
 
 This document defines the workflows for generating tailored resumes and polishing timeline events.
 
@@ -85,10 +85,10 @@ Generate each section of the resume using the specific prompt files. Pass the **
           education: 'Education'
           work: 'Work Experience'
           projects: 'Projects'
-          certificates: 'Certificates'
-          skills: 'Skills'
-          languages: 'Languages'
-          interests: 'Interests'
+          certificates: Certificates
+          skills: Skills
+          languages: Languages
+          interests: Interests
         order:
           - basics
           - education
