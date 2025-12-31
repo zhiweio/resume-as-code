@@ -1,60 +1,121 @@
 # Resume as Code
 
-This project aims to manage personal resumes through a "code-based" approach. The core concept is to maintain a comprehensive personal career timeline, and by analyzing the target Job Description (JD), automatically match the most relevant experiences to generate a highly customized resume.
+This project implements a "Resume as Code" philosophy, leveraging LLMs (Large Language Models) and structured data to automate the creation of highly tailored, professional resumes.
+
+It solves the common pain points of resume maintenance:
+
+- **Fragmentation**: Keeping multiple versions of Word/PDF files for different job applications.
+- **Inconsistency**: Difficulty in maintaining consistent formatting and content across versions.
+- **Time-Consuming**: Manually tailoring resumes for each Job Description (JD) is tedious.
+
+By maintaining a single "Master Timeline" of your career and using AI agents to dynamically assemble resumes, you can generate a perfect match for any job opportunity in minutes.
 
 ## ✨ Core Features
 
-- **Single Source of Truth**: All experiences (work, projects, education, certificates) are structured in YAML format, making them easy to maintain and version control.
-- **Deep JD Analysis**: Utilizes LLMs to deeply parse job descriptions, extracting key skills, project experience, and soft skill requirements.
-- **Intelligent Matching & Generation**: Based on JD analysis results, filters the most matching events from the Timeline to generate targeted resume content.
-- **Multi-dimensional Management**: Supports management of personal profiles, education, certificates, and detailed project and work experiences.
+- **Single Source of Truth**: All career data (work, projects, education, certificates) is stored in modular YAML files.
+- **AI-Powered Agents**:
+  - **Resume Generation Agent**: Analyzes JDs and assembles targeted resumes.
+  - **Timeline Polishing Agent**: Polishes raw experience descriptions using STAR/3W methodologies.
+- **Standardized Format**: Built on the [YAMLResume](https://yamlresume.dev/docs) standard, ensuring compatibility with a rich ecosystem of themes and export tools.
+- **Automated Validation**: Integrated validation ensures generated resumes are syntactically correct and ready for compilation.
+- **Multi-Format Export**: Supports exporting to PDF (LaTeX), HTML, and Markdown via the YAMLResume compiler.
+
+## 🏗️ Architecture & Workflow
+
+The system operates through two primary AI agents:
+
+### 1. Timeline Polishing Agent
+
+_Input: Raw text description of a job or project._
+_Output: Structured, polished YAML file in `timelines/gem/`._
+
+1.  **Input Analysis**: Identifies if the input is Work Experience or a Project.
+2.  **Polishing**: Applies **STAR** (Situation, Task, Action, Result) for work or **3W** (What, Why, How) for projects.
+3.  **Enrichment**: Infers relevant technical keywords and industry context.
+4.  **Storage**: Saves the polished artifact to the timeline library.
+
+### 2. Resume Generation Agent
+
+_Input: Target Job Description (JD)._
+_Output: A complete, tailored resume YAML file in `resumes/gem/`._
+
+1.  **Job Analysis**: Extracts key skills, requirements, and role context from the JD.
+2.  **Matching**: Selects the most relevant experiences from the Timeline library based on the analysis.
+3.  **Section Generation**: Generates tailored Summary, Skills, Work, and Project sections.
+4.  **Assembly**: Combines all sections with static profile data (Education, Certificates) into a final YAMLResume-compliant file.
+5.  **Validation**: Validates the output against the schema.
 
 ## 📂 Directory Structure
 
 ```text
 .
-├── certificates/       # Certificate data
-├── education/          # Education background data
-├── profiles/           # Personal basic information
-├── resumes/            # Prompts and examples for resume generation
-│   ├── gem/            # Generated resume files
-│   ├── job-analysis-prompt.md    # JD Analysis Prompt
-│   ├── resume-prompt.md          # Resume Generation Prompt
-│   └── ...
-├── timelines/          # Core timeline data (work experience, project experience)
-│   ├── gem/            # Specific timeline event files
-│   └── ...
+├── profiles/           # Personal basic information (static)
+├── resumes/            # Resume generation artifacts
+│   ├── gem/            # Final generated resume files
+│   ├── temp/           # Intermediate generation artifacts
+│   ├── job-analysis-prompt.md    # Prompt for analyzing JDs
+│   ├── resume-prompt.md          # Prompt for resume assembly
+│   └── section-*-prompt.md       # Prompts for specific sections
+├── timelines/          # Master Timeline Library
+│   ├── gem/            # Polished timeline event files (YAML)
+│   ├── timeline-project-prompt.md # Prompt for polishing projects
+│   └── timeline-work-experience-prompt.md # Prompt for polishing work exp
 └── ...
 ```
 
-## 🚀 Workflow
+## 🚀 Usage Guide
 
-### 1. Maintain Personal Data
+### Prerequisites
 
-Maintain your personal data in the `timelines/`, `education/`, `certificates/`, and `profiles/` directories. It is recommended to refer to the `.example.yml` file formats.
+- **Node.js** & **pnpm** installed.
+- **YAMLResume CLI** installed (`pnpm add -g @yamlresume/cli` or use via `pnpm exec`).
+- An LLM interface (e.g., GitHub Copilot Chat in VS Code).
 
-- **Timelines**: Records detailed work and project experiences. This is the source material library for resume generation.
-- **Profiles**: Personal contact information, social links, etc.
+### Step 1: Build Your Timeline Library
 
-### 2. Analyze Target Job (JD Analysis)
+Don't write a resume yet. First, build your database of experiences.
 
-Use the Prompt in `resumes/job-analysis-prompt.md`, combined with the target job's JD content, and send it to an LLM (such as ChatGPT, Claude, Gemini).
+1.  Open Copilot Chat.
+2.  Paste a raw description of a past job or project.
+3.  The **Timeline Polishing Agent** will format it into a structured YAML file in `timelines/gem/`.
+4.  Review and save the file.
 
-The LLM will return a structured job analysis report (in YAML format), containing skill keywords, core responsibilities, and experience requirements.
+### Step 2: Configure Static Data
 
-### 3. Generate Customized Resume
+Fill in your static information in the `profiles/` directory:
 
-Provide the following content to the LLM (using `resumes/resume-prompt.md`):
+- `profiles/basics.yml`: Contact info, social links.
+- `profiles/education.yml`: Academic history.
+- `profiles/certificates.yml`: Certifications.
 
-1. **Job Analysis Report** (Output from the previous step)
-2. **Relevant Timeline Events** (Select experiences relevant to the position from your `timelines/`)
-3. **Personal Basic Information** (From `profiles/`, etc.)
+### Step 3: Generate a Resume
 
-The LLM will generate highly matched resume content for you based on the guiding principles of the Prompt (Relevance, Quantification, Professionalism).
+When you find a job you want to apply for:
 
-## 🛠️ Development & Maintenance
+1.  Copy the Job Description (JD).
+2.  Paste it into Copilot Chat.
+3.  The **Resume Generation Agent** will:
+    - Analyze the JD.
+    - Select relevant timeline events.
+    - Generate tailored content.
+    - Assemble a final YAML file in `resumes/gem/` (e.g., `Name_JobTitle_Company.yml`).
 
-This project uses pnpm for package management and includes basic formatting and code checking tools.
+### Step 4: Compile & Export
+
+Use the YAMLResume CLI to compile your resume into PDF or HTML.
+
+```bash
+# Validate the generated resume
+pnpm yamlresume validate "resumes/gem/Your_Resume.yml"
+
+# Export to PDF
+pnpm yamlresume export "resumes/gem/Your_Resume.yml" --format pdf --theme moderncv-banking
+
+# Export to HTML
+pnpm yamlresume export "resumes/gem/Your_Resume.yml" --format html --theme calm
+```
+
+## 🛠️ Development
 
 ```bash
 # Install dependencies
