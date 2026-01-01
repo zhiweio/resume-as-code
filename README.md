@@ -63,6 +63,24 @@ _Output: A complete, tailored resume YAML file in `resumes/gem/`._
 └── ...
 ```
 
+## 🤖 AI Tools Support & Configuration
+
+This project leverages AI agents to automate the resume generation process. While it can work with various LLMs, it is optimized for the following tools:
+
+### 1. GitHub Copilot
+
+- **Status**: Supported (Recommended)
+- **Configuration**: No specific configuration is required. You can directly interact with Copilot Chat in VS Code.
+
+### 2. Trae
+
+- **Status**: Supported
+- **Configuration**:
+  1.  **Create Agent**: Create a new Custom Agent in Trae.
+  2.  **Configure Rules**: Copy the content of [.trae/rules/project_rules.md](.trae/rules/project_rules.md) and paste it into the agent's instructions.
+  3.  **Save**: Name the agent **`resume-as-code`**.
+- **Usage**: Select the **`resume-as-code`** agent when working on this project to ensure strict adherence to the workflow.
+
 ## 🚀 Usage Guide
 
 ### Prerequisites
@@ -107,9 +125,6 @@ Use the YAMLResume CLI to compile your resume into PDF or HTML.
 ```bash
 # Validate the generated resume
 pnpm yamlresume validate "resumes/gem/Your_Resume.yml"
-
-# Build the resume to PDF, HTML, and Markdown
-pnpm yamlresume build "resumes/gem/Your_Resume.yml"
 ```
 
 ## 🛠️ Development
