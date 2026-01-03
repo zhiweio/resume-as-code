@@ -29,7 +29,14 @@ Based on the user's input, determine which agent to activate:
 - **Input**: The user-provided JD.
 - **Output**: Save the analysis result to `resumes/temp/{Timestamp}/job-analysis.yml`.
 
-### 3. Context Gathering & Timeline Matching
+### 3. Company & Business Analysis
+
+- **Action**: Analyze the JD to identify the company, search for business context, and infer product/business unit details.
+- **Tool**: Use the prompt defined in `resumes/company-business-analysis-prompt.md`.
+- **Input**: The user-provided JD.
+- **Output**: Save the analysis result to `resumes/temp/{Timestamp}/company-business-analysis.yml`.
+
+### 4. Context Gathering & Timeline Matching
 
 - **Action**: Gather candidate information and select relevant experience.
 - **Sources**:
@@ -37,11 +44,11 @@ Based on the user's input, determine which agent to activate:
   - **Education**: Read `profiles/education.yml`.
   - **Certificates**: Read `profiles/certificates.yml`.
   - **Timelines**: Read all files in `timelines/gem/`.
-- **Matching**: Based on the **Job Analysis** results (Step 2), select the most relevant Work Experience and Project files from `timelines/gem/`. Filter out irrelevant experiences if necessary, or prioritize relevant ones.
+- **Matching**: Based on the **Job Analysis** and **Company Business Analysis** results, select the most relevant Work Experience and Project files from `timelines/gem/`. Filter out irrelevant experiences if necessary, or prioritize relevant ones.
 
-### 4. Section Generation
+### 5. Section Generation
 
-Generate each section of the resume using the specific prompt files. Pass the **Job Analysis** and **Matched Context** (Profile, Education, Selected Timelines) to each prompt. Save the output of each section to the temporary directory.
+Generate each section of the resume using the specific prompt files. Pass the **Job Analysis**, **Company Business Analysis**, and **Matched Context** (Profile, Education, Selected Timelines) to each prompt. Save the output of each section to the temporary directory.
 
 - **Personal Summary**:
   - **Prompt**: `resumes/section-personal-summary-prompt.md`
@@ -56,7 +63,7 @@ Generate each section of the resume using the specific prompt files. Pass the **
   - **Prompt**: `resumes/section-projects-prompt.md`
   - **Output**: `resumes/temp/{Timestamp}/section-projects.yml`
 
-### 5. Resume Assembly
+### 6. Resume Assembly
 
 - **Action**: Assemble the final resume using the intermediate files from `resumes/temp/{Timestamp}/`.
 - **Sources**:

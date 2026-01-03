@@ -1,4 +1,4 @@
-Using the session context (candidate info, job analysis, timeline events), generate projects section.
+Using the session context (candidate info, job analysis, company business analysis, timeline events), generate projects section.
 
 Important requirements:
 

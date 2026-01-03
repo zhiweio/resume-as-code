@@ -82,6 +82,7 @@ The system will provide the following context:
 - Personal Info
 - Timeline Events (Matched)
 - Job Analysis
+- Company Business Analysis
 - Custom Instructions
 
 For all subsequent generation requests, use the provided context and do not repeat it. Return only the content for the requested section in the specified format.

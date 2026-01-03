@@ -1,4 +1,4 @@
-Using session context (personal info, projects, work experience, skills, certifications, open-source) and the Job Description analysis, write a targeted professional summary.
+Using session context (personal info, projects, work experience, skills, certifications, open-source), Job Description analysis, and Company Business Analysis, write a targeted professional summary.
 
 Important requirements:
 

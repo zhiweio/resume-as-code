@@ -1,0 +1,28 @@
+﻿company:
+  name: "Schneider Electric"
+  industry: "Energy Management & Industrial Automation"
+  website: "https://www.se.com"
+  overview: >-
+    Schneider Electric is a global leader in the digital transformation of energy management and automation.
+    They provide integrated efficiency solutions, combining energy, automation, and software.
+    Key focus areas include Homes, Buildings, Data Centers, Infrastructure, and Industries.
+  key_business_areas:
+    - "Energy Management (Medium/Low Voltage)"
+    - "Industrial Automation"
+    - "Secure Power (Data Centers)"
+    - "Sustainability Services"
+
+context:
+  department: "Global Data & AI / Digital Office"
+  business_unit: "Cross-Functional (Enterprise-wide)"
+  product_line: "EcoStruxure Platform"
+  project_type: "Enterprise Data Architecture & Digital Transformation"
+
+role_insight:
+  business_goal: >-
+    The role is critical for unifying data across OT (Operational Technology like MES) and IT (ERP, CRM) systems.
+    It supports the 'EcoStruxure' architecture by enabling data flow from connected devices to apps and analytics,
+    driving operational efficiency and sustainability for customers.
+  technical_environment: >-
+    Hybrid Cloud (AWS/Azure) environment focusing on integrating legacy industrial systems (MES) with modern
+    cloud data platforms. High emphasis on scalability to handle IoT data streams and complex enterprise data integration.

@@ -1,4 +1,4 @@
-Using the session context (candidate info, job analysis, timeline events), generate work experience.
+Using the session context (candidate info, job analysis, company business analysis, timeline events), generate work experience.
 
 Important requirements:
 
