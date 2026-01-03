@@ -177,7 +177,7 @@ content:
         - Established a robust Infrastructure as Code (IaC) foundation using Terraform and GitHub Actions, reducing deployment time by 60% and ensuring 99.9% infrastructure uptime.
         - Designed an event-driven orchestration workflow with AWS Step Functions and EventBridge to manage complex dependencies across MySQL, SQL Server, and PostgreSQL.
       keywords:
-        - "AWS (Glue, Lambda, Step Functions)"
+        - "AWS (Glue, Lambda, Redshift)"
         - "Terraform"
         - "GitHub Actions"
         - "Data Lakehouse"

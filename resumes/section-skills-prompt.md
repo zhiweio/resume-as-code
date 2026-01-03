@@ -10,7 +10,7 @@ Important requirements:
 - **Tone**: Tech stack names may appear (e.g., React/TypeScript/Vite) but avoid tag lists; keep a natural, professional tone.
 - **Avoid**: Quantified wording (numbers, percentages, counts); no KPI-style phrasing.
 - **Structure**: Order by role relevance, most relevant first; suggest 4–6 items.
-- **Keywords**: Must be short tags (≤ 32 characters). Do NOT use long sentences as keywords.
+- **Keywords**: Must be short tags (**≤ 32 characters**). Do NOT use long sentences as keywords.
 - **Detailing**: When listing broad tech stacks (e.g., AWS, Azure, CI/CD), use parentheses to list specific relevant tools or services if applicable (e.g., "AWS (Redshift, Glue)", "CI/CD (GitLab, Jenkins)").
 - **Authenticity & Inference**:
   - **Strictly Forbidden**: Do NOT invent skills or tech stacks that are completely absent from the candidate's timeline/profile, even if the JD requires them.

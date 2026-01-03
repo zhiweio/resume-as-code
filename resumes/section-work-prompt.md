@@ -23,7 +23,7 @@ Output format:
   - `startDate`: Start Date (MMM YYYY or YYYY-MM-DD)
   - `endDate`: End Date (MMM YYYY or YYYY-MM-DD). **For current roles, leave this field empty (null) or omit it. DO NOT use the string "Present" or empty string `""`.**
   - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points.
-  - `keywords`: List of key skills or domains.
+  - `keywords`: List of key skills or domains. **Each keyword MUST be ≤ 32 characters.**
 
 Example format:
 

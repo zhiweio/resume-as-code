@@ -19,7 +19,7 @@ Output format:
   - `startDate`: Start Date (MMM YYYY)
   - `endDate`: End Date (MMM YYYY). **For current projects, leave this field empty (null) or omit it. DO NOT use the string "Present" or empty string `""`.**
   - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points.
-  - `keywords`: List of technologies or domains.
+  - `keywords`: List of technologies or domains. **Each keyword MUST be ≤ 32 characters.**
 
 Example format:
 
