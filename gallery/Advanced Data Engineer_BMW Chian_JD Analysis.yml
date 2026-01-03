@@ -1,0 +1,32 @@
+title: Advanced Specialist Big Data Engineer AD
+company: BMW China
+summary: |
+  This role focuses on the design, deployment, and improvement of distributed big data systems specifically for automated driving (AD) applications within a cloud environment. It involves developing off-board backend applications, managing requirements from AD development teams, and steering both internal teams and external partners. The position also requires defining and maintaining the Big Data Architecture in alignment with the China data platform strategy.
+skills:
+  technical:
+    - Distributed Big Data Systems
+    - Cloud Service Providers (AWS, Alibaba Cloud)
+    - Kubernetes (AWS EKS, Alibaba ACK)
+    - Monitoring & Alerting (Opensearch, Grafana, Prometheus)
+    - CI/CD (Jenkins, TerraForm, Ansible)
+    - Relational Databases (PostgreSQL, MySQL, MariaDB)
+    - Scheduling Tools (Airflow, Argos)
+    - Data Quality Standards & Processes
+    - Linux/UNIX & Shell Scripting
+    - Programming (Java, Python, Scala)
+    - NoSQL Databases (Elasticsearch, MongoDB)
+  soft:
+    - English Communication (Written and Oral)
+    - Stakeholder Management
+    - Project Steering
+    - Budget Planning Support
+    - Technical Leadership
+analysis:
+  projects: |
+    The candidate must have experience in designing and deploying distributed big data systems, particularly for automated driving applications. Key project experience includes developing off-board backend applications, managing enterprise workloads on cloud platforms like AWS or Alibaba Cloud, and creating/managing production-scale Kubernetes clusters. Experience with data quality standards and big data architecture design is also essential.
+  management: |
+    The role involves steering BMW China AD development teams and external cooperation partners (major Chinese tech players). It requires management of requirements provided by development teams and supporting the budget planning process for the organization unit. The candidate is expected to review, monitor, and report on the status of their own projects.
+  industry: |
+    Deep understanding of the Automated Driving (AD) domain is required. The candidate needs to align technical and product architectures with the China data platform strategy and work closely with global and local partners. Familiarity with the automotive industry's data needs and compliance within the Chinese market context is implied.
+  experience: |
+    The position requires 5-10 years of relevant experience with a Master's or Bachelor's degree in Computer Science or a related field. A strong background in working with Linux/UNIX environments and developing big data or backend applications is mandatory. Experience with specific tools like Airflow, Argos, Elasticsearch, and MongoDB is considered a plus.

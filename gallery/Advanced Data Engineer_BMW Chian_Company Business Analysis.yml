@@ -1,0 +1,20 @@
+company:
+  name: "BMW China"
+  industry: "Automotive"
+  website: "https://www.bmw.com.cn"
+  overview: "BMW China is the Chinese subsidiary of the BMW Group, a world-leading premium manufacturer of automobiles and motorcycles. In China, they focus heavily on localization, digitalization, and automated driving technologies to cater to the world's largest auto market."
+  key_business_areas:
+    - "Premium Automobiles"
+    - "Automated Driving (AD)"
+    - "Digital Services"
+    - "E-Mobility"
+
+context:
+  department: "Automated Driving (AD) R&D / Digitalization"
+  business_unit: "Automated Driving"
+  product_line: "AD Big Data Platform"
+  project_type: "Platform Engineering & Architecture Design"
+
+role_insight:
+  business_goal: "To build and optimize a robust, cloud-native big data platform that enables the development, validation, and deployment of Automated Driving features specifically for the Chinese market, ensuring compliance and leveraging local tech ecosystems."
+  technical_environment: "The role bridges cloud infrastructure (AWS/Alibaba Cloud) and big data processing for high-volume AD data (sensor data, logs). It requires a hybrid approach using global standards while adapting to local cloud providers and data regulations."

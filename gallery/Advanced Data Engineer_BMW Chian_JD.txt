@@ -1,0 +1,36 @@
+宝马中国服务招聘
+
+Advanced Specialist Big Data Engineer AD
+20-35K
+上海
+5-10年
+本科
+
+职位描述：
+自动驾驶大数据工程师
+Major Responsibilities                                              
+ 
+Design, deployment and improvement of distributed, big data systems targeting automated driving applications for a cloud environment.
+Tasking the development and improvement of off-board backend big data applications and related communication protocols targeting automated driving use cases.       
+Management and structuring of requirements provided by BMW's AD development teams regarding the big data AD Platform.   
+Steering of BMW China AD development teams and external cooperation partners (big Chinese Tech-Player) regarding data driven development.   
+Review, monitor and report the status of own project.    
+Support in the budget planning process for the organization unit.      
+Research, recommend, design and develop our Big Data Architecture. Ensures system, technical and product architectures are aligned with China data platform strategy. 
+                                                                       
+Qualifications                                                                                                                    
+    
+Master/ Bachelor’s degree in Computer Science, Electrical/Electronic Engineering, Information Technology or another related field or Equivalent.
+Good communication skills, good language skills in English (written and oral); German language skills optional.
+Industry experience with developing and managing enterprise workloads on Cloud Service Provider such as AWS, Alibaba Cloud or similar.
+Experience in creating and managing production scale Kubernetes clusters using AWS EKS, Alibaba ACK or similar.
+Knowledge and experience in monitoring and alerting cluster using open source monitoring tools like Opensearch, Grafana, Prometheus or similar.
+Familiar with CI/CD tools, like Jenkins, TerraForm, and Ansible.
+Knowledge and experience in Relational Databases like PostgreSQL, mySQL, MariaDB, etc.
+Experience with scheduling tools is a plus, like Airflow and Argos preferred.                                                                                        
+Experience in building and maintaining data quality standards and processes. 
+Strong background working with Linux/UNIX environments including shell scripting.
+Experience with development of big data or backend applications. Familiar with at least one of programming language of Java/Python/Scala.
+Experience with other NoSQL databases is a plus, like Elasticsearch and MongoDB preferred.
+Solid communication skills with ability to communicate sophisticated technical concepts and align on decisions with global and China local partners.
+Passion to stay on top of the latest happenings in the tech world and an attitude to discuss and bring those into play.

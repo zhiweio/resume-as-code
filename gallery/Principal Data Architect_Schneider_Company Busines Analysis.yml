@@ -1,0 +1,19 @@
+company:
+  name: "Schneider Electric"
+  industry: "Energy Management & Automation"
+  website: "https://www.se.com"
+  overview: "A global specialist in energy management and automation, providing integrated efficiency solutions, combining energy, automation, and software."
+  key_business_areas:
+    - "Energy Management"
+    - "Industrial Automation"
+    - "Digital Transformation"
+
+context:
+  department: "Digital / Data Office"
+  business_unit: "Global Data & Performance"
+  product_line: "Enterprise Data Platform"
+  project_type: "Digital Transformation & Data Architecture"
+
+role_insight:
+  business_goal: "Unify data across OT (MES) and IT (ERP, CRM) systems to drive efficiency and enable AI/Analytics."
+  technical_environment: "Hybrid cloud environment (AWS/Azure) handling large-scale industrial and enterprise data."
