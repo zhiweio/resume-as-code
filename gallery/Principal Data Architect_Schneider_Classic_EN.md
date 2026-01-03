@@ -10,9 +10,9 @@ Profiles:
 
 ## Basics
 
-- Senior Data Architect with 7 years of experience designing and delivering scalable cloud-native data platforms and enterprise data warehouses on AWS and Azure.
-- Expertise in building high-throughput real-time streaming (Flink, Kafka) and batch processing (Spark, Databricks) architectures, optimizing data reliability and query performance by 40%+.
-- Proven track record of leading cross-functional teams in digital transformation initiatives, including migrating 10TB+ legacy systems and implementing Master Data Management (MDM) solutions for Fortune 500 clients.
+- Senior Data Architect with 6+ years of experience designing and delivering scalable, cloud-native data solutions on AWS and Azure.
+- Expert in modernizing legacy data warehouses and building high-throughput ETL/ELT pipelines using Spark, Kafka, and Flink, managing 10TB+ datasets and billions of records.
+- Proven track record of leading cross-functional teams to deliver mission-critical projects, including Enterprise Data Warehouse migrations and Customer Data Platforms, driving digital transformation and operational efficiency.
 
 ## Education
 
@@ -27,55 +27,48 @@ Summary:
 
 ## Work
 
-### Senior Data Engineer (Tech Lead)
+### Senior Data Engineer (Technical Lead)
 
 Cognizant Technology Solutions Shanghai Co. Ltd., Dec 2022–Present
 
-URL: https://www.cognizant.com
-
-Keywords: AWS, Azure, Solution Architecture, Team Leadership, Data Governance
+Keywords: AWS, Azure, Data Architecture, Team Leadership, Cloud Migration
 
 Summary:
 
-- Led the end-to-end architecture and delivery of a unified Customer Data Platform (CDP) on AWS, integrating 8+ disparate systems (Salesforce, Databricks) to create a "Single Source of Truth" for marketing analytics.
-- Spearheaded the strategic migration of a 10TB+ legacy SQL Server data warehouse to Amazon Redshift, reducing query latency by 40% and infrastructure costs by 25% through serverless orchestration.
-- Architected a Retail Master Data Management (MDM) system using Azure Power Platform and Cosmos DB, enforcing data governance and reducing master data discrepancies by 95% for enterprise operations.
-- Mentored a team of engineers on cloud-native best practices (IaC, CI/CD), fostering engineering excellence and ensuring 99.9% platform uptime.
+- Served as Technical Lead for Bayer's digital transformation, architecting a unified Customer Data Platform (CDP) integrating 8+ systems and billions of records to enable 360-degree customer analytics.
+- Led the strategic migration of a 10TB+ legacy Enterprise Data Warehouse to AWS Redshift, designing a serverless migration factory that reduced query latency by 40% and infrastructure costs by 25%.
+- Designed and implemented a Retail Master Data Management (MDM) system using Azure and Power Platform, resolving critical data inconsistencies and reducing discrepancies by 95%.
+- Optimized core data processing workflows in Databricks, reducing daily processing time by 60% and ensuring 99.9% data availability for business reporting.
 
-### Data Engineer (Core Big Data Developer)
+### Data Engineer
 
 Patsnap Information Technology (Suzhou) Co. Ltd., Jun 2021–Nov 2022
 
-URL: https://www.patsnap.com
-
-Keywords: Real-time Data Warehouse, Flink, TiDB, Spark, Client Delivery
+Keywords: Real-time Analytics, Flink, TiDB, AWS, Spark
 
 Summary:
 
-- Architected a real-time data warehouse solution for the TFFI SaaS platform using Flink, Kafka, and TiDB, enabling minute-level insights for 180 million global patent records.
-- Designed a custom Spark Diff engine to handle daily synchronization of 500 million analysis records, optimizing incremental updates and reducing database load significantly.
-- Led the technical delivery of localized data systems for 10+ major banking clients (e.g., Agricultural Bank of China), automating deployment pipelines to reduce delivery costs.
+- Architected a real-time data warehouse solution for the TFFI SaaS product using Flink and TiDB, enabling minute-level data freshness for 180 million global patent records.
+- Designed a scalable data lake architecture on AWS S3 and Athena, orchestrating complex Spark jobs to process TB-scale datasets for financial risk analysis.
+- Developed 'Guardian', an automated continuous delivery system, reducing deployment costs and improving reliability for 10+ localized banking and government projects.
 
 ### Data Engineer
 
 Intsig Information Co., Ltd., Jun 2019–Jun 2021
 
-URL: https://www.intsig.com
-
-Keywords: ETL Optimization, Python, DevOps, High-throughput Systems
+Keywords: High-throughput Systems, Kafka, Redis, Data Modeling, DevOps
 
 Summary:
 
-- Architected high-throughput ETL pipelines processing 100 billion data points for Qixinbao, ensuring sub-second data freshness for 230 million enterprise entities.
-- Modernized the DevOps infrastructure by migrating to GitLab CI/CD, automating testing and deployment to reduce release cycles from hours to minutes.
-- Developed Python-based productivity tools to standardize ETL logic across 1000+ dimensions, reducing boilerplate code by 90%.
+- Spearheaded data engineering for Qixinbao, architecting high-throughput real-time pipelines using Redis and Kafka to process 100 billion+ data points for 230 million entities.
+- Designed complex data models for 1000+ business dimensions and developed a Python-based ETL optimization library, reducing boilerplate code by 90%.
+- Led DevOps transformation by implementing CI/CD pipelines, reducing release times from hours to minutes and improving team efficiency.
 
 ## Skills
 
-- Data Architecture & Cloud: Expert, Keywords: AWS (Redshift, Glue, EMR), Azure (Synapse, Cosmos DB), Data Warehouse (Snowflake, TiDB), Terraform (IaC), Master Data Management (MDM)
-- Big Data & Streaming: Expert, Keywords: Apache Spark (Databricks), Apache Flink, Kafka, Hadoop Ecosystem, Real-time Data Processing
-- Software Engineering & DevOps: Advanced, Keywords: Python, SQL & NoSQL, CI/CD (GitLab, GitHub Actions), Docker & Kubernetes, Serverless Architecture
-- Leadership & Soft Skills: Advanced, Keywords: Solution Architecture Design, Cross-functional Collaboration, Project Management, Stakeholder Communication, Agile Methodologies
+- Data Architecture & Cloud: Expert, Keywords: AWS (Redshift, Glue, Lambda), Azure (Synapse, Cosmos DB), Data Warehouse & Lakehouse, ETL/ELT Pipeline Design, Master Data Management (MDM)
+- Big Data & Streaming: Expert, Keywords: Apache Spark, Apache Flink, Kafka, Databricks, TiDB
+- Programming & DevOps: Advanced, Keywords: Python, SQL, Terraform (IaC), CI/CD (GitHub Actions, GitLab), Docker
 
 ## Certificates
 
@@ -103,36 +96,36 @@ PingCAP, Mar 2022
 
 ### Bayer Customer Data Platform (CDP)
 
-Unified cloud-native data platform integrating fragmented customer data for advanced analytics., Dec 2022–Present
+Cloud-native data lakehouse unifying customer data across the enterprise., Dec 2022–Present
 
-Keywords: AWS Architecture, Data Lakehouse, Terraform, Salesforce Integration
+Keywords: AWS Lakehouse, Terraform, Data Integration, Serverless
 
 Summary:
 
-- Architected a serverless data lakehouse on AWS using Glue, Lambda, and Step Functions, optimizing compute costs by 40% while handling billions of daily records.
-- Engineered a custom high-throughput Salesforce integration layer to overcome API limits, synchronizing 10M+ records daily with improved reliability.
-- Implemented comprehensive CI/CD pipelines via GitHub Actions and Terraform (IaC), reducing deployment time by 60% and ensuring zero configuration drift.
+- Architected a serverless data lakehouse on AWS, integrating Salesforce, Databricks, and legacy systems to establish a Single Source of Truth for customer data.
+- Designed a modular Terraform architecture for Infrastructure as Code, reducing deployment time by 60% and ensuring 99.9% uptime.
+- Engineered high-throughput integration layers and event-driven orchestration workflows using AWS Step Functions and Lambda, optimizing compute costs by 40%.
 
 ### Retail Master Data Management Platform
 
-Enterprise MDM solution on Azure to centralize and govern retail data assets., May 2025–Dec 2025
+Centralized master data governance system on Azure and Power Platform., May 2025–Dec 2025
 
-Keywords: Azure Architecture, Master Data Management, Cosmos DB, Data Governance
+Keywords: Azure, Master Data Management, Cosmos DB, Power Platform
 
 Summary:
 
-- Designed a billion-scale data storage architecture using Azure Cosmos DB and Blob Storage, achieving 30x performance gains in bulk data ingestion.
-- Established a cross-cloud data synchronization bridge between Azure operational systems and AWS analytical warehouses using Synapse Link.
-- Enforced Zero Trust security models and automated data quality checks, streamlining data stewardship and saving 20+ operational hours weekly.
+- Architected a comprehensive MDM solution leveraging Azure Cosmos DB and Power Platform to centralize and govern retail data assets.
+- Designed a high-performance storage layer with Cosmos DB to manage billions of records with sub-second response times.
+- Implemented a metadata-driven 'Zero Code' framework and automated ETL pipelines, significantly reducing manual maintenance overhead.
 
 ### Enterprise Data Warehouse Migration to AWS
 
-Strategic migration of 10TB+ legacy warehouse to cloud-native Amazon Redshift., Nov 2022–May 2023
+Strategic migration of 10TB+ legacy warehouse to Amazon Redshift., Nov 2022–May 2022
 
-Keywords: Cloud Migration, Amazon Redshift, Python Automation, Performance Tuning
+Keywords: Cloud Migration, Amazon Redshift, Performance Optimization, Python
 
 Summary:
 
-- Architected a self-healing, event-driven migration pipeline using AWS Step Functions, automating the transfer of 3,000+ tables with 99% accuracy.
-- Developed a proprietary Python migration engine with AST parsing to automate DDL translation, reducing engineering overhead by 80%.
-- Optimized Redshift schema design with columnar compression, reducing storage footprint by 40% and improving analytical query performance by 5x.
+- Spearheaded the migration of a 10TB+ SQL Server warehouse to Amazon Redshift, resolving scalability bottlenecks.
+- Architected a serverless, event-driven migration pipeline using AWS Step Functions and Lambda, automating complex workflows.
+- Optimized Redshift schemas and data transfer pipelines, achieving a 300% acceleration in data transfer and 5x improvement in query performance.
