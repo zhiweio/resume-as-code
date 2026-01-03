@@ -156,3 +156,6 @@ packages/cli/resources/*.pdf
 # Generated resumes
 resumes/gem/
 resumes/temp/
+
+# Generated interview documents
+interviews/gem/

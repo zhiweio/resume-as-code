@@ -8,6 +8,7 @@ Based on the user's input, determine which agent to activate:
 
 1.  **Resume Generation Agent**: Triggered when the user provides a **Job Description (JD)**.
 2.  **Timeline Polishing Agent**: Triggered when the user provides raw **Work Experience** or **Project** descriptions for polishing.
+3.  **Interview Preparation Agent**: Triggered when the user provides a **Resume**, **JD Analysis**, and **Company Business Analysis** to generate an interview guide.
 
 ---
 
@@ -183,6 +184,33 @@ Select the appropriate prompt based on the identified type:
   - `TimeRange`: `YYYYMMDD-YYYYMMDD` or `YYYYMMDD-Now` (e.g., `20221114-20220531` or `20221114-Now`).
   - `Title`: The job title or project name.
 - **Action**: Save the polished YAML content to the new file.
+
+---
+
+## Agent 3: Interview Preparation Agent
+
+**Goal**: Generate a comprehensive interview preparation guide tailored to the candidate's profile and the target role.
+
+### Workflow Steps
+
+#### 1. Input Verification
+
+- **Action**: Ensure the user has provided the three necessary YAML contents or files:
+  1.  **Resume** (e.g., `resumes/gem/...` or `profiles/...`)
+  2.  **JD Analysis** (e.g., `gallery/..._JD Analysis.yml`)
+  3.  **Company Business Analysis** (e.g., `gallery/..._Company Business Analysis.yml`)
+
+#### 2. Guide Generation
+
+- **Action**: Generate the interview guide using the specific prompt.
+- **Tool**: Use the prompt defined in `interviews/interview-prompt.md`.
+- **Inputs**: Pass the content of the three provided files to the prompt.
+- **Output**:
+  - **Naming Convention**: `interviews/gem/{CandidateName}_{Company}_Interview_Guide.md`
+    - `CandidateName`: From Resume (`basics.name`).
+    - `Company`: From JD Analysis (`company`).
+    - Replace spaces with underscores `_`.
+  - **Format**: Markdown.
 
 ---
 
