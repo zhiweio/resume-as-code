@@ -150,6 +150,9 @@ packages/client/public/sw.js
 packages/cli/*.pdf
 packages/cli/resources/*.pdf
 
+# IntelliJ IDEA
+.idea
+
 # Generated resumes
 resumes/gem/
 resumes/temp/
