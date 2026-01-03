@@ -16,13 +16,14 @@ By maintaining a single "Master Timeline" of your career and using AI agents to 
 - **AI-Powered Agents**:
   - **Resume Generation Agent**: Analyzes JDs and assembles targeted resumes.
   - **Timeline Polishing Agent**: Polishes raw experience descriptions using STAR/3W methodologies.
+  - **Interview Preparation Agent**: Generates comprehensive interview guides based on your resume and target JD.
 - **Standardized Format**: Built on the [YAMLResume](https://yamlresume.dev/docs) standard, ensuring compatibility with a rich ecosystem of themes and export tools.
 - **Automated Validation**: Integrated validation ensures generated resumes are syntactically correct and ready for compilation.
 - **Multi-Format Export**: Supports exporting to PDF (LaTeX), HTML, and Markdown via the YAMLResume compiler.
 
 ## 🏗️ Architecture & Workflow
 
-The system operates through two primary AI agents:
+The system operates through three primary AI agents:
 
 ### 1. Timeline Polishing Agent
 
@@ -45,6 +46,17 @@ _Output: A complete, tailored resume YAML file in `resumes/gem/`._
 4.  **Assembly**: Combines all sections with static profile data (Education, Certificates) into a final YAMLResume-compliant file.
 5.  **Validation**: Validates the output against the schema.
 
+### 3. Interview Preparation Agent
+
+_Input: Resume, JD Analysis, Company Business Analysis._
+_Output: A comprehensive Interview Preparation Guide in `interviews/gem/`._
+
+1.  **Input Verification**: Ensures all necessary context files are present.
+2.  **Strategy Generation**: Creates a personal introduction strategy tailored to the role.
+3.  **Deep Dive**: Generates STAR-based deep dive questions for every project.
+4.  **Q&A Bank**: Creates an extensive technical Q&A bank covering specific tech, architecture, and domain knowledge.
+5.  **Behavioral & Reverse**: Prepares behavioral questions and high-quality reverse interview questions.
+
 ## 📂 Directory Structure
 
 ```text
@@ -60,6 +72,9 @@ _Output: A complete, tailored resume YAML file in `resumes/gem/`._
 │   ├── gem/            # Polished timeline event files (YAML)
 │   ├── timeline-project-prompt.md # Prompt for polishing projects
 │   └── timeline-work-experience-prompt.md # Prompt for polishing work exp
+├── interviews/         # Interview preparation artifacts
+│   ├── gem/            # Generated interview guides
+│   └── interview-prompt.md # Prompt for generating interview guides
 └── ...
 ```
 
@@ -126,6 +141,14 @@ Use the YAMLResume CLI to compile your resume into PDF or HTML.
 # Validate the generated resume
 pnpm yamlresume validate "resumes/gem/Your_Resume.yml"
 ```
+
+### Step 5: Prepare for Interview
+
+Once your resume is ready:
+
+1.  Provide the generated **Resume**, **JD Analysis**, and **Company Business Analysis** to Copilot Chat.
+2.  The **Interview Preparation Agent** will generate a detailed guide in `interviews/gem/`.
+3.  Use this guide to practice your introduction, project deep dives, and technical Q&A.
 
 ## 🛠️ Development
 
