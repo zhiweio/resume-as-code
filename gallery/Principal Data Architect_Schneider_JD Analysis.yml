@@ -1,0 +1,30 @@
+title: Principal Data Architect
+company: Schneider Electric
+summary: |
+  Senior leadership role responsible for designing comprehensive data solutions (OLTP, OLAP, integration) and leading key data projects. Involves cross-functional collaboration (ERP, MES, CRM), stakeholder management, and team management. Requires deep technical expertise in cloud data platforms, big data technologies, and non-functional architecture design.
+skills:
+  technical:
+    - "Data Architecture (OLTP, OLAP)"
+    - "Data Integration & ETL/ELT"
+    - "Cloud Platforms (AWS, Azure, GCP)"
+    - "Big Data Technologies (Hadoop, Spark, Kafka, Flink, Flume)"
+    - "Database Systems (SQL, NoSQL)"
+    - "Data Governance & Compliance"
+    - "System Integration (ERP, MES, CRM)"
+    - "Non-functional Requirements (Scalability, Security, Performance)"
+    - "Scala/Java/Python"
+  soft:
+    - "Leadership & Team Management"
+    - "Stakeholder Communication"
+    - "Project Management (Scope, Cost, Risk, Quality)"
+    - "Cross-functional Collaboration"
+    - "Problem-solving"
+analysis:
+  projects: |
+    Requires experience in designing and delivering end-to-end data solutions for large-scale projects. Specific mention of data platform architecture, data warehouse architecture, and integration with business systems like ERP, MES, and CRM.
+  management: |
+    Strong emphasis on project team management, including daily operations, scope, cost, risk, and quality. Requires ability to lead solution design and delivery ownership.
+  industry: |
+    Manufacturing/Industrial background preferred given the mention of MES (Manufacturing Execution Systems) and ERP/CRM integration. Schneider Electric is an energy management and automation company.
+  experience: |
+    Requires a minimum of 10 years of experience in data architecture or engineering. Needs a proven track record of large-scale project delivery.

@@ -1,0 +1,50 @@
+施耐德电气招聘
+Principal Data Architect
+35-45K·14薪
+上海
+10年以上
+本科
+职位描述：
+要求有数据架构经验数据平台架构经验业务需求分析BWScalaAI数据仓库架构经验Flume计算机相关专业Flink要求数据开发/架构经验数据项目管理
+1. Data Solution Architecture Design
+   - Design comprehensive data solutions, including OLTP systems, data integration pipelines, OLAP systems, and non-functional requirements (e.g., scalability, security, performance).
+   - Ensure the architecture supports both current and future business needs.
+
+2. Lead Key Data Project Solution Design
+   - Take ownership of solution design, development, and delivery for key data projects delivery
+   - Ensure projects are delivered on time, within scope, and meet quality standards
+
+3. Cross-Functional Collaboration
+   - Coordinate with other workstreams (e.g., ERP, MES， CRM etc.) to ensure end-to-end data architecture compliance and efficiency.
+   - Align data solutions with broader business systems and processes.
+
+4. Stakeholder Communication
+   - Effectively communicate technical solutions to data project sponsors and key stakeholders.
+   - Translate complex technical concepts into clear, actionable insights for non-technical audiences.
+
+5. Project Team Management
+   - Manage daily operations of data project teams, including scope, cost, risk, quality, and escalations.
+   - Ensure projects adhere to best practices in project management and data governance.
+Qualifications - External
+1. Education
+   - Bachelor’s or Master’s degree in Computer Science, Information Technology, Data Science, or a related field.
+
+2. Experience
+   - Minimum of 10 years of experience in data architecture, data engineering, or a related field.
+   - Proven track record of designing and delivering end-to-end data solutions for large-scale projects.
+
+3. Technical Skills
+   - Expertise in OLTP, OLAP, data integration, and ETL/ELT processes.
+   - Strong knowledge of cloud platforms (e.g., AWS, Azure, Google Cloud) and their data services.
+   - Familiarity with big data technologies (e.g., Hadoop, Spark, Kafka) and database systems (SQL, NoSQL).
+   - Understanding of non-functional requirements such as scalability, security, and performance optimization.
+
+4. Soft Skills
+   - Excellent communication and stakeholder management skills.
+   - Strong problem-solving abilities and a collaborative mindset.
+   - Proven experience in project management, including scope, cost, risk, and quality management.
+
+5. Preferred Qualifications
+   - Experience with CRM and ERP systems integration.
+   - Knowledge of data governance and compliance standards.
+   - Relevant certifications (e.g., AWS Certified Solutions Architect, Google Cloud Professional Data Engineer).
