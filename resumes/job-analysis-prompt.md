@@ -6,17 +6,19 @@ Your task is to deeply analyze target job information, extracting not only skill
 
 ### Analysis Points
 
-1.  **Skill Requirements**: Deep analysis of skill requirements, distinguishing technical and soft skills.
-2.  **Project Experience**: Identify project experience requirements: types, scale, tech stack, roles.
-3.  **Management Experience**: Extract management experience requirements: team size, responsibilities, leadership.
-4.  **Industry Knowledge**: Analyze industry knowledge requirements: domain expertise, business understanding.
-5.  **Experience Level**: Assess years of experience and specific experience accumulation needs.
+1.  **Language Detection**: Detect the primary language of the JD. Map it to one of: `en`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw`, `es`, `fr`, `no`. Default to `en` if uncertain.
+2.  **Skill Requirements**: Deep analysis of skill requirements, distinguishing technical and soft skills.
+3.  **Project Experience**: Identify project experience requirements: types, scale, tech stack, roles.
+4.  **Management Experience**: Extract management experience requirements: team size, responsibilities, leadership.
+5.  **Industry Knowledge**: Analyze industry knowledge requirements: domain expertise, business understanding.
+6.  **Experience Level**: Assess years of experience and specific experience accumulation needs.
 
 ### Output Format
 
 - You MUST output valid YAML format.
 - The structure should be a single object.
 - Fields:
+  - `language`: The detected language code (e.g., `en`, `zh-hans`).
   - `title`: The job title.
   - `company`: The company name.
   - `summary`: A brief summary of the role (multiline string).
@@ -26,6 +28,7 @@ Your task is to deeply analyze target job information, extracting not only skill
 ### Example Format
 
 ```yaml
+language: en
 title: Senior Software Engineer
 company: Tech Corp
 summary: |

@@ -1,7 +1,10 @@
-Using session context (personal info, projects, work experience, skills, certifications, open-source), Job Description analysis, and Company Business Analysis, write a targeted professional summary.
+Using session context (personal info, **GENERATED Projects**, **GENERATED Work Experience**, **GENERATED Skills**, certifications, open-source), Job Description analysis, and Company Business Analysis, write a targeted professional summary.
+
+**CRITICAL**: You must synthesize the summary based on the _generated_ work and project content to ensure consistency and highlight the most relevant points already selected for this resume.
 
 Important requirements:
 
+- **Language**: The content MUST be generated in the language specified by the user or the `language` field from the Job Analysis. Supported languages: `en`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw`, `es`, `fr`, `no`.
 - **Format**: Use 3-4 concise bullet points.
 - **Content Strategy**:
   - **Point 1 (Identity & Match)**: Current role/level + key years of experience + primary match to JD (e.g., "Senior Data Engineer with 6+ years of experience specializing in...").

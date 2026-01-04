@@ -12,7 +12,11 @@ You will be provided with the following three documents in YAML format:
 
 ## Instructions
 
-Based on the inputs, generate a detailed **Interview Preparation Guide** in **English**. The guide must be tailored to the candidate's experience level (from fresh graduate to 10+ years veteran) and specifically aligned with the target role and company.
+Based on the inputs, generate a detailed **Interview Preparation Guide**.
+
+**Language Requirement**: The output (including headings and content) MUST be in the language specified in the **JD Analysis** (`language` field). If the field is missing or the user specifies a different language, follow the user's instruction. Supported languages: `en`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw`, `es`, `fr`, `no`.
+
+The guide must be tailored to the candidate's experience level (from fresh graduate to 10+ years veteran) and specifically aligned with the target role and company.
 
 ### 1. Candidate Profile Assessment
 

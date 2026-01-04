@@ -2,6 +2,7 @@ Generate the skills section (descriptive, highlight-oriented) using session cont
 
 Important requirements:
 
+- **Language**: The content MUST be generated in the language specified by the user or the `language` field from the Job Analysis. Supported languages: `en`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw`, `es`, `fr`, `no`.
 - **Adapt to Experience Level**:
   - **Entry Level (0-1y)**: Can list specific languages/tools learned in university/internships. Focus on foundational knowledge (Data Structures, Algorithms).
   - **Mid-Level (1-5y)**: Focus on proficiency, application in real projects, and best practices (CI/CD, Testing).

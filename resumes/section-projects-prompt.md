@@ -2,6 +2,7 @@ Using the session context (candidate info, job analysis, company business analys
 
 Important requirements:
 
+- **Language**: The content MUST be generated in the language specified by the user or the `language` field from the Job Analysis. Supported languages: `en`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw`, `es`, `fr`, `no`.
 - Achievement descriptions should be specific and quantified with numbers and results.
 - Emphasize project and role parts most relevant to the target position.
 - **Authenticity & Inference**:
@@ -19,7 +20,7 @@ Output format:
   - `startDate`: Start Date (MMM YYYY)
   - `endDate`: End Date (MMM YYYY). **For current projects, leave this field empty (null) or omit it. DO NOT use the string "Present" or empty string `""`.**
   - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points.
-  - `keywords`: List of technologies or domains. **Each keyword MUST be ≤ 32 characters.**
+  - `keywords`: List of 5-10 most impactful technologies or domains relevant to this project and the target JD. **Each keyword MUST be ≤ 32 characters.**
 
 Example format:
 

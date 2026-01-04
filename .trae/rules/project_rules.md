@@ -25,7 +25,7 @@ Based on the user's input, determine which agent to activate:
 
 ### 2. Job Analysis
 
-- **Action**: Analyze the provided JD to extract key requirements, skills, and role details.
+- **Action**: Analyze the provided JD to extract key requirements, skills, role details, and **detect the language**.
 - **Tool**: Use the prompt defined in `resumes/job-analysis-prompt.md`.
 - **Input**: The user-provided JD.
 - **Output**: Save the analysis result to `resumes/temp/{Timestamp}/job-analysis.yml`.
@@ -49,20 +49,28 @@ Based on the user's input, determine which agent to activate:
 
 ### 5. Section Generation
 
-Generate each section of the resume using the specific prompt files. Pass the **Job Analysis**, **Company Business Analysis**, and **Matched Context** (Profile, Education, Selected Timelines) to each prompt. Save the output of each section to the temporary directory.
+Generate each section of the resume using the specific prompt files. Pass the **Job Analysis** (including `language`), **Company Business Analysis**, and **Matched Context** (Profile, Education, Selected Timelines) to each prompt. Save the output of each section to the temporary directory.
 
-- **Personal Summary**:
-  - **Prompt**: `resumes/section-personal-summary-prompt.md`
-  - **Output**: `resumes/temp/{Timestamp}/section-personal-summary.yml`
-- **Skills**:
-  - **Prompt**: `resumes/section-skills-prompt.md`
-  - **Output**: `resumes/temp/{Timestamp}/section-skills.yml`
-- **Work Experience**:
-  - **Prompt**: `resumes/section-work-prompt.md`
-  - **Output**: `resumes/temp/{Timestamp}/section-work.yml`
+**Order of Generation:**
+
+1.  **Projects**: Generate first to establish technical depth.
+2.  **Work Experience**: Generate second, referencing project highlights if applicable.
+3.  **Skills**: Generate third, extracting keywords from both Projects and Work Experience.
+4.  **Personal Summary**: Generate LAST. **Crucial**: You MUST pass the _generated_ content of Projects, Work Experience, and Skills as context to this prompt to ensure the summary accurately reflects the tailored resume.
+
 - **Projects**:
   - **Prompt**: `resumes/section-projects-prompt.md`
   - **Output**: `resumes/temp/{Timestamp}/section-projects.yml`
+- **Work Experience**:
+  - **Prompt**: `resumes/section-work-prompt.md`
+  - **Output**: `resumes/temp/{Timestamp}/section-work.yml`
+- **Skills**:
+  - **Prompt**: `resumes/section-skills-prompt.md`
+  - **Output**: `resumes/temp/{Timestamp}/section-skills.yml`
+- **Personal Summary**:
+  - **Prompt**: `resumes/section-personal-summary-prompt.md`
+  - **Input**: Pass `section-projects.yml`, `section-work.yml`, and `section-skills.yml` (generated above) in addition to the standard context.
+  - **Output**: `resumes/temp/{Timestamp}/section-personal-summary.yml`
 
 ### 6. Resume Assembly
 
@@ -83,7 +91,9 @@ Generate each section of the resume using the specific prompt files. Pass the **
   ```yaml
   locale:
     # Use `yamlresume languages list` to get the list of supported languages
-    language: en # Change to 'zh' if the JD is in Chinese
+    # Set this based on the user's request or the detected language from Job Analysis
+    # Supported: en, zh-hans, zh-hant-hk, zh-hant-tw, es, fr, no
+    language: en
 
   layouts:
     - engine: latex
