@@ -111,7 +111,8 @@ This project leverages AI agents to automate the resume generation process. Whil
 ### Prerequisites
 
 - **Node.js** & **pnpm** installed.
-- **YAMLResume CLI** installed (`pnpm add -g @yamlresume/cli` or use via `pnpm exec`).
+- **YAMLResume CLI** installed. This project relies on `yamlresume` to compile and build resumes in various formats (PDF, HTML, Markdown).
+  - Please refer to the official [Installation Guide](https://yamlresume.dev/docs/installation) for setup instructions.
 - An LLM interface (e.g., GitHub Copilot Chat in VS Code).
 
 ### Step 1: Build Your Timeline Library
@@ -148,7 +149,6 @@ When you find a job you want to apply for:
 Use the YAMLResume CLI to compile your resume into PDF or HTML.
 
 ```bash
-# Validate the generated resume
 pnpm yamlresume build "resumes/gem/Your_Resume.yml"
 ```
 
