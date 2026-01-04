@@ -11,7 +11,8 @@ timeline:
       - "Real-time Data Warehouse Architecture: To provide up-to-the-minute insights on enterprise financing and business status, built a real-time wide table system using Flink, Kafka, and TiCDC. Overcame a critical compatibility blocker between Flink 1.12 and TiCDC 5.1 by analyzing the source code and patching the `flink-format-maxwell` component, adding custom filtering capabilities. This ensured seamless real-time data ingestion into TiDB."
       - "SaaS Data Infrastructure & Analytics: Architected a scalable data lake solution on AWS S3 and Athena to handle 1.8 billion global patents. Orchestrated complex Spark jobs via DolphinScheduler on AWS EMR to compute patent value distributions and tags. This infrastructure supported TB-scale data processing, enabling the generation of high-value financial reports and risk analysis for the SaaS platform."
       - "Automated Delivery System (Guardian): Addressed the inefficiency of deploying updates to isolated, secure client environments (banks/government) by developing 'Guardian,' a custom continuous delivery tool based on webhooks. Integrated this with GitLab CI/CD pipelines to automate Docker image building, MinIO file synchronization, and application rolling upgrades. This reduced delivery costs and improved deployment reliability across 10+ localized projects."
-      - "Client Delivery & Recognition: Successfully led the independent delivery and maintenance of complex data projects for high-profile clients including the Agricultural Bank of China (Suzhou, Hubei, Wuhan branches) and the Bank of Jiangsu. Recognized for technical excellence and impact with the '2021 Star Engineer' award."
+      - "Client Delivery & Revenue Impact: Led the end-to-end delivery of localized data projects for major financial clients, including Agricultural Bank of China (Suzhou), Bank of Jiangsu, and Hubei Bank. Managed on-premise deployments, established VPN tunnels for remote updates, and ensured continuous data delivery, generating over 10 million RMB in revenue. Recognized with the '2021 Star Engineer' award."
+      - "Cross-Functional Leadership & Agile Management: Acted as the technical liaison between the TFFI product team and the Patent Database, Big Data, and DevOps teams. Facilitated knowledge transfer of patent data logic and business requirements while managing Agile workflows via Jira and Confluence, ensuring alignment and efficient delivery across departments."
     keywords:
       - "Spark"
       - "Flink"
@@ -39,3 +40,5 @@ timeline:
       - "Java"
       - "Scala"
       - "ElasticSearch"
+      - "Jira"
+      - "Confluence"
