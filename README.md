@@ -20,6 +20,7 @@ By maintaining a single "Master Timeline" of your career and using AI agents to 
 - **Standardized Format**: Built on the [YAMLResume](https://yamlresume.dev/docs) standard, ensuring compatibility with a rich ecosystem of themes and export tools.
 - **Automated Validation**: Integrated validation ensures generated resumes are syntactically correct and ready for compilation.
 - **Multi-Format Export**: Supports exporting to PDF (LaTeX), HTML, and Markdown via the YAMLResume compiler.
+- **Multi-Language Support**: Automatically detects the target language from the Job Description or user input. Supports generation in English, Simplified Chinese, Traditional Chinese (HK/TW), Spanish, French, and Norwegian.
 
 ## 🎨 Gallery & Examples
 
