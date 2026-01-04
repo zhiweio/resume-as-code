@@ -149,7 +149,7 @@ Use the YAMLResume CLI to compile your resume into PDF or HTML.
 
 ```bash
 # Validate the generated resume
-pnpm yamlresume validate "resumes/gem/Your_Resume.yml"
+pnpm yamlresume build "resumes/gem/Your_Resume.yml"
 ```
 
 ### Step 5: Prepare for Interview
