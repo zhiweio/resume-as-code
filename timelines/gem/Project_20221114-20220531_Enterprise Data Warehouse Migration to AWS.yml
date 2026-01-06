@@ -13,6 +13,8 @@ timeline:
       - "**Redshift Schema Optimization**: Designed performant target schemas by analyzing query patterns to define optimal Distribution Keys (DISTKEY) and Sort Keys. Replaced SQL Server indexes with Redshift's columnar compression encodings, resulting in a 40% reduction in storage footprint and a 5x improvement in complex analytical query performance."
       - "**Data Integrity & Validation Framework**: Implemented a rigorous automated validation suite to certify migration success. Developed scripts to perform row count verification and checksum comparisons between source and target systems, ensuring 100% data fidelity for critical financial and operational reporting datasets."
     keywords:
+      - "Zero-Disk Architecture"
+      - "Stream Processing"
       - "AWS"
       - "Redshift"
       - "Python"
