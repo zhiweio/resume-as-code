@@ -1,5 +1,7 @@
 # Resume as Code
 
+[简体中文](README.zh-CN.md) | English
+
 This project implements a "Resume as Code" philosophy, leveraging LLMs (Large Language Models) and structured data to automate the creation of highly tailored, professional resumes.
 
 It solves the common pain points of resume maintenance:
