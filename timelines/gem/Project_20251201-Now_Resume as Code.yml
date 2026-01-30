@@ -1,0 +1,27 @@
+timeline:
+  - title: Resume as Code
+    type: project
+    company/institution: Personal Project
+    startDate: 2025-12-01
+    endDate: Now
+    content: |
+      Architected and developed an AI-powered "Resume as Code" system to automate the creation of highly tailored, professional resumes. The system leverages Large Language Models (LLMs) and structured data to solve the problems of resume fragmentation, inconsistency, and time-consuming manual tailoring. By maintaining a single "Master Timeline" of career data in modular YAML files, the system dynamically assembles targeted resumes for specific job descriptions in minutes.
+    achievements:
+      - "Designed a modular 'Master Timeline' architecture using YAML to serve as a single source of truth for all career data, eliminating data redundancy and ensuring consistency across multiple resume versions."
+      - "Implemented a multi-agent AI system using GitHub Copilot and Trae to automate the resume generation workflow, including a Timeline Polishing Agent for standardizing experiences (STAR/3W), a Resume Generation Agent for JD-specific tailoring, and an Interview Preparation Agent for generating custom interview guides."
+      - "Integrated the YAMLResume standard to ensure compatibility with a rich ecosystem of themes and export tools, enabling multi-format output (PDF/LaTeX, HTML, Markdown) and automated schema validation."
+      - "Developed a comprehensive prompt engineering strategy to guide LLMs in analyzing Job Descriptions, matching relevant experiences, and generating professional content for summaries, skills, and project sections."
+      - "Streamlined the application process by reducing the time required to tailor a resume from hours to minutes, while simultaneously improving the quality and relevance of the content for each specific opportunity."
+    keywords:
+      - "LLM"
+      - "AI Agents"
+      - "Prompt Engineering"
+      - "GitHub Copilot"
+      - "Trae"
+      - "Node.js"
+      - "YAML"
+      - "YAMLResume"
+      - "Automation"
+      - "Resume Generation"
+      - "Career Management"
+      - "Open Source"

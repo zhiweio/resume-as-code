@@ -1,0 +1,31 @@
+work:
+  - name: PPResume
+    url: https://ppresume.com
+    startDate: Dec 1, 2022
+    endDate: ""
+    position: Senior Software Engineer
+    summary: |
+      - Developed and implemented efficient and scalable code, ensuring high-quality and maintainable web applications
+      - Collaborated with cross-functional teams to gather project requirements and translate them into technical solutions
+      - Conducted thorough testing and debugging to identify and resolve any issues or bugs in the software
+      - Actively participated in code reviews, providing valuable feedback to improve code quality and adherence to best practices
+      - Mentored and guided junior developers, fostering a collaborative and growth-oriented team environment
+    keywords:
+      - Scalibility
+      - Growth
+      - Quality
+      - Mentorship
+  - name: PPResume
+    url: ""
+    startDate: Sep 1, 2020
+    endDate: Dec 1, 2022
+    position: Software Engineer
+    summary: |
+      - Created reusable React components to ensure code efficiency and maintainability
+      - Integrated with RESTful APIs to fetch and display dynamic data on the frontend
+      - Implemented client-side routing using React Router for smooth navigation between pages
+      - Actively participated in Agile development methodologies, attending daily stand-up meetings and sprint planning sessions
+    keywords:
+      - RESTful
+      - React
+      - Agile

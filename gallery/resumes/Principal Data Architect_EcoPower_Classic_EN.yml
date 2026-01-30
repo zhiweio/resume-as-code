@@ -1,0 +1,191 @@
+locale:
+  language: en
+
+layouts:
+  - engine: latex
+    sections:
+      aliases:
+        basics: "Basics"
+        education: "Education"
+        work: "Work Experience"
+        projects: "Projects"
+        certificates: "Certificates"
+        skills: "Skills"
+        languages: "Languages"
+        interests: "Interests"
+      order:
+        - basics
+        - education
+        - work
+        - skills
+        - certificates
+        - projects
+        - languages
+        - interests
+    page:
+      margins:
+        top: 1.5cm
+        left: 1.5cm
+        right: 1.5cm
+        bottom: 1.5cm
+      showPageNumbers: true
+    template: moderncv-classic
+    typography:
+      fontSize: 11pt
+  - engine: markdown
+  - engine: html
+    template: calm
+    typography:
+      fontSize: 16px
+
+content:
+  basics:
+    name: John Doe
+    phone: "+86 199 8888 8888"
+    email: nocoding188@gmail.com
+    url: https://johndoe.dev
+    summary: |
+      - Senior Data Architect with 6+ years of experience designing and delivering scalable, cloud-native data solutions on AWS and Azure.
+      - Expert in modernizing legacy data warehouses and building high-throughput ETL/ELT pipelines using Spark, Kafka, and Flink, managing 10TB+ datasets and billions of records.
+      - Proven track record of leading cross-functional teams to deliver mission-critical projects, including Enterprise Data Warehouse migrations and Customer Data Platforms, driving digital transformation and operational efficiency.
+  profiles:
+    - network: GitHub
+      url: https://github.com/johndoe
+      username: johndoe
+  education:
+    - institution: City University of Technology
+      degree: Bachelor
+      area: Computer Science and Technology
+      startDate: Sep 1, 2015
+      endDate: Jul 1, 2019
+      summary: |
+        - Awarded Third Prize in the 4th National University Cloud Computing Application Innovation Competition (2018).
+        - Project: "Implementation of Large-scale Distributed Functional Dependency Mining Algorithm Based on Spark".
+  work:
+    - name: MegaConsulting Tech Solutions Ltd.
+      position: Senior Data Engineer (Technical Lead)
+      startDate: Dec 2022
+      summary: |
+        - Served as Technical Lead for BioLife Sciences's digital transformation, architecting a unified Customer Data Platform (CDP) integrating 8+ systems and billions of records to enable 360-degree customer analytics.
+        - Led the strategic migration of a 10TB+ legacy Enterprise Data Warehouse to AWS Redshift, designing a serverless migration factory that reduced query latency by 40% and infrastructure costs by 25%.
+        - Designed and implemented a Retail Master Data Management (MDM) system using Azure and Power Platform, resolving critical data inconsistencies and reducing discrepancies by 95%.
+        - Optimized core data processing workflows in Databricks, reducing daily processing time by 60% and ensuring 99.9% data availability for business reporting.
+      keywords:
+        - "AWS"
+        - "Azure"
+        - "Data Architecture"
+        - "Team Leadership"
+        - "Cloud Migration"
+    - name: Patsnap Information Technology (Suzhou) Co. Ltd.
+      position: Data Engineer
+      startDate: Jun 2021
+      endDate: Nov 2022
+      summary: |
+        - Architected a real-time data warehouse solution for the TFFI SaaS product using Flink and TiDB, enabling minute-level data freshness for 180 million global patent records.
+        - Designed a scalable data lake architecture on AWS S3 and Athena, orchestrating complex Spark jobs to process TB-scale datasets for financial risk analysis.
+        - Developed 'Guardian', an automated continuous delivery system, reducing deployment costs and improving reliability for 10+ localized banking and government projects.
+      keywords:
+        - "Real-time Analytics"
+        - "Flink"
+        - "TiDB"
+        - "AWS"
+        - "Spark"
+    - name: Intsig Information Co., Ltd.
+      position: Data Engineer
+      startDate: Jun 2019
+      endDate: Jun 2021
+      summary: |
+        - Spearheaded data engineering for Qixinbao, architecting high-throughput real-time pipelines using Redis and Kafka to process 100 billion+ data points for 230 million entities.
+        - Designed complex data models for 1000+ business dimensions and developed a Python-based ETL optimization library, reducing boilerplate code by 90%.
+        - Led DevOps transformation by implementing CI/CD pipelines, reducing release times from hours to minutes and improving team efficiency.
+      keywords:
+        - "High-throughput Systems"
+        - "Kafka"
+        - "Redis"
+        - "Data Modeling"
+        - "DevOps"
+  skills:
+    - name: Data Architecture & Cloud
+      level: Expert
+      keywords:
+        - "AWS (Redshift, Glue, Lambda)"
+        - "Azure (Synapse, Cosmos DB)"
+        - "Data Warehouse & Lakehouse"
+        - "ETL/ELT Pipeline Design"
+        - "Master Data Management (MDM)"
+    - name: Big Data & Streaming
+      level: Expert
+      keywords:
+        - "Apache Spark"
+        - "Apache Flink"
+        - "Kafka"
+        - "Databricks"
+        - "TiDB"
+    - name: Programming & DevOps
+      level: Advanced
+      keywords:
+        - "Python"
+        - "SQL"
+        - "Terraform (IaC)"
+        - "CI/CD (GitHub Actions, GitLab)"
+        - "Docker"
+  certificates:
+    - name: AWS Certified Data Analytics – Specialty
+      url:
+      issuer: "AWS"
+      date: "Jan, 2024"
+    - name: AWS Certified Developer - Associate
+      url:
+      issuer: "AWS"
+      date: "Sep, 2024"
+    - name: Microsoft Certified Azure Data Engineer Associate
+      url:
+      issuer: "Microsoft"
+      date: "Jun, 2024"
+    - name: Databricks Certified Data Engineer Associate
+      url:
+      issuer: "Databricks"
+      date: "Mar, 2023"
+    - name: PingCAP Certified TiDB Professional
+      url:
+      issuer: "PingCAP"
+      date: "Mar, 2022"
+  projects:
+    - name: BioLife Sciences Customer Data Platform (CDP)
+      description: Cloud-native data lakehouse unifying customer data across the enterprise.
+      startDate: Dec 2022
+      summary: |
+        - Architected a serverless data lakehouse on AWS, integrating Salesforce, Databricks, and legacy systems to establish a Single Source of Truth for customer data.
+        - Designed a modular Terraform architecture for Infrastructure as Code, reducing deployment time by 60% and ensuring 99.9% uptime.
+        - Engineered high-throughput integration layers and event-driven orchestration workflows using AWS Step Functions and Lambda, optimizing compute costs by 40%.
+      keywords:
+        - "AWS Lakehouse"
+        - "Terraform"
+        - "Data Integration"
+        - "Serverless"
+    - name: Retail Master Data Management Platform
+      description: Centralized master data governance system on Azure and Power Platform.
+      startDate: May 2025
+      endDate: Dec 2025
+      summary: |
+        - Architected a comprehensive MDM solution leveraging Azure Cosmos DB and Power Platform to centralize and govern retail data assets.
+        - Designed a high-performance storage layer with Cosmos DB to manage billions of records with sub-second response times.
+        - Implemented a metadata-driven 'Zero Code' framework and automated ETL pipelines, significantly reducing manual maintenance overhead.
+      keywords:
+        - "Azure"
+        - "Master Data Management"
+        - "Cosmos DB"
+        - "Power Platform"
+    - name: Enterprise Data Warehouse Migration to AWS
+      description: Strategic migration of 10TB+ legacy warehouse to Amazon Redshift.
+      startDate: Nov 2022
+      endDate: May 2022
+      summary: |
+        - Spearheaded the migration of a 10TB+ SQL Server warehouse to Amazon Redshift, resolving scalability bottlenecks.
+        - Architected a serverless, event-driven migration pipeline using AWS Step Functions and Lambda, automating complex workflows.
+        - Optimized Redshift schemas and data transfer pipelines, achieving a 300% acceleration in data transfer and 5x improvement in query performance.
+      keywords:
+        - "Cloud Migration"
+        - "Amazon Redshift"
+        - "Performance Optimization"
+        - "Python"

@@ -1,0 +1,5 @@
+certificates:
+  - name: AWS Certified Developer - Associate
+    url: https://aws.amazon.com/certification/
+    issuer: AWS
+    date: Mar 2021

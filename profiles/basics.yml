@@ -1,0 +1,9 @@
+basics:
+  name: John Doe
+  phone: "+86 199 8888 8888"
+  email: nocoding188@gmail.com
+  url: https://johndoe.dev
+profiles:
+  - network: GitHub
+    url: https://github.com/johndoe
+    username: johndoe
