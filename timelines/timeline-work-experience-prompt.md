@@ -28,6 +28,7 @@ Output format:
 - You MUST output valid YAML format.
 - The structure should be a list of timeline items under a `timeline` key.
 - Each item should have `title`, `type` (set to 'work'), `company/institution`, `startDate`, `endDate`, `content` (multiline string using |), and `achievements` (list of strings).
+- `company/institution` should preserve the official organization name(s). If the source or user input provides both English and Chinese names, store them as `English | 中文` so downstream resume generation can select the correct localized form. If only one official name is available, keep that single name as-is.
 - `content` should be a high-level summary.
 - `achievements` should be specific bullet points using the STAR methodology.
 - `keywords` should be a comprehensive list of ALL technical skills, tools, platforms, and methodologies used or inferred.
@@ -42,7 +43,7 @@ Example format:
 timeline:
   - title: Job Title
     type: work
-    company/institution: Company Name
+    company/institution: Company Name | 公司名称
     startDate: MMM DD, YYYY
     endDate: MMM DD, YYYY
     content: |

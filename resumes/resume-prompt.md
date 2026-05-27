@@ -5,10 +5,21 @@ Your task is to generate high-quality resume content based on matched timeline e
 **CRITICAL: ALL output content MUST be in the target language (default: English).**
 
 1.  **Language Consistency**: Ensure all sections (generated or static) match the target resume language.
-2.  **Education Translation**: You MUST read `profiles/education.yml`. If the content (Institution, Degree, Area, Summary) is in a different language than the target output language, you **MUST translate** it to match.
-    - _Example_: If target is English but `education.yml` is Chinese, translate to English.
-    - _Example_: If target is Chinese but `education.yml` is English, translate to Chinese.
-3.  **Certificate Exception**: Certificate names in `profiles/certificates.yml` MUST be kept exactly as they appear in the source (do not translate).
+2.  **Proper Name Localization**: Company names, school names, and other organization names MUST match the target resume language.
+
+- If a source field is stored as `English | 中文`, select only one side in the final output.
+- For `zh`, `zh-hans`, `zh-hant-hk`, and `zh-hant-tw`, use the **Chinese** side.
+- For `en`, `es`, `fr`, `no`, and other non-Chinese target languages, use the **English** side.
+- If only one official name is available, preserve it as-is.
+- Do **NOT** output bilingual names like `English | 中文` in a monolingual resume unless the user explicitly requests bilingual output.
+
+3.  **Education Translation**: You MUST read `profiles/education.yml`. If the content (Institution, Degree, Area, Summary) is in a different language than the target output language, you **MUST translate** it to match.
+
+- If `institution` uses the bilingual format `English | 中文`, select the side that matches the target output language instead of keeping both.
+  - _Example_: If target is English but `education.yml` is Chinese, translate to English.
+  - _Example_: If target is Chinese but `education.yml` is English, translate to Chinese.
+
+4.  **Certificate Exception**: Certificate names in `profiles/certificates.yml` MUST be kept exactly as they appear in the source (do not translate).
 
 ### Content Generation Principles
 
@@ -16,17 +27,30 @@ Your task is to generate high-quality resume content based on matched timeline e
 2. **Quantification**: Use quantified data and specific achievements to enhance persuasiveness.
 3. **Professionalism**: Content should be concise, professional, and targeted.
 4. **Prioritization**: Prioritize projects and management experience that best match the target position.
+5. **Page Budget**: Optimize the final resume for focus and readability, and keep it within two pages whenever possible.
 
 ### Generation Workflow & Context
 
 To ensure the highest quality and consistency:
 
 1.  **Sequence**: The generation MUST follow this order: **Projects -> Work Experience -> Skills -> Personal Summary**.
-2.  **Context Flow**:
+2.  **Project Highlight Policy**:
+
+- If the user explicitly specifies one or two priority projects, treat those as the preferred flagship projects.
+- If the user specifies more than two candidate projects and interactive clarification is available, ask the user to narrow the focus to two projects.
+- If the user does not specify priority projects, automatically choose the two strongest projects based on JD relevance, company business analysis, business impact, quantified outcomes, technical depth, architectural ownership, and complementarity.
+- Do NOT turn the projects section into a full inventory. Highlight at most two flagship projects in the final resume.
+- Projects not selected for the final projects section must still be reviewed and may contribute important signals to the generated Work Experience and Skills sections.
+
+3.  **Context Flow**:
     - **Projects & Work**: Generated based on matched timeline events and JD.
     - **Skills**: Extracted from the generated Projects and Work content to ensure alignment.
     - **Personal Summary**: Synthesized LAST, using the _generated_ Projects, Work, and Skills as input. This ensures the summary accurately reflects the specific narrative constructed for this resume.
-3.  **Completeness**: The Personal Summary must be a comprehensive "elevator pitch" that ties together the candidate's background with the specific value proposition for the target role, supported by the evidence in the other sections.
+4.  **Completeness**: The Personal Summary must be a comprehensive "elevator pitch" that ties together the candidate's background with the specific value proposition for the target role, supported by the evidence in the other sections.
+5.  **Length Control**:
+
+- Preserve the full career chronology, but compress lower-signal or older content before reducing the clarity of the two flagship projects and the two most recent roles.
+- Favor dense, outcome-oriented bullets over exhaustive project-by-project enumeration.
 
 ### Experience Level Guidelines
 
@@ -91,6 +115,7 @@ The generated content will be compiled by `yamlresume`.
 - **Formatting**: Each skill description should be a complete sentence. Avoid listing specific technology names as tags.
 - **Ordering**: Skill descriptions should be ordered by job relevance, most relevant first.
 - **Focus**: Projects and work experience should highlight parts most relevant to the target position.
+- **Project Count**: The final resume should usually present no more than two projects, unless the user explicitly requests a longer project section.
 
 ### Session Context
 

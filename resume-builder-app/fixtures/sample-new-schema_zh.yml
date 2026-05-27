@@ -1,0 +1,203 @@
+schema:
+  version: "1.0"
+
+document:
+  title: "张三 – 高级数据工程师"
+  language: zh
+
+basics:
+  name: 张三
+  headline: "高级数据工程师 · 7年经验 · AWS 数据分析认证专家"
+  phone: "+86 123 4567 8901"
+  email: zhangsan@example.com
+  url: zhangsan.dev
+  summary:
+    - "拥有 7 年经验的数据工程师，为生命科学、零售、SaaS 和企业智能领域交付生产级数据平台。专精于端到端湖仓一体架构、实时流处理管道以及基于 AWS 的智能体 BI 系统，具备从设计到生产的完整 CI/CD 自主权。"
+  profiles:
+    - network: GitHub
+      url: https://github.com/zhangsan
+      username: github.com/zhangsan
+    - network: LinkedIn
+      url: https://linkedin.com/in/zhangsan
+      username: linkedin.com/in/zhangsan
+
+sections:
+  - id: work
+    type: work
+    items:
+      - id: accenture
+        name: "泰克解决方案有限公司"
+        position: 高级数据工程师
+        startDate: 2022年11月
+        summary:
+          - "为生命科学和零售客户交付生产级数据平台项目，负责设计、实现、测试、CI/CD 以及 DEV、QA、PROD 环境的全流程支持。"
+          - "在 AWS 上架构了企业客户数据平台，将多个数据源和遗留系统整合到受管控的湖仓一体及数仓底座中，为 4 个下游应用提供支持。"
+          - "设计了事件驱动的迁移工厂（Step Functions + Lambda + S3 事件），自动化完成 10 TB+ 数据仓库迁移，端到端迁移时间缩短 70%。"
+          - "领导设计并交付了双平面 NL2SQL 数据智能体平台，集成了 LLM API、受管控的语义层、向量搜索及 React/TypeScript 前端。"
+        keywords:
+          [AWS, Python, Redshift, dbt, Databricks, Terraform, Step Functions, Lambda, FastAPI, CI/CD, Docker]
+      - id: patsnap
+        name: "赛仕创新有限公司"
+        position: 数据工程师
+        startDate: 2021年6月
+        endDate: 2022年11月
+        summary:
+          - "为企业 SaaS 产品设计并运维实时和批处理数据平台，服务数百万家企业及 1.8 亿条全球记录。"
+          - "使用 Kafka 和 Flink 构建流式 ETL 管道；管理多系统及 AWS S3 上的湖仓一体模型。"
+          - "作为核心团队成员，在双周敏捷迭代中推动交付，持续达成迭代目标。"
+        keywords: [Python, Spark, Flink, Kafka, TiDB, AWS, Hive, CI/CD, Docker, Agile]
+      - id: intsig
+        name: "数据系统公司"
+        position: 数据工程师
+        startDate: 2019年6月
+        endDate: 2021年6月
+        summary:
+          - "负责数据工程，围绕 2.3 亿+企业实体构建 ETL 管道和数据模型。"
+          - "通过优化 Python 和 Hive 批处理管道，将数据新鲜度从 T+1 提升至近实时。"
+          - "构建并维护搜索索引，支持 1 亿+文档全文搜索，用于企业风险信号检测。"
+        keywords: [Python, Hive, Airflow, MySQL, Elasticsearch, Hadoop, ETL]
+
+  - id: education
+    type: education
+    items:
+      - id: wust
+        institution: "州立科技大学"
+        degree: "工学学士"
+        area: "计算机科学与技术"
+        startDate: 2015年9月
+        endDate: 2019年7月
+        summary:
+          - "全国大学生云计算应用创新大赛三等奖。"
+          - "GPA 3.6/4.0，排名专业前 15%。"
+
+  - id: projects
+    type: projects
+    items:
+      - id: bayer-cdp
+        name: "企业客户数据平台"
+        description: "端到端 AWS 客户数据平台，具备受管控的 ingestion、数仓底座和安全数据 API。"
+        startDate: 2022年12月
+        summary:
+          - "从 0 到 1 在 AWS 上构建，整合多数据源至受管控的湖仓一体；通过 Great Expectations + dbt 测试实现列级脱敏、行级安全及自动化质量门禁。"
+          - "通过 FastAPI + API Gateway REST API 暴露受管控的数据，供 4 个下游客户端应用生产使用。"
+        keywords: [AWS, Redshift, dbt, Glue, S3, FastAPI, Terraform, Great Expectations, Python]
+      - id: migration
+        name: "企业数据仓库迁移"
+        description: "将 10 TB+ 数据仓库自动化迁移至云原生架构。"
+        startDate: 2022年11月
+        endDate: 2023年5月
+        summary:
+          - "设计了事件驱动的迁移工厂（Step Functions、Lambda、S3 事件和临时数据库），将全人工流程转变为一键可重复的管道，时间缩短 70%，零数据丢失。"
+        keywords: [AWS, Step Functions, Lambda, RDS, Redshift, Python, Event-Driven]
+      - id: streaming
+        name: "实时分析平台"
+        description: "高吞吐流式数据处理管道，每日处理 5 亿+ 事件，延迟亚秒级。"
+        startDate: 2023年8月
+        endDate: 2024年2月
+        summary:
+          - "使用 Kafka、Flink 和 Databricks Delta Lake 构建端到端流式架构，实时仪表盘实现 99.99% 可用性和 p99 延迟低于 100 毫秒。"
+          - "实施自动伸缩策略，在保持性能 SLA 的前提下降低 35% 基础设施成本。"
+        keywords: [Kafka, Apache Flink, Databricks, Delta Lake, Python, AWS, Prometheus, Grafana]
+      - id: data-agent
+        name: "企业数据智能体平台"
+        description: "全栈智能体 BI 平台，具备受管控的语义层、NL2SQL 和交互式分析。"
+        startDate: 2026年2月
+        summary:
+          - "领导端到端架构设计，实现双平面系统解耦语义治理与运行时执行，使业务用户能够通过自然语言查询数据，并具备自动验证和可解释性。"
+        keywords: [Python, LLM APIs, FastAPI, TypeScript, React, PostgreSQL, Vector Search, AWS, NL2SQL]
+      - id: governance
+        name: "数据治理与合规框架"
+        description: "面向企业数据资产的中心化元数据和治理系统。"
+        startDate: 2024年3月
+        endDate: 2024年9月
+        summary:
+          - "设计并实现了数据契约、自动化 PII 检测和审计日志，服务 50+ 数据生产者和 200+ 消费者。"
+          - "通过实时监控将合规违规减少 92%，数据事件响应时间从 4 小时缩短至 15 分钟。"
+        keywords: [Python, Apache Atlas, Data Contracts, dbt, PostgreSQL, Kubernetes, CI/CD]
+
+  - id: awards
+    type: awards
+    items:
+      - id: tech-award
+        name: "技术领导力奖"
+        awarder: "泰克解决方案有限公司"
+        date: 2024
+        summary:
+          - "因架构并领导企业数据平台转型、指导 8 名初级工程师、按时交付 3 项重大平台举措而获得表彰。"
+      - id: oss-award
+        name: "开源贡献者"
+        awarder: "Apache Flink 社区"
+        date: 2023
+        summary:
+          - "为 Apache Flink 贡献了 5 个生产级特性及性能改进，被全球多家大型企业采用。"
+      - id: hackathon
+        name: "创新黑客马拉松冠军"
+        awarder: "赛仕创新有限公司"
+        date: 2022
+        summary:
+          - "带领跨职能团队以实时数据编织原型赢得创新竞赛，该原型后续产品化成为平台核心功能。"
+
+  - id: skills
+    type: skills
+    items:
+      - id: data-platform
+        name: 数据平台工程
+        level: 专家
+        keywords: [Python, SQL, dbt, Redshift, Snowflake, Databricks, Hive, Delta Lake, Apache Iceberg]
+      - id: orchestration
+        name: "编排、流式处理与计算"
+        level: 高级
+        keywords: [Apache Airflow, Apache Spark, Apache Flink, Kafka, AWS Step Functions, AWS Glue, EMR]
+      - id: cloud
+        name: "云与基础设施"
+        level: 高级
+        keywords: ["AWS (S3, EC2, Lambda, ECS, RDS, Glue, Redshift)", Terraform, Docker, CI/CD, GitHub Actions, Kubernetes]
+      - id: quality
+        name: "质量、安全与可靠性"
+        level: 高级
+        keywords: [Great Expectations, dbt tests, 列级脱敏, 行级安全, 数据契约, 合规]
+      - id: apis
+        name: "API 与应用层"
+        level: 高级
+        keywords: [FastAPI, REST / OpenAPI, TypeScript, React, LLM APIs, gRPC]
+      - id: delivery
+        name: "交付与协作"
+        level: 高级
+        keywords: [敏捷/Scrum, 技术设计, 干系人管理, 跨职能领导, 指导]
+
+  - id: certificates
+    type: certificates
+    items:
+      - id: aws-da
+        name: "AWS 认证数据分析 – 专项"
+        issuer: 亚马逊云科技
+        date: 2024年1月
+      - id: aws-sa
+        name: "AWS 认证解决方案架构师 – 助理级"
+        issuer: 亚马逊云科技
+        date: 2023年3月
+      - id: databricks
+        name: "Apache Spark 认证开发人员"
+        issuer: Databricks
+        date: 2022年11月
+      - id: kubernetes
+        name: "Kubernetes 应用开发人员"
+        issuer: 云原生计算基金会
+        date: 2023年6月
+
+  - id: langAndInterests
+    type: langAndInterests
+    languages:
+      - language: 中文
+        fluency: 母语
+      - language: 英语
+        fluency: 专业工作水平
+      - language: 日语
+        fluency: 初级
+    interests:
+      - name: 开源
+        keywords: [数据工具, Apache 社区, 贡献者]
+      - name: 技术写作
+        keywords: [架构博客, Medium 专栏, 会议演讲]
+      - name: 社区
+        keywords: [指导初级工程师, 会议分享, 知识交流]

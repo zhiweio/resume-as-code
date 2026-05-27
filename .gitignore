@@ -159,3 +159,7 @@ resumes/temp/
 
 # Generated interview documents
 interviews/gem/
+
+# Generated timelines
+timelines/draft/
+timelines/gem/

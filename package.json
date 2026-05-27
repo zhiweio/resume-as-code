@@ -32,6 +32,6 @@
     }
   },
   "dependencies": {
-    "yamlresume": "^0.9.1"
+    "yamlresume": "^0.12.2"
   }
 }

@@ -9,6 +9,14 @@ Important requirements:
   - If `language` is `en`, output **English**.
   - Ignore the source language of the timeline events; **TRANSLATE** everything to the target language.
   - Do NOT mix languages (e.g., do not output English descriptions if the target is Chinese, except for proper nouns like "AWS", "React", "Kubernetes").
+- **Mandatory Full Review**: You MUST review ALL available project timeline entries before deciding which projects to output.
+- **User Preference First**:
+  - If the session context includes one or two user-designated priority projects, prioritize those projects.
+  - If the session context includes more than two user-designated projects, keep only the strongest two among them based on JD relevance, business impact, technical depth, and complementarity.
+  - If the user did not specify projects, automatically select the two best flagship projects based on JD analysis, company business analysis, business impact, quantified outcomes, technical depth, architectural ownership, and complementarity.
+- **Curated Selection Only**: Do NOT list all projects. Output at most **two** projects unless the user explicitly requests more.
+- **Resume Length Budget**: Treat the projects section as a concise highlight area that helps keep the overall resume within two pages whenever possible.
+- **Distinctiveness Rule**: Prefer two projects that showcase different strengths or domains instead of two nearly identical implementations.
 - Achievement descriptions should be specific and quantified with numbers and results.
 - Emphasize project and role parts most relevant to the target position.
 - **Authenticity & Inference**:
@@ -25,7 +33,7 @@ Output format:
   - `description`: Brief description (single line)
   - `startDate`: Start Date (MMM YYYY)
   - `endDate`: End Date (MMM YYYY). **For current projects, leave this field empty (null) or omit it. DO NOT use the string "Present" or empty string `""`.**
-  - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points.
+  - `summary`: Detailed achievements as a multiline string using `|`, formatted as bullet points. Keep each selected project concise and high-signal, usually 2-4 bullets per project.
   - `keywords`: List of 5-10 most impactful technologies or domains relevant to this project and the target JD. **Each keyword MUST be ≤ 32 characters.**
 
 Example format:

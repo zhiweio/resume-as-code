@@ -46,6 +46,14 @@ Based on the user's input, determine which agent to activate:
   - **Certificates**: Read `profiles/certificates.yml`.
   - **Timelines**: Read all files in `timelines/gem/`.
 - **Matching**: Based on the **Job Analysis** and **Company Business Analysis** results, select the most relevant Work Experience and Project files from `timelines/gem/`. Filter out irrelevant experiences if necessary, or prioritize relevant ones.
+- **Project Priority Confirmation**:
+  - If the candidate has more than two viable project experiences, prompt the user to nominate up to **two** priority projects to highlight when feasible.
+  - If the user does not specify preferred projects, automatically select the two best flagship projects based on JD relevance, business impact, quantified outcomes, technical depth, architectural ownership, and complementarity.
+  - Projects not selected for the final `projects` section should still be analyzed and mined for signals that can strengthen the generated work experience and skills sections.
+- **Resume Length Budget**:
+  - Optimize the final resume for focus and scannability, and keep it to **no more than two pages whenever possible**.
+  - When space is limited, preserve complete chronology but compress older roles and non-flagship project detail before trimming the two highlighted projects.
+- **Name Localization Rule**: If a school or organization name is stored in bilingual format as `English | 中文`, select the final display name based on the target resume language: use the **Chinese** side for `zh`, `zh-hans`, `zh-hant-hk`, and `zh-hant-tw`; use the **English** side for `en`, `es`, `fr`, `no`, and other non-Chinese languages. Do **NOT** output both names in a monolingual resume.
 
 ### 5. Section Generation
 
@@ -53,7 +61,7 @@ Generate each section of the resume using the specific prompt files. Pass the **
 
 **Order of Generation:**
 
-1.  **Projects**: Generate first to establish technical depth.
+1.  **Projects**: Generate first to establish technical depth. Output at most **two** highlighted projects.
 2.  **Work Experience**: Generate second, referencing project highlights if applicable.
 3.  **Skills**: Generate third, extracting keywords from both Projects and Work Experience.
 4.  **Personal Summary**: Generate LAST. **Crucial**: You MUST pass the _generated_ content of Projects, Work Experience, and Skills as context to this prompt to ensure the summary accurately reflects the tailored resume.
@@ -109,11 +117,11 @@ Generate each section of the resume using the specific prompt files. Pass the **
           interests: 'Interests'
         order:
           - basics
-          - education
           - work
+          - education
+          - projects
           - skills
           - certificates
-          - projects
           - languages
           - interests
       page:
@@ -124,14 +132,14 @@ Generate each section of the resume using the specific prompt files. Pass the **
           bottom: 1.5cm
         showPageNumbers: true
       # Use `yamlresume templates list` to get the list of available templates
-      template: moderncv-classic
+      template: jake
       typography:
         # LaTeX engine only supports 10pt, 11pt, and 12pt
         fontSize: 11pt
     - engine: markdown
     - engine: html
       # Use `yamlresume templates list` to get the list of available templates
-      template: calm
+      template: jake
       typography:
         # HTML engine only supports font size in px unit, from 14px to 20px
         fontSize: 16px
@@ -189,6 +197,7 @@ Select the appropriate prompt based on the identified type:
 #### 3. Output
 
 - **Format**: Return the polished content in valid YAML format as defined in the respective prompts.
+- **Bilingual Name Convention**: If the source material includes both English and Chinese school/company names, store them in timeline files as `English | 中文` so the resume generation flow can localize them later. If only one official name is available, keep that single name as-is.
 - **Naming Convention**: `timelines/gem/{Type}_{TimeRange}_{Title}.yml`
   - `Type`: `Work` or `Project`.
   - `TimeRange`: `YYYYMMDD-YYYYMMDD` or `YYYYMMDD-Now` (e.g., `20221114-20220531` or `20221114-Now`).
@@ -207,8 +216,8 @@ Select the appropriate prompt based on the identified type:
 
 - **Action**: Ensure the user has provided the three necessary YAML contents or files:
   1.  **Resume** (e.g., `resumes/gem/...` or `profiles/...`)
-  2.  **JD Analysis** (e.g., `gallery/..._JD Analysis.yml`)
-  3.  **Company Business Analysis** (e.g., `gallery/..._Company Business Analysis.yml`)
+  2.  **JD Analysis** (e.g., `resumes/temp/.../job-analysis.yml`)
+  3.  **Company Business Analysis** (e.g., `resumes/temp/.../company-business-analysis.yml`)
 
 #### 2. Guide Generation
 
