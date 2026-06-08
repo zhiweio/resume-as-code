@@ -1,4 +1,5 @@
 import { Colors } from '../constants'
+import { inlineMdProps } from '../inline-md'
 
 /** Bullet list for summaries/descriptions. */
 export function Bullets({ items }: { items: string[] }) {
@@ -17,7 +18,7 @@ export function Bullets({ items }: { items: string[] }) {
           }}
         >
           <span style={{ flexShrink: 0, marginTop: '0.15em' }}>•</span>
-          <span>{item}</span>
+          <span className="md-inline" {...inlineMdProps(item)} />
         </li>
       ))}
     </ul>

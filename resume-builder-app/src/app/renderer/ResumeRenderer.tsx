@@ -3,6 +3,7 @@ import { Colors } from './constants'
 import { SecHead, EntryHead, Bullets, Keywords } from './components'
 import { PrintStyles } from './PrintStyles'
 import { PaginatedPaper } from './PaginatedPaper'
+import { inlineMdProps } from './inline-md'
 import type { ReactNode } from 'react'
 
 interface ResumeRendererProps {
@@ -83,10 +84,10 @@ export function ResumeRenderer({
           {header.summary.map((s, i) => (
             <p
               key={i}
+              className="md-inline"
               style={{ fontSize: 9.5, color: Colors.meta, lineHeight: 1.6 }}
-            >
-              {s}
-            </p>
+              {...inlineMdProps(s)}
+            />
           ))}
         </div>
       )}

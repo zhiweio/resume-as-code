@@ -14,6 +14,11 @@ export function PrintStyles() {
         p, li { orphans: 2; widows: 2; }
       }
       .chrome { scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.2) transparent; }
+      .md-inline strong { font-weight: 600; }
+      .md-inline em { font-style: italic; }
+      .md-inline code { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; background: rgba(0,0,0,0.05); padding: 0 3px; border-radius: 3px; }
+      .md-inline del, .md-inline s { text-decoration: line-through; }
+      .md-inline a { color: inherit; text-decoration: underline; }
     `}</style>
   )
 }
