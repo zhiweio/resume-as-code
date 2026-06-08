@@ -1,0 +1,20 @@
+{
+  "name": "resume-as-code-skills",
+  "owner": {
+    "name": "Wang Zhiwei",
+    "url": "https://github.com/zhiweio"
+  },
+  "metadata": {
+    "description": "Resume-as-Code: tailored resume generation, timeline polishing, and interview preparation skills.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "resume-as-code-skills",
+      "source": "./skills",
+      "description": "Three skills (resume-generation, timeline-polishing, interview-preparation) for a complete resume-as-code workflow.",
+      "category": "productivity",
+      "tags": ["resume", "career", "interview", "yaml"]
+    }
+  ]
+}

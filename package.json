@@ -9,7 +9,9 @@
     "format:check": "prettier --check .",
     "prepare": "husky",
     "commitlint": "commitlint --edit",
-    "release": "commit-and-tag-version"
+    "release": "commit-and-tag-version",
+    "skills:install": "node scripts/install-skills.mjs",
+    "skills:uninstall": "node scripts/install-skills.mjs --uninstall"
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"

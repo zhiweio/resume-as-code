@@ -326,7 +326,7 @@ The system operates through three primary AI agents:
 ### 1. Timeline Polishing Agent
 
 _Input: Raw text description of a job or project._
-_Output: Structured, polished YAML file in `timelines/gem/`._
+_Output: Structured, polished YAML file in `data/timeline/`._
 
 1.  **Input Analysis**: Identifies if the input is Work Experience or a Project.
 2.  **Polishing**: Applies **STAR** (Situation, Task, Action, Result) for work or **3W** (What, Why, How) for projects.
@@ -336,7 +336,7 @@ _Output: Structured, polished YAML file in `timelines/gem/`._
 ### 2. Resume Generation Agent
 
 _Input: Target Job Description (JD)._
-_Output: A complete, tailored resume YAML file in `resumes/gem/`._
+_Output: A complete, tailored resume YAML file in `data/resumes/`._
 
 1.  **Job Analysis**: Extracts key skills, requirements, and role context from the JD.
 2.  **Matching**: Selects the most relevant experiences from the Timeline library based on the analysis.
@@ -347,7 +347,7 @@ _Output: A complete, tailored resume YAML file in `resumes/gem/`._
 ### 3. Interview Preparation Agent
 
 _Input: Resume, JD Analysis, Company Business Analysis._
-_Output: A comprehensive Interview Preparation Guide in `interviews/gem/`._
+_Output: A comprehensive Interview Preparation Guide in `data/interviews/`._
 
 1.  **Input Verification**: Ensures all necessary context files are present.
 2.  **Strategy Generation**: Creates a personal introduction strategy tailored to the role.
@@ -359,40 +359,64 @@ _Output: A comprehensive Interview Preparation Guide in `interviews/gem/`._
 
 ```text
 .
-├── resume-builder-app/  # Local-first resume workbench (see above)
-├── profiles/            # Personal basic information (static)
-├── resumes/             # Resume generation artifacts
-│   ├── gem/             # Final generated resume files
-│   ├── temp/            # Intermediate generation artifacts
-│   ├── job-analysis-prompt.md
-│   ├── company-business-analysis-prompt.md
-│   └── section-*-prompt.md
-├── timelines/           # Master Timeline Library
-│   ├── gem/             # Polished timeline event files (YAML)
-│   ├── timeline-project-prompt.md
-│   └── timeline-work-experience-prompt.md
-└── interviews/          # Interview preparation artifacts
-    ├── gem/             # Generated interview guides
-    └── interview-prompt.md
+├── AGENTS.md            # Universal entry point for any AGENTS.md-aware agent
+├── skills/              # Three portable Agent Skills (the workflow source of truth)
+│   ├── resume-generation/        # JD → tailored YAML resume
+│   ├── timeline-polishing/       # Raw notes → STAR/3W YAML timeline
+│   ├── interview-preparation/    # Resume + JD + Company → Markdown interview guide
+│   ├── .claude-plugin/plugin.json  # Claude Code plugin manifest
+│   └── README.md
+├── .claude-plugin/marketplace.json  # Claude Code plugin marketplace registration
+├── scripts/install-skills.mjs       # One-command installer for any supported agent
+├── resume-builder-app/  # Local-first resume workbench
+└── data/                # All user-owned content lives here
+    ├── profiles/        #   Candidate's static data (basics, education, certificates)
+    ├── timeline/        #   Master timeline library (polished work + project YAML)
+    ├── drafts/          #   Raw notes waiting to be polished into the timeline
+    ├── resumes/         #   Final tailored resume files
+    ├── interviews/      #   Generated interview guides
+    └── .cache/          #   Per-run intermediate artifacts (gitignored)
 ```
 
 ## 🤖 AI Tools Support & Configuration
 
-This project leverages AI agents to automate the resume generation process. While it can work with various LLMs, it is optimized for the following tools:
+The resume-as-code workflow is packaged as three portable [Agent Skills](https://agentskills.io) under [`skills/`](skills/). They work with every major coding agent — install with **one command**.
 
-### 1. GitHub Copilot
+### One-command install
 
-- **Status**: Supported (Recommended)
-- **Configuration**: No specific configuration is required. You can directly interact with Copilot Chat in VS Code.
+From the repo root:
 
-### 2. Trae
+```bash
+pnpm skills:install <agent>   # one specific agent
+pnpm skills:install all       # everything supported
+pnpm skills:install <agent> --dry-run   # preview without writing
+pnpm skills:uninstall <agent>|all       # clean removal
+```
 
-- **Status**: Supported
-- **Configuration**:
-  1.  **Create Agent**: Create a new Custom Agent in Trae.
-  2.  **Configure Rules**: Copy the content of [.trae/rules/project_rules.md](.trae/rules/project_rules.md) and paste it into the agent's instructions.
-  3.  **Save**: Name the agent **`resume-as-code`**.
-- **Usage**: Select the **`resume-as-code`** agent when working on this project to ensure strict adherence to the workflow.
+| Agent                                                                         | Install command                                                                                                     | Notes                                                                    |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| **Claude Code** (marketplace)                                                 | `/plugin marketplace add zhiweio/resume-as-code` then `/plugin install resume-as-code-skills@resume-as-code-skills` | Native UX, no clone needed beyond marketplace                            |
+| **Claude Code** (local)                                                       | `pnpm skills:install claude`                                                                                        | Symlinks each skill into `.claude/skills/` for live-reload               |
+| **GitHub Copilot**                                                            | Zero-config (committed)                                                                                             | Adapter file `.github/copilot-instructions.md` is committed in this repo |
+| **Codex** / **OpenCode** / **Aider** / **Qoder** / **Continue** / **RooCode** | Zero-config                                                                                                         | Read `AGENTS.md` natively                                                |
+| **Cursor** (recent)                                                           | Zero-config (via `AGENTS.md`) — or `pnpm skills:install cursor` for an explicit `.cursor/rules/` file               | —                                                                        |
+| **Trae**                                                                      | Zero-config (committed)                                                                                             | Adapter `.trae/rules/project_rules.md` is committed in this repo         |
+| **Windsurf**                                                                  | `pnpm skills:install windsurf`                                                                                      | Writes `.windsurf/rules/resume-as-code.md`                               |
+| **Cline** / **RooCode**                                                       | `pnpm skills:install cline`                                                                                         | Writes `.clinerules`                                                     |
+
+### The three skills
+
+| Skill                                                            | Trigger                                               | Output                                         |
+| ---------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------- |
+| [`resume-generation`](skills/resume-generation/SKILL.md)         | User provides a Job Description                       | Tailored YAML resume in `data/resumes/`        |
+| [`timeline-polishing`](skills/timeline-polishing/SKILL.md)       | User provides raw work or project notes               | Structured YAML timeline in `data/timeline/`   |
+| [`interview-preparation`](skills/interview-preparation/SKILL.md) | User provides Resume + JD Analysis + Company Analysis | Markdown interview guide in `data/interviews/` |
+
+### Adding a new agent
+
+1. Open [`scripts/install-skills.mjs`](scripts/install-skills.mjs).
+2. Add a new entry to the `AGENTS` map describing where the agent expects its rules file.
+3. Verify with `pnpm skills:install <new-agent> --dry-run`.
 
 ## 🚀 Usage Guide
 
@@ -407,16 +431,16 @@ Don't write a resume yet. First, build your database of experiences.
 
 1.  Open Copilot Chat.
 2.  Paste a raw description of a past job or project.
-3.  The **Timeline Polishing Agent** will format it into a structured YAML file in `timelines/gem/`.
+3.  The **Timeline Polishing Agent** will format it into a structured YAML file in `data/timeline/`.
 4.  Review and save the file.
 
 ### Step 2: Configure Static Data
 
-Fill in your static information in the `profiles/` directory:
+Fill in your static information in the `data/profiles/` directory:
 
-- `profiles/basics.yml`: Contact info, social links.
-- `profiles/education.yml`: Academic history.
-- `profiles/certificates.yml`: Certifications.
+- `data/profiles/basics.yml`: Contact info, social links.
+- `data/profiles/education.yml`: Academic history.
+- `data/profiles/certificates.yml`: Certifications.
 
 ### Step 3: Generate a Resume
 
@@ -428,7 +452,7 @@ When you find a job you want to apply for:
     - Analyze the JD.
     - Select relevant timeline events.
     - Generate tailored content.
-    - Assemble a final YAML file in `resumes/gem/` (e.g., `Name_JobTitle_Company.yml`).
+    - Assemble a final YAML file in `data/resumes/` (e.g., `Name_JobTitle_Company.yml`).
 
 ### Step 4: Preview & Export PDF
 
@@ -449,7 +473,7 @@ pnpm dev
 Alternatively, use the YAMLResume CLI for LaTeX-based PDF:
 
 ```bash
-pnpm yamlresume build "resumes/gem/Your_Resume.yml"
+pnpm yamlresume build "data/resumes/Your_Resume.yml"
 ```
 
 ### Step 5: Prepare for Interview
@@ -457,7 +481,7 @@ pnpm yamlresume build "resumes/gem/Your_Resume.yml"
 Once your resume is ready:
 
 1.  Provide the generated **Resume**, **JD Analysis**, and **Company Business Analysis** to Copilot Chat.
-2.  The **Interview Preparation Agent** will generate a detailed guide in `interviews/gem/`.
+2.  The **Interview Preparation Agent** will generate a detailed guide in `data/interviews/`.
 3.  Use this guide to practice your introduction, project deep dives, and technical Q&A.
 
 ## 🛠️ Development

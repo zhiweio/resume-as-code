@@ -13,13 +13,13 @@ Your task is to generate high-quality resume content based on matched timeline e
 - If only one official name is available, preserve it as-is.
 - Do **NOT** output bilingual names like `English | 中文` in a monolingual resume unless the user explicitly requests bilingual output.
 
-3.  **Education Translation**: You MUST read `profiles/education.yml`. If the content (Institution, Degree, Area, Summary) is in a different language than the target output language, you **MUST translate** it to match.
+3.  **Education Translation**: You MUST read `data/profiles/education.yml`. If the content (Institution, Degree, Area, Summary) is in a different language than the target output language, you **MUST translate** it to match.
 
 - If `institution` uses the bilingual format `English | 中文`, select the side that matches the target output language instead of keeping both.
   - _Example_: If target is English but `education.yml` is Chinese, translate to English.
   - _Example_: If target is Chinese but `education.yml` is English, translate to Chinese.
 
-4.  **Certificate Exception**: Certificate names in `profiles/certificates.yml` MUST be kept exactly as they appear in the source (do not translate).
+4.  **Certificate Exception**: Certificate names in `data/profiles/certificates.yml` MUST be kept exactly as they appear in the source (do not translate).
 
 ### Content Generation Principles
 

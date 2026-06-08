@@ -1,0 +1,13 @@
+{
+  "name": "resume-as-code-skills",
+  "version": "1.0.0",
+  "description": "Resume-as-Code workflow skills: tailored resume generation, timeline polishing (STAR/3W), and interview preparation.",
+  "author": {
+    "name": "Wang Zhiwei",
+    "url": "https://github.com/zhiweio"
+  },
+  "homepage": "https://github.com/zhiweio/resume-as-code",
+  "repository": "https://github.com/zhiweio/resume-as-code",
+  "license": "MIT",
+  "keywords": ["resume", "career", "yaml", "interview", "agent-skills"]
+}

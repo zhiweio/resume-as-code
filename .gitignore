@@ -153,13 +153,21 @@ packages/cli/resources/*.pdf
 # IntelliJ IDEA
 .idea
 
-# Generated resumes
-resumes/gem/
-resumes/temp/
+# User workspace data. Everything under data/ is per-user content and ignored
+# by default; only the *.example.yml templates under data/profiles/ are tracked
+# so new users have a starting point.
+data/resumes/
+data/interviews/
+data/timeline/
+data/drafts/
+data/.cache/
+data/profiles/*
+!data/profiles/*.example.yml
 
-# Generated interview documents
-interviews/gem/
-
-# Generated timelines
-timelines/draft/
-timelines/gem/
+# Generated agent adapter files (created by `pnpm skills:install <agent>`).
+# Committed adapters (.github/copilot-instructions.md, .trae/rules/project_rules.md)
+# are intentionally tracked; everything below is per-user, install on demand.
+.claude/skills/
+.cursor/rules/resume-as-code.mdc
+.windsurf/rules/resume-as-code.md
+.clinerules
