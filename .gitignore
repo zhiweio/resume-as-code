@@ -163,6 +163,7 @@ data/drafts/
 data/.cache/
 data/profiles/*
 !data/profiles/*.example.yml
+data/repo/
 
 # Generated agent adapter files (created by `pnpm skills:install <agent>`).
 # Committed adapters (.github/copilot-instructions.md, .trae/rules/project_rules.md)

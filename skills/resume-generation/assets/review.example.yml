@@ -1,0 +1,154 @@
+# Review output structural template — used as schema reference only.
+# NEVER read or copy content from this file into generated output.
+# See references/resume-review.md for the review prompt.
+
+review:
+  meta:
+    reviewed_at: "2026-06-23T10:30:00Z"
+    round: 1
+    resume_source: "data/.cache/<Timestamp>/assembled-resume.yml"
+    jd_source: "data/.cache/<Timestamp>/job-analysis.yml"
+
+  # ── Step 1: First Impression & Initial Diagnosis ─────────────────────
+  first_impression:
+    target_positioning:
+      role: "Senior Data Engineer"
+      level: "Senior" # Junior | Mid | Senior | Staff | Principal
+      rationale: "Based on 6+ years experience and architecture ownership signals"
+    thirty_second_verdict:
+      decision: "merit_further_investigation" # merit_further_investigation | likely_closed
+      reason: "Strong domain alignment and quantified impact in flagship projects"
+
+  # ── Step 2: Deep Audit ───────────────────────────────────────────────
+  deep_audit:
+    holistic:
+      career_narrative:
+        status: pass # pass | warn | fail
+        critique: null
+        analysis: null
+        suggestion: null
+      keyword_alignment:
+        status: warn
+        critique: "Resume emphasizes Java ecosystem but JD targets Go/Python"
+        analysis: "Hiring manager may close resume within 15 seconds due to apparent mismatch"
+        suggestion: "Reorder skills to lead with Python; add Go to learning trajectory if applicable"
+      consistency_check:
+        status: pass
+        critique: null
+        analysis: null
+        suggestion: null
+      noise_filtering:
+        status: warn
+        critique: "Contains a generic CRUD project with no unique technical depth"
+        analysis: "Reduces perception of real-world engineering experience"
+        suggestion: "Replace with a deeper dive into the payment gateway project"
+
+    sections:
+      personal_summary:
+        status: warn
+        critique: 'Summary exceeds 3 lines and uses generic phrases like "hardworking"'
+        analysis: "Recruiter loses patience; fails to communicate core competitiveness"
+        suggestion: "Use formula: [positioning] + [years] + [core domain] + [top achievement]"
+        before_after:
+          before: "Hardworking engineer with passion for technology and strong communication skills..."
+          after: "Senior backend engineer with 6 years specializing in high-concurrency distributed systems, led payment gateway refactoring improving availability from 99.9% to 99.99%"
+
+      work_experience:
+        - company: "Acme Corp"
+          position: "Senior Engineer"
+          overall_status: warn
+          bullet_analyses:
+            - bullet_text: "Responsible for backend development"
+              status: fail
+              narrative_framework: "incomplete" # complete | incomplete | missing_result
+              so_what_depth: "shallow" # deep | moderate | shallow
+              technical_insight: "low" # high | moderate | low
+              verb_power: "weak" # strong | moderate | weak
+              impact_evidence: "none" # quantified | qualitative | scope | strategic | none
+              scope_of_influence: "individual" # individual | team | department | company
+              critique: "Passive voice, no result stated"
+              analysis: "Reads like a job description, not an achievement"
+              suggestion: 'Rewrite as: "To [goal], [action], resulting in [measurable outcome]"'
+
+      projects:
+        - name: "Payment Gateway"
+          overall_status: warn
+          bullet_analyses:
+            - bullet_text: "Built payment system"
+              status: fail
+              narrative_framework: "missing_result"
+              so_what_depth: "shallow"
+              technical_insight: "low"
+              verb_power: "weak"
+              impact_evidence: "none"
+              scope_of_influence: "team"
+              critique: "No technical depth or measurable outcome"
+              analysis: "Cannot distinguish from any other payment project"
+              suggestion: "Add: architecture decisions, throughput numbers, failure handling strategy"
+
+      technical_skills:
+        status: pass
+        critique: null
+        analysis: null
+        suggestion: null
+
+      tech_foresight:
+        status: warn
+        critique: "No mention of AI tooling usage despite industry trend"
+        analysis: "May appear technically narrow or behind current practices"
+        suggestion: "Add a bullet about LLM-assisted development if applicable"
+
+  # ── Step 3: Strategic Revision Blueprint ─────────────────────────────
+  revision_blueprint:
+    impact_narrative_toolbox:
+      recommended_formulas:
+        - formula: "star" # star | car | decision_tradeoff
+          description: "For straightforward achievements: Situation/Task -> Action -> Result"
+          example: "To reduce query latency (S/T), implemented Redis caching layer (A), cutting p99 from 800ms to 120ms (R)"
+        - formula: "decision_tradeoff"
+          description: "For architectural decisions: Problem -> Options evaluated -> Choice -> Risk mitigation -> Outcome"
+          example: "Evaluated Kafka vs Pulsar for event streaming; chose Kafka for ecosystem maturity; added Schema Registry; reduced integration failures by 60%"
+    heuristic_questions:
+      - "What was the most complex technical challenge in this project? How did you overcome it?"
+      - "How much time did your solution save the team? How many incidents did it reduce?"
+      - "Was there a technical decision that proved to be the right architectural choice? Why?"
+      - "What are you most proud of in this project?"
+    impact_thinking_examples:
+      - vague: "Optimized backend management system"
+        thinking_path: "What was optimized? -> Query function -> What effect? -> Speed improved -> How much? -> From 5s to 1s -> What does this mean? -> Operations staff process 50% more order reviews daily"
+        concrete: "Optimized order review queries from 5s to 1s, enabling operations staff to process 50% more reviews daily"
+
+  # ── Step 4: Key Changes Summary ──────────────────────────────────────
+  revised_template:
+    key_changes_summary:
+      - "Compressed personal summary from 4 lines to 3 bullets using positioning formula"
+      - "Rewrote 3 passive work bullets using STAR framework"
+      - "Removed generic CRUD project, deepened payment gateway description"
+      - "Added AI tooling mention to skills section"
+
+  # ── Step 5: Final Verdict ────────────────────────────────────────────
+  final_verdict:
+    overall_assessment: "Transformed from a generic job description sheet to a targeted achievement showcase with highlights, depth, and emotional appeal"
+    overall_score: 72 # 0-100
+    core_risk_points:
+      - "Keyword mismatch with Go/Python JD is the most critical issue"
+      - "Passive language in work experience reduces credibility"
+    action_items:
+      primary:
+        - "Supplement all impact proofs with quantified or qualitative outcomes"
+      secondary:
+        - "Rewrite highest-level project using Decision-Tradeoff model"
+      long_term:
+        - "Develop habit of recording Problem-Decision-Action-Result-Reflection for future career materials"
+
+  # ── Machine-readable summary for revision step triage ────────────────
+  summary:
+    total_issues: 5
+    by_severity:
+      fail: 1
+      warn: 3
+      pass: 6
+    sections_needing_revision:
+      - personal_summary
+      - work_experience
+      - projects

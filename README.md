@@ -338,11 +338,14 @@ _Output: Structured, polished YAML file in `data/timeline/`._
 _Input: Target Job Description (JD)._
 _Output: A complete, tailored resume YAML file in `data/resumes/`._
 
-1.  **Job Analysis**: Extracts key skills, requirements, and role context from the JD.
-2.  **Matching**: Selects the most relevant experiences from the Timeline library based on the analysis.
-3.  **Section Generation**: Generates tailored Summary, Skills, Work, and Project sections.
-4.  **Assembly**: Combines all sections with static profile data (Education, Certificates) into a final YAML file.
-5.  **Validation**: Validates the output against the schema.
+1.  **Company & Business Analysis**: Researches the company's business lines, strategic direction, tech stack, and infers which business unit the role supports. Uses DeepWiki, Context7, and Web Search.
+2.  **Job Analysis**: Deep-analyzes the JD in the context of the company's business — infers what the company _actually needs_, corrects HR's generic boilerplate, and produces a rewritten JD sharper than the original.
+3.  **Matching**: Selects the most relevant experiences from the Timeline library based on the analysis.
+4.  **Section Generation**: Generates tailored Summary, Skills, Work, and Project sections.
+5.  **Assembly**: Combines all sections with static profile data (Education, Certificates) into a final YAML file.
+6.  **De-AI Pass**: Runs a language-aware humanizer over all free-text fields to strip AI writing patterns, making the resume read as human-written. English and Romance languages use [blader/humanizer](https://github.com/blader/humanizer); Chinese uses [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh).
+7.  **Quality Review & Revision** (optional, multi-round): Reviews the resume against a structured audit framework ([itMrBoy/resumePolice](https://github.com/itMrBoy/resumePolice)) covering first impression, deep audit, impact narrative, and JD alignment. Produces a YAML analysis artifact, then optionally revises the resume based on findings. Supports 1-3 review-revise-humanize cycles.
+8.  **Validation** (optional): Validates the output against the yamlresume schema if compatibility mode is enabled.
 
 ### 3. Interview Preparation Agent
 
@@ -497,6 +500,12 @@ pnpm dev          # Start dev server + PDF export service
 pnpm build        # Production build
 pnpm typecheck    # Type checking
 ```
+
+## 🙏 Acknowledgments
+
+- [blader/humanizer](https://github.com/blader/humanizer) — English AI writing pattern detection and removal, based on Wikipedia's "Signs of AI writing" guide. Used as the de-AI pass for English and Romance language resumes.
+- [op7418/humanizer-zh](https://github.com/op7418/humanizer-zh) — Chinese adaptation of the humanizer skill, covering Chinese-specific AI writing tells. Used as the de-AI pass for Simplified and Traditional Chinese resumes.
+- [itMrBoy/resumePolice](https://github.com/itMrBoy/resumePolice) — Comprehensive resume review framework combining technical leadership and senior HRBP perspectives. Adapted as the structured quality review step in the resume generation pipeline.
 
 ## 📄 License
 

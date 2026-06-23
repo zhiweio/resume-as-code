@@ -1,6 +1,6 @@
 ---
 name: timeline-polishing
-description: Polish raw work experience or project descriptions into structured YAML timeline entries using STAR (work) or 3W (projects). Use when the user pastes raw notes about a past job, internship, role, project, or deliverable and asks to polish, structure, format, expand, or convert them to YAML.
+description: Polish raw work experience or project descriptions into structured YAML timeline entries with deep business-technology integration using enhanced STAR (work) or 3W (projects). Every achievement leads with business context and demonstrates transferable problem-solving ability. Use when the user pastes raw notes about a past job, internship, role, project, or deliverable and asks to polish, structure, format, expand, or convert them to YAML.
 ---
 
 # Timeline Polishing
@@ -38,8 +38,8 @@ Decide whether the description is a **work experience** or a **project**. If unc
 
 ### 2. Polish using the matching methodology
 
-- **Work experience** → follow [references/work-experience.md](references/work-experience.md). Methodology: **STAR** (Situation, Task, Action, Result). Goal: expand and enrich with industry context, role-standard responsibilities, specific metrics, leadership signals.
-- **Project** → follow [references/project.md](references/project.md). Methodology: **3W** (What, Why, How). Goal: expand and enrich with technical depth, architectural decisions, problem-solving nuances.
+- **Work experience** → follow [references/work-experience.md](references/work-experience.md). Methodology: **Enhanced STAR** (business-focused Situation, Task, Action, Result). Goal: reframe every achievement with business-first storytelling — lead with business challenges and outcomes, show problem-solving methodology, quantify in business terms, use transferable language that works across industries.
+- **Project** → follow [references/project.md](references/project.md). Methodology: **Enhanced 3W** (business-focused What, Why, How). Goal: reframe every achievement with business-first storytelling — define scope by business value, explain business drivers, show decision-making methodology and trade-off analysis, quantify outcomes in business terms.
 
 ### 3. Apply the bilingual name convention
 
@@ -55,7 +55,8 @@ Write the polished YAML to `data/timeline/{Type}_{TimeRange}_{Title}.yml` using 
 ## General rules
 
 - **Format**: valid YAML.
-- **Authenticity**: never invent skills or tech absent from the source text. You may infer specific services or tools that are standard within a platform the source already mentions (e.g. given "AWS", inferring "Step Functions"). Do not invent platforms.
+- **Business-Technology Integration**: Each achievement must lead with business context (the problem or value), not the technology. Frame problems in universal, transferable terms rather than industry-specific jargon. Show problem-solving methodology and decision rationale, not just what was built. Quantify in business metrics first (cost, revenue, time, risk), then use technical metrics as supporting evidence.
+- **Authenticity**: never invent skills or tech absent from the source text. You may infer specific services or tools that are standard within a platform the source already mentions (e.g. given "AWS", inferring "Step Functions"). Do not invent platforms. You may also infer standard business context for the role and industry.
 - **Date format**: prefer `MMM DD, YYYY` inside the YAML (e.g. `Nov 14, 2022`); use the `YYYYMMDD` form **only** in the file name.
 
 ## Quick reference

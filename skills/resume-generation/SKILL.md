@@ -24,19 +24,41 @@ Activate when the user supplies a Job Description (raw text, a link, or a file p
 - Intermediate artifacts in `data/.cache/<UTC-Timestamp>/` (one per generation run).
 - Final resume in `data/resumes/{CandidateName}_{JobTitle}_{Company}.yml`.
 
+## Review & Revision Options
+
+Before starting the pipeline, present the user with these options:
+
+1. **Auto review + revise** — should the pipeline automatically review and revise the resume after De-AI? (default: `yes`)
+2. **Revision rounds** — how many review-revise cycles to run? (default: `1`, options: `1` / `2` / `3`)
+3. **yamlresume compatibility** — should the final output pass `pnpm yamlresume validate`? (default: `no`)
+
+Present as a single prompt:
+
+> Resume generation pipeline ready. Quick setup:
+>
+> 1. Auto review & revise after generation? [Y/n]
+> 2. Review-revise rounds? [1/2/3] (default: 1)
+> 3. yamlresume format compatibility? [y/N] (default: no)
+
+If the user does not respond, use defaults (`yes`, `1`, `no`). Store the answers in the run context for steps 9 and 10.
+
 ## Workflow
 
 ### 1. Initialize a run directory
 
 Create `data/.cache/<UTC-Timestamp>/` (e.g. `data/.cache/20260608_104500/`). All intermediate artifacts for this run go here.
 
-### 2. Analyze the JD
+### 2. Analyze the company and business context
+
+Follow [references/company-business-analysis.md](references/company-business-analysis.md). Save the result to `data/.cache/<Timestamp>/company-business-analysis.yml`.
+
+Use DeepWiki, Context7, and Web Search as directed in the reference to build a complete picture of the company's business lines, strategic direction, tech stack, and the business unit this role supports. This output is **required input** for the next step.
+
+### 3. Analyze the JD
 
 Follow [references/job-analysis.md](references/job-analysis.md). Save the result to `data/.cache/<Timestamp>/job-analysis.yml`. The `language` field detected here governs the entire downstream pipeline.
 
-### 3. Analyze the company and business context
-
-Follow [references/company-business-analysis.md](references/company-business-analysis.md). Save the result to `data/.cache/<Timestamp>/company-business-analysis.yml`.
+This step **must consume the company business analysis** from step 2. The JD alone is not enough — job requirements are inseparable from business context. The output includes a `rewritten_jd` field that is sharper and more honest than the raw HR posting. The resume generation steps target this rewritten JD, not the original.
 
 ### 4. Gather context and match timelines
 
@@ -81,7 +103,66 @@ basics → education → work → skills → certificates → projects
 - Markdown engine: defaults.
 - HTML engine: `template: jake`, font size in `px` from `14px` to `20px` (default `16px`).
 
-### 7. Name and validate the final file
+### 7. De-AI the resume text
+
+After assembling the YAML, run a humanizer pass to strip AI writing patterns from all free-text fields. This step makes the resume read as human-written.
+
+**Select the humanizer based on `language`** from Job Analysis:
+
+| Language codes                              | Humanizer reference                                      |
+| ------------------------------------------- | -------------------------------------------------------- |
+| `en`, `es`, `fr`, `no`                      | [references/humanizer-en.md](references/humanizer-en.md) |
+| `zh`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw` | [references/humanizer-zh.md](references/humanizer-zh.md) |
+
+**Fields to process** (string values only — never touch keys, dates, URLs, or structure):
+
+- `basics.summary`
+- Each work entry's `summary` and `highlights[]`
+- Each project entry's `summary` and `highlights[]`
+- Skills group `summary` (if present)
+- Any `description` fields
+
+**Constraints**:
+
+- Preserve YAML validity — edit string values in place.
+- Rewrites must be the **same length or shorter**, never longer.
+- The resume is professional register; skip personality/soul injections.
+- No em dashes (—) or en dashes (–) in the final output.
+- Save the humanized YAML back to the same file, overwriting the pre-humanized version.
+
+### 8. Review the resume
+
+Follow [references/resume-review.md](references/resume-review.md). Read the De-AI'd resume YAML, `job-analysis.yml`, and `company-business-analysis.yml`. Save the review output to `data/.cache/<Timestamp>/resume-review.yml`.
+
+The review produces a structured YAML analysis covering first impression, deep audit (holistic + per-section), revision blueprint, and final verdict.
+
+**HITL checkpoint** (skipped in auto mode):
+
+If the user chose auto review+revise at startup, proceed directly to step 9. Otherwise, present the review summary (final_verdict + summary counts) and ask:
+
+> Review complete. Score: {score}/100 | Issues: {total} ({fail} critical, {warn} warnings). Would you like to revise? [y/N]
+
+If the user declines, skip step 9 and proceed to step 10.
+
+### 9. Revise the resume (optional)
+
+If revision was selected (auto or HITL-confirmed):
+
+Follow [references/resume-revision.md](references/resume-revision.md). Read `resume-review.yml` and the current resume YAML. Produce the revised resume and overwrite the assembled YAML file.
+
+**Mandatory De-AI after every revision**: after the revision overwrites the YAML, immediately run the humanizer pass (step 7 rules) on the revised text. The humanizer selection (English vs Chinese) is the same as step 7. This ensures the final output is always free of AI writing patterns — regardless of how many revision rounds run.
+
+**Multi-round loop**: after the humanizer pass, if more rounds remain (based on startup option), loop back to step 8 for another review pass. Each round's review is saved as `resume-review-round{N}.yml` in the same cache directory.
+
+```
+Round 1: review -> revise -> humanize
+Round 2: re-review -> revise -> humanize
+Round 3: re-review -> revise -> humanize (final)
+```
+
+After the final round (or if user declines revision), proceed to step 10.
+
+### 10. Name and save the final file
 
 - **File path**: `data/resumes/{CandidateName}_{JobTitle}_{Company}.yml`
   - `CandidateName` — from `data/profiles/basics.yml` (`basics.name`).
@@ -89,11 +170,13 @@ basics → education → work → skills → certificates → projects
   - `Company` — from Job Analysis (`company`).
   - Join with underscores `_`. **Preserve spaces inside each part** (do not replace spaces within a name/title/company with underscores).
 - Save the assembled YAML.
-- Validate with the project's CLI:
+- **Validate** (only if the user opted in to yamlresume compatibility at startup):
 
   ```bash
   pnpm yamlresume validate "data/resumes/{CandidateName}_{JobTitle}_{Company}.yml"
   ```
+
+  If validation fails, report the errors and let the user decide whether to fix or keep the file as-is.
 
 ## General rules (apply to every section)
 
@@ -105,15 +188,20 @@ basics → education → work → skills → certificates → projects
 
 ## Quick reference
 
-| Need                               | File                                                                               |
-| ---------------------------------- | ---------------------------------------------------------------------------------- |
-| JD analysis prompt                 | [references/job-analysis.md](references/job-analysis.md)                           |
-| Company / business analysis prompt | [references/company-business-analysis.md](references/company-business-analysis.md) |
-| Projects section prompt            | [references/section-projects.md](references/section-projects.md)                   |
-| Work Experience section prompt     | [references/section-work.md](references/section-work.md)                           |
-| Skills section prompt              | [references/section-skills.md](references/section-skills.md)                       |
-| Personal Summary section prompt    | [references/section-personal-summary.md](references/section-personal-summary.md)   |
-| Overall content principles         | [references/overview.md](references/overview.md)                                   |
-| Resume YAML structural template    | [assets/resume.example.yml](assets/resume.example.yml)                             |
-| Example JD                         | [assets/jd.example.txt](assets/jd.example.txt)                                     |
-| Per-section example outputs        | [assets/section-\*.example.yml](assets/)                                           |
+| Need                                      | File                                                                               |
+| ----------------------------------------- | ---------------------------------------------------------------------------------- |
+| JD analysis prompt                        | [references/job-analysis.md](references/job-analysis.md)                           |
+| Company / business analysis prompt        | [references/company-business-analysis.md](references/company-business-analysis.md) |
+| Projects section prompt                   | [references/section-projects.md](references/section-projects.md)                   |
+| Work Experience section prompt            | [references/section-work.md](references/section-work.md)                           |
+| Skills section prompt                     | [references/section-skills.md](references/section-skills.md)                       |
+| Personal Summary section prompt           | [references/section-personal-summary.md](references/section-personal-summary.md)   |
+| Overall content principles                | [references/overview.md](references/overview.md)                                   |
+| De-AI: English & romance languages        | [references/humanizer-en.md](references/humanizer-en.md)                           |
+| De-AI: Chinese (simplified & traditional) | [references/humanizer-zh.md](references/humanizer-zh.md)                           |
+| Resume quality review prompt              | [references/resume-review.md](references/resume-review.md)                         |
+| Resume revision prompt                    | [references/resume-revision.md](references/resume-revision.md)                     |
+| Review output structural template         | [assets/review.example.yml](assets/review.example.yml)                             |
+| Resume YAML structural template           | [assets/resume.example.yml](assets/resume.example.yml)                             |
+| Example JD                                | [assets/jd.example.txt](assets/jd.example.txt)                                     |
+| Per-section example outputs               | [assets/section-\*.example.yml](assets/)                                           |
