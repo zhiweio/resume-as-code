@@ -32,6 +32,8 @@ function getDefaultSectionTitle(section: Section, lang: string): string {
       return isZH ? '证书资质' : 'Certifications'
     case 'langAndInterests':
       return isZH ? '语言与兴趣' : 'Languages & Interests'
+    case 'awards':
+      return isZH ? '获奖荣誉' : 'Awards'
   }
 }
 
@@ -145,6 +147,22 @@ function compileSection(section: Section, lang: string): RenderSection | null {
           })),
         ],
       }
+
+    case 'awards':
+      return {
+        id: section.id,
+        title,
+        variant: 'awards',
+        awards: section.items
+          .filter((item) => item.visible !== false)
+          .map((item, i) => ({
+            id: item.id ?? `award-${i}`,
+            name: item.name,
+            awarder: item.awarder,
+            date: item.date,
+            bullets: item.summary ?? [],
+          })),
+      }
   }
 }
 
@@ -164,7 +182,7 @@ export function compileNewSchema(
   // profiles can be at basics.profiles or doc.profiles (yamlresume compat)
   const profiles = basics.profiles ?? doc.profiles
   if (profiles) {
-    contactParts2.push(...profiles.map((p) => p.username))
+    contactParts2.push(...profiles.map((p) => `${p.network}: ${p.username}`))
   }
 
   let sections: RenderSection[] = doc.sections
@@ -173,12 +191,22 @@ export function compileNewSchema(
 
   // Reorder sections based on explicit order if provided
   if (doc.order && doc.order.length > 0) {
-    const orderMap = new Map(doc.order.map((id, idx) => [id, idx]))
-    sections.sort((a, b) => {
-      const ai = orderMap.get(a.id) ?? 999
-      const bi = orderMap.get(b.id) ?? 999
-      return ai - bi
-    })
+    const sectionsMap = new Map(sections.map((s) => [s.id, s]))
+    const ordered: RenderSection[] = []
+    for (const key of doc.order) {
+      // Skip 'basics' — it's the header, not a section (matches legacy behavior)
+      if (key === 'basics') continue
+      const section = sectionsMap.get(key)
+      if (section) {
+        ordered.push(section)
+        sectionsMap.delete(key)
+      }
+    }
+    // Append any sections not listed in order
+    for (const section of sectionsMap.values()) {
+      ordered.push(section)
+    }
+    sections = ordered
   }
 
   return {

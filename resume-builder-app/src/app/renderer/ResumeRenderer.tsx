@@ -318,5 +318,51 @@ function emitSectionBlocks(
         </div>
       </div>,
     )
+  } else if (section.variant === 'awards') {
+    const awards = section.awards
+    if (awards.length === 0) {
+      blocks.push(
+        <div key={section.id}>
+          <SecHead title={section.title} />
+        </div>,
+      )
+      return
+    }
+
+    // SecHead + first award (keep together)
+    blocks.push(
+      <div key={`${section.id}-head`}>
+        <SecHead title={section.title} />
+        <div className="resume-entry">
+          <EntryHead
+            title={awards[0].name}
+            sub={awards[0].awarder}
+            start={awards[0].date}
+          />
+          {awards[0].bullets.length > 0 && (
+            <Bullets items={awards[0].bullets} />
+          )}
+        </div>
+      </div>,
+    )
+
+    // Subsequent awards: independent blocks
+    for (let i = 1; i < awards.length; i++) {
+      const award = awards[i]
+      blocks.push(
+        <div
+          key={`${section.id}-award-${award.id}`}
+          className="resume-entry"
+          style={{ marginTop: sectionGap(9) }}
+        >
+          <EntryHead
+            title={award.name}
+            sub={award.awarder}
+            start={award.date}
+          />
+          {award.bullets.length > 0 && <Bullets items={award.bullets} />}
+        </div>,
+      )
+    }
   }
 }

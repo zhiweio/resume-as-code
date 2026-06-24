@@ -21,6 +21,15 @@ basics:
       url: https://linkedin.com/in/johndoe
       username: linkedin.com/in/johndoe
 
+order:
+  - work
+  - education
+  - projects
+  - awards
+  - skills
+  - certificates
+  - langAndInterests
+
 sections:
   - id: work
     type: work

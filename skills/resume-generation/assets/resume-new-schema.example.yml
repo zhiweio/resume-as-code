@@ -1,0 +1,141 @@
+---
+schema:
+  version: "1.0"
+
+document:
+  title: "{JobTitle} – {Company}"
+  language: en
+
+basics:
+  name: John Doe
+  headline: "Senior Software Engineer · 5 YOE"
+  phone: "(+86) 19988888888"
+  email: nocoding188@gmail.com
+  url: https://johndoe.dev
+  # summary supports string[] (each bullet as a separate string)
+  # Rich text subset: Bold, Italic, Links, Lists only.
+  # Forbidden: headings, blockquotes, images, horizontal rules, tables.
+  summary:
+    - Computer Science major with strong foundation in data structures, algorithms, and software development
+    - Pixel perfect full stack web developer, specialised in creating high-quality, visually appealing websites
+    - Experienced in databases (SQL, NoSQL), familiar with server-side technologies (Node.js, Express, etc.)
+    - Team player, with detail-oriented mindset and a keen eye for design and user experiences
+  # profiles: social links from basics.yml (GitHub, LinkedIn, etc.)
+  # Always include if present in the candidate's data.
+  profiles:
+    - network: GitHub
+      url: https://github.com/johndoe
+      username: johndoe
+
+# order: explicit section display order.
+# Always include. Values are section id strings (NOT 'basics' — basics is the header).
+order:
+  - education
+  - work
+  - skills
+  - certificates
+  - projects
+
+sections:
+  - id: education
+    type: education
+    items:
+      - id: cut
+        institution: City University of Technology
+        degree: Bachelor
+        area: Computer Science and Technology
+        startDate: Sep 1, 2015
+        endDate: Jul 1, 2019
+        summary:
+          - "Awarded Third Prize in the 4th National University Cloud Computing Application Innovation Competition (2018)."
+          - "Project: Implementation of Large-scale Distributed Functional Dependency Mining Algorithm Based on Spark."
+
+  - id: work
+    type: work
+    items:
+      - id: ppresume-senior
+        name: PPResume
+        position: Senior Software Engineer
+        startDate: Dec 1, 2022
+        # Omit endDate or set to null for current roles. Do NOT use "Present" or "".
+        summary:
+          - Developed and implemented efficient and scalable code, ensuring high-quality and maintainable web applications
+          - Collaborated with cross-functional teams to gather project requirements and translate them into technical solutions
+          - Conducted thorough testing and debugging to identify and resolve any issues or bugs in the software
+          - Actively participated in code reviews, providing valuable feedback to improve code quality and adherence to best practices
+          - Mentored and guided junior developers, fostering a collaborative and growth-oriented team environment
+        keywords:
+          - Scalability
+          - Growth
+          - Quality
+          - Mentorship
+      - id: ppresume-junior
+        name: PPResume
+        position: Software Engineer
+        startDate: Sep 1, 2020
+        endDate: Dec 1, 2022
+        summary:
+          - Created reusable React components to ensure code efficiency and maintainability
+          - Integrated with RESTful APIs to fetch and display dynamic data on the frontend
+          - Implemented client-side routing using React Router for smooth navigation between pages
+          - Actively participated in Agile development methodologies, attending daily stand-up meetings and sprint planning sessions
+        keywords:
+          - RESTful
+          - React
+          - Agile
+
+  - id: skills
+    type: skills
+    # Valid skill level options: 'Novice', 'Beginner', 'Intermediate', 'Advanced', 'Expert', 'Master'
+    items:
+      - id: web-dev
+        name: Web Development
+        level: Expert
+        keywords:
+          - Python
+          - Ruby
+          - CSS
+          - React
+          - JavaScript
+      - id: devops
+        name: DevOps
+        level: Intermediate
+        keywords:
+          - Python
+          - Kubernetes
+          - Docker
+          - Shell
+          - Ansible
+      - id: design
+        name: Design
+        level: Intermediate
+        keywords:
+          - Sketch
+          - Figma
+          - Photoshop
+
+  - id: certificates
+    type: certificates
+    items:
+      - id: aws-dev
+        name: AWS Certified Developer - Associate
+        issuer: AWS
+        date: Mar 2021
+
+  - id: projects
+    type: projects
+    items:
+      - id: eduweb
+        name: EduWeb
+        description: A web-based educational platform for interactive learning
+        startDate: Sep 2016
+        endDate: Dec 2016
+        summary:
+          - Designed to enhance online learning experiences
+          - Facilitates students' engagement and collaboration through interactive features and user-friendly interface
+          - Offers a wide range of courses across various subjects
+          - Aims to improve the way students learn through the power of the web
+        keywords:
+          - Education
+          - Online Learning
+          - HCI

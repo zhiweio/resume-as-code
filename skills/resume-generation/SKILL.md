@@ -40,7 +40,14 @@ Present as a single prompt:
 > 2. Review-revise rounds? [1/2/3] (default: 1)
 > 3. yamlresume format compatibility? [y/N] (default: no)
 
-If the user does not respond, use defaults (`yes`, `1`, `no`). Store the answers in the run context for steps 9 and 10.
+If the user does not respond, use defaults (`yes`, `1`, `no`). Store the answers in the run context for steps 5 and 10.
+
+**Format routing:**
+
+- yamlresume compatible = `yes` → generate in **Legacy (YAMLResume)** format. Use [assets/resume.example.yml](assets/resume.example.yml) as the structural template for step 6, and `assets/section-*.example.yml` for step 5.
+- yamlresume compatible = `no` → generate in **New Schema v1.0** format. Use [assets/resume-new-schema.example.yml](assets/resume-new-schema.example.yml) as the structural template for step 6, and `assets/section-*.new-schema.example.yml` for step 5.
+
+Store the chosen format (`legacy` or `new-schema`) in the run context for steps 5–10.
 
 ## Workflow
 
@@ -73,6 +80,11 @@ This step **must consume the company business analysis** from step 2. The JD alo
 
 Pass Job Analysis (including `language`), Company Business Analysis, and the matched context to each step. Save each output under `data/.cache/<Timestamp>/`.
 
+**Format-aware generation** — use the format chosen at startup:
+
+- **Legacy path**: each section uses pipe-string `summary: |` syntax. Reference `assets/section-{name}.example.yml` for structure.
+- **New Schema path**: each section uses array `summary: []` syntax (each bullet as a separate string). Each item must include an `id` field. Reference `assets/section-{name}.new-schema.example.yml` for structure.
+
 1. **Projects** — see [references/section-projects.md](references/section-projects.md). At most **two** highlighted projects. Save as `section-projects.yml`.
 2. **Work Experience** — see [references/section-work.md](references/section-work.md). Save as `section-work.yml`.
 3. **Skills** — see [references/section-skills.md](references/section-skills.md). Save as `section-skills.yml`.
@@ -82,12 +94,20 @@ Detailed length budgets, ATS rules, supported Markdown subset, and authenticity 
 
 ### 6. Assemble the final resume
 
-Merge into one YAML file using the structure in [assets/resume.example.yml](assets/resume.example.yml) (use it as a structural template only — do not copy its content). Sources:
+Merge into one YAML file. Use the structural template matching your chosen format — do not copy its content. Sources:
 
 - `data/profiles/basics.yml` (basics — merge the generated summary into `basics.summary`)
 - `data/profiles/education.yml`
 - `data/profiles/certificates.yml`
 - `data/.cache/<Timestamp>/section-{personal-summary,skills,work,projects}.yml`
+
+**Profiles (social links)**: always include `profiles` from `data/profiles/basics.yml` if present (e.g. GitHub, LinkedIn). This is mandatory for both formats.
+
+**Order**: always include section display order. This is mandatory for both formats.
+
+#### Legacy path (yamlresume compatible = yes)
+
+Use [assets/resume.example.yml](assets/resume.example.yml) as the structural template.
 
 **Section order is strict** — `content` must follow `layouts.sections.order`:
 
@@ -102,6 +122,33 @@ basics → education → work → skills → certificates → projects
 - LaTeX engine: `template: jake`, font size `10pt | 11pt | 12pt` (default `11pt`), page margins `1.5cm` all sides, `showPageNumbers: true`.
 - Markdown engine: defaults.
 - HTML engine: `template: jake`, font size in `px` from `14px` to `20px` (default `16px`).
+
+**Profiles placement**: `profiles` appears under `content` as a sibling of `basics` (or inside `content.basics.profiles`).
+
+#### New Schema path (yamlresume compatible = no)
+
+Use [assets/resume-new-schema.example.yml](assets/resume-new-schema.example.yml) as the structural template.
+
+**Top-level structure**: `schema` → `document` → `basics` → `order` → `sections`.
+
+- `schema.version`: `"1.0"`
+- `document.title`: `"{JobTitle} – {Company}"`
+- `document.language`: from Job Analysis `language` field. Supported: `en`, `zh-hans`, `zh-hant-hk`, `zh-hant-tw`, `es`, `fr`, `no`.
+- `basics`: name, headline, phone, email, url, summary (as `string[]`), profiles
+- `order`: `["education", "work", "skills", "certificates", "projects"]`
+- `sections`: array of discriminated section objects, each with `id`, `type`, `items`
+
+**Profiles placement**: `profiles` appears under `basics.profiles`.
+
+**Summary format**: all `summary` fields must be `string[]` (each bullet as a separate string). Do NOT use pipe-string `|` syntax.
+
+**Section order** (via top-level `order` array):
+
+```
+education → work → skills → certificates → projects
+```
+
+Each section object must include `id` (matching the order value) and `type` (one of: `work`, `education`, `projects`, `skills`, `certificates`). Each item within a section should include an `id` field.
 
 ### 7. De-AI the resume text
 
@@ -121,6 +168,11 @@ After assembling the YAML, run a humanizer pass to strip AI writing patterns fro
 - Each project entry's `summary` and `highlights[]`
 - Skills group `summary` (if present)
 - Any `description` fields
+
+**Format-aware processing**:
+
+- **Legacy path**: `summary` fields are pipe-strings (`|`). Process the multiline string in place, rewriting each bullet line independently.
+- **New Schema path**: `summary` fields are `string[]`. Process each array element independently — each element is a single bullet string. Edit the array elements in place, preserving the array structure.
 
 **Constraints**:
 
@@ -170,7 +222,7 @@ After the final round (or if user declines revision), proceed to step 10.
   - `Company` — from Job Analysis (`company`).
   - Join with underscores `_`. **Preserve spaces inside each part** (do not replace spaces within a name/title/company with underscores).
 - Save the assembled YAML.
-- **Validate** (only if the user opted in to yamlresume compatibility at startup):
+- **Validate** (Legacy path only — if the user opted in to yamlresume compatibility at startup):
 
   ```bash
   pnpm yamlresume validate "data/resumes/{CandidateName}_{JobTitle}_{Company}.yml"
@@ -178,11 +230,13 @@ After the final round (or if user declines revision), proceed to step 10.
 
   If validation fails, report the errors and let the user decide whether to fix or keep the file as-is.
 
+  **New Schema path**: skip `yamlresume validate` (it only supports Legacy format). The resume-builder-app performs structural validation at load time.
+
 ## General rules (apply to every section)
 
 - **Format**: output must be valid YAML.
 - **Rich text**: `summary` fields support a limited Markdown subset only — Bold, Italic, Links, Lists (ordered, unordered, nested). **Forbidden**: headings, blockquotes, images, horizontal rules, tables.
-- **Dates**: align with the format in `assets/resume.example.yml`. For current roles or projects, **omit `endDate` or set it to null**. Do NOT use `"Present"` or `""`.
+- **Dates**: align with the format in the chosen template (`assets/resume.example.yml` for Legacy, `assets/resume-new-schema.example.yml` for New Schema). For current roles or projects, **omit `endDate` or set it to null**. Do NOT use `"Present"` or `""`.
 - **URLs**: omit if unknown, do NOT use `""`.
 - **Forbidden sources**: never read or copy content from `*.example.yml` files. They are structural references only.
 
@@ -202,6 +256,8 @@ After the final round (or if user declines revision), proceed to step 10.
 | Resume quality review prompt              | [references/resume-review.md](references/resume-review.md)                         |
 | Resume revision prompt                    | [references/resume-revision.md](references/resume-revision.md)                     |
 | Review output structural template         | [assets/review.example.yml](assets/review.example.yml)                             |
-| Resume YAML structural template           | [assets/resume.example.yml](assets/resume.example.yml)                             |
+| **Legacy**: Resume YAML template          | [assets/resume.example.yml](assets/resume.example.yml)                             |
+| **Legacy**: Per-section examples          | [assets/section-\*.example.yml](assets/)                                           |
+| **New Schema**: Resume YAML template      | [assets/resume-new-schema.example.yml](assets/resume-new-schema.example.yml)       |
+| **New Schema**: Per-section examples      | [assets/section-\*.new-schema.example.yml](assets/)                                |
 | Example JD                                | [assets/jd.example.txt](assets/jd.example.txt)                                     |
-| Per-section example outputs               | [assets/section-\*.example.yml](assets/)                                           |

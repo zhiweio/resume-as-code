@@ -40,6 +40,14 @@ export interface RenderCertificate {
   date: string
 }
 
+export interface RenderAward {
+  id: string
+  name: string
+  awarder: string
+  date: string
+  bullets: string[]
+}
+
 export interface RenderLabelRow {
   id: string
   label: string
@@ -75,11 +83,19 @@ export interface LangAndInterestsSection {
   rows: RenderLabelRow[]
 }
 
+export interface AwardsSection {
+  id: string
+  title: string
+  variant: 'awards'
+  awards: RenderAward[]
+}
+
 export type RenderSection =
   | EntriesSection
   | SkillsSection
   | CertificatesSection
   | LangAndInterestsSection
+  | AwardsSection
 
 // ── Root Model ──────────────────────────────────────────────────────────────
 

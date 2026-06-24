@@ -1,0 +1,36 @@
+- id: skills
+  type: skills
+  # Valid skill level options:
+  #
+  # - 'Novice'
+  # - 'Beginner'
+  # - 'Intermediate'
+  # - 'Advanced'
+  # - 'Expert'
+  # - 'Master'
+  items:
+    - id: web-dev
+      name: Web Development
+      level: Expert
+      keywords:
+        - Python
+        - Ruby
+        - CSS
+        - React
+        - JavaScript
+    - id: devops
+      name: DevOps
+      level: Intermediate
+      keywords:
+        - Python
+        - Kubernetes
+        - Docker
+        - Shell
+        - Ansible
+    - id: design
+      name: Design
+      level: Intermediate
+      keywords:
+        - Sketch
+        - Figma
+        - Photoshop

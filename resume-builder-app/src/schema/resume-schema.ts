@@ -109,6 +109,16 @@ export interface InterestItem {
   keywords: string[]
 }
 
+export interface AwardItem {
+  id?: string
+  visible?: boolean
+  name: string
+  awarder: string
+  date: string
+  summary?: string[]
+  priority?: number
+}
+
 // ── Section Discriminators ──────────────────────────────────────────────────
 
 export interface WorkSection {
@@ -160,6 +170,14 @@ export interface LanguagesAndInterestsSection {
   interests: InterestItem[]
 }
 
+export interface AwardsSection {
+  id: string
+  type: 'awards'
+  title?: string
+  visible?: boolean
+  items: AwardItem[]
+}
+
 export type Section =
   | WorkSection
   | EducationSection
@@ -167,6 +185,7 @@ export type Section =
   | SkillsSection
   | CertificatesSection
   | LanguagesAndInterestsSection
+  | AwardsSection
 
 // ── Layout ──────────────────────────────────────────────────────────────────
 

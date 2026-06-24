@@ -21,6 +21,15 @@ basics:
       url: https://linkedin.com/in/zhangsan
       username: linkedin.com/in/zhangsan
 
+order:
+  - work
+  - education
+  - projects
+  - awards
+  - skills
+  - certificates
+  - langAndInterests
+
 sections:
   - id: work
     type: work
@@ -35,7 +44,19 @@ sections:
           - "设计了事件驱动的迁移工厂（Step Functions + Lambda + S3 事件），自动化完成 10 TB+ 数据仓库迁移，端到端迁移时间缩短 70%。"
           - "领导设计并交付了双平面 NL2SQL 数据智能体平台，集成了 LLM API、受管控的语义层、向量搜索及 React/TypeScript 前端。"
         keywords:
-          [AWS, Python, Redshift, dbt, Databricks, Terraform, Step Functions, Lambda, FastAPI, CI/CD, Docker]
+          [
+            AWS,
+            Python,
+            Redshift,
+            dbt,
+            Databricks,
+            Terraform,
+            Step Functions,
+            Lambda,
+            FastAPI,
+            CI/CD,
+            Docker,
+          ]
       - id: patsnap
         name: "赛仕创新有限公司"
         position: 数据工程师
@@ -45,7 +66,8 @@ sections:
           - "为企业 SaaS 产品设计并运维实时和批处理数据平台，服务数百万家企业及 1.8 亿条全球记录。"
           - "使用 Kafka 和 Flink 构建流式 ETL 管道；管理多系统及 AWS S3 上的湖仓一体模型。"
           - "作为核心团队成员，在双周敏捷迭代中推动交付，持续达成迭代目标。"
-        keywords: [Python, Spark, Flink, Kafka, TiDB, AWS, Hive, CI/CD, Docker, Agile]
+        keywords:
+          [Python, Spark, Flink, Kafka, TiDB, AWS, Hive, CI/CD, Docker, Agile]
       - id: intsig
         name: "数据系统公司"
         position: 数据工程师
@@ -80,7 +102,18 @@ sections:
         summary:
           - "从 0 到 1 在 AWS 上构建，整合多数据源至受管控的湖仓一体；通过 Great Expectations + dbt 测试实现列级脱敏、行级安全及自动化质量门禁。"
           - "通过 FastAPI + API Gateway REST API 暴露受管控的数据，供 4 个下游客户端应用生产使用。"
-        keywords: [AWS, Redshift, dbt, Glue, S3, FastAPI, Terraform, Great Expectations, Python]
+        keywords:
+          [
+            AWS,
+            Redshift,
+            dbt,
+            Glue,
+            S3,
+            FastAPI,
+            Terraform,
+            Great Expectations,
+            Python,
+          ]
       - id: migration
         name: "企业数据仓库迁移"
         description: "将 10 TB+ 数据仓库自动化迁移至云原生架构。"
@@ -88,7 +121,8 @@ sections:
         endDate: 2023年5月
         summary:
           - "设计了事件驱动的迁移工厂（Step Functions、Lambda、S3 事件和临时数据库），将全人工流程转变为一键可重复的管道，时间缩短 70%，零数据丢失。"
-        keywords: [AWS, Step Functions, Lambda, RDS, Redshift, Python, Event-Driven]
+        keywords:
+          [AWS, Step Functions, Lambda, RDS, Redshift, Python, Event-Driven]
       - id: streaming
         name: "实时分析平台"
         description: "高吞吐流式数据处理管道，每日处理 5 亿+ 事件，延迟亚秒级。"
@@ -97,14 +131,35 @@ sections:
         summary:
           - "使用 Kafka、Flink 和 Databricks Delta Lake 构建端到端流式架构，实时仪表盘实现 99.99% 可用性和 p99 延迟低于 100 毫秒。"
           - "实施自动伸缩策略，在保持性能 SLA 的前提下降低 35% 基础设施成本。"
-        keywords: [Kafka, Apache Flink, Databricks, Delta Lake, Python, AWS, Prometheus, Grafana]
+        keywords:
+          [
+            Kafka,
+            Apache Flink,
+            Databricks,
+            Delta Lake,
+            Python,
+            AWS,
+            Prometheus,
+            Grafana,
+          ]
       - id: data-agent
         name: "企业数据智能体平台"
         description: "全栈智能体 BI 平台，具备受管控的语义层、NL2SQL 和交互式分析。"
         startDate: 2026年2月
         summary:
           - "领导端到端架构设计，实现双平面系统解耦语义治理与运行时执行，使业务用户能够通过自然语言查询数据，并具备自动验证和可解释性。"
-        keywords: [Python, LLM APIs, FastAPI, TypeScript, React, PostgreSQL, Vector Search, AWS, NL2SQL]
+        keywords:
+          [
+            Python,
+            LLM APIs,
+            FastAPI,
+            TypeScript,
+            React,
+            PostgreSQL,
+            Vector Search,
+            AWS,
+            NL2SQL,
+          ]
       - id: governance
         name: "数据治理与合规框架"
         description: "面向企业数据资产的中心化元数据和治理系统。"
@@ -113,7 +168,16 @@ sections:
         summary:
           - "设计并实现了数据契约、自动化 PII 检测和审计日志，服务 50+ 数据生产者和 200+ 消费者。"
           - "通过实时监控将合规违规减少 92%，数据事件响应时间从 4 小时缩短至 15 分钟。"
-        keywords: [Python, Apache Atlas, Data Contracts, dbt, PostgreSQL, Kubernetes, CI/CD]
+        keywords:
+          [
+            Python,
+            Apache Atlas,
+            Data Contracts,
+            dbt,
+            PostgreSQL,
+            Kubernetes,
+            CI/CD,
+          ]
 
   - id: awards
     type: awards
@@ -143,19 +207,48 @@ sections:
       - id: data-platform
         name: 数据平台工程
         level: 专家
-        keywords: [Python, SQL, dbt, Redshift, Snowflake, Databricks, Hive, Delta Lake, Apache Iceberg]
+        keywords:
+          [
+            Python,
+            SQL,
+            dbt,
+            Redshift,
+            Snowflake,
+            Databricks,
+            Hive,
+            Delta Lake,
+            Apache Iceberg,
+          ]
       - id: orchestration
         name: "编排、流式处理与计算"
         level: 高级
-        keywords: [Apache Airflow, Apache Spark, Apache Flink, Kafka, AWS Step Functions, AWS Glue, EMR]
+        keywords:
+          [
+            Apache Airflow,
+            Apache Spark,
+            Apache Flink,
+            Kafka,
+            AWS Step Functions,
+            AWS Glue,
+            EMR,
+          ]
       - id: cloud
         name: "云与基础设施"
         level: 高级
-        keywords: ["AWS (S3, EC2, Lambda, ECS, RDS, Glue, Redshift)", Terraform, Docker, CI/CD, GitHub Actions, Kubernetes]
+        keywords:
+          [
+            "AWS (S3, EC2, Lambda, ECS, RDS, Glue, Redshift)",
+            Terraform,
+            Docker,
+            CI/CD,
+            GitHub Actions,
+            Kubernetes,
+          ]
       - id: quality
         name: "质量、安全与可靠性"
         level: 高级
-        keywords: [Great Expectations, dbt tests, 列级脱敏, 行级安全, 数据契约, 合规]
+        keywords:
+          [Great Expectations, dbt tests, 列级脱敏, 行级安全, 数据契约, 合规]
       - id: apis
         name: "API 与应用层"
         level: 高级
