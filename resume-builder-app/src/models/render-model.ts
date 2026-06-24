@@ -6,12 +6,18 @@
 
 // ── Header ──────────────────────────────────────────────────────────────────
 
+export interface RenderSocialLink {
+  label: string
+  url: string
+}
+
 export interface RenderHeader {
   name: string
   headline: string
   contactLine1: string
   contactLine2: string
   summary: string[]
+  socialLinks: RenderSocialLink[]
 }
 
 // ── Section Variants ────────────────────────────────────────────────────────
@@ -100,6 +106,8 @@ export type RenderSection =
 // ── Root Model ──────────────────────────────────────────────────────────────
 
 export interface RenderModel {
+  /** BCP 47 language tag (e.g. 'en', 'zh-hans', 'zh', 'es', 'fr', 'no') */
+  lang: string
   /** Font family CSS value for the resume */
   fontFamily: string
   header: RenderHeader

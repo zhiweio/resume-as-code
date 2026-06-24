@@ -16,6 +16,15 @@ importers:
       '@emotion/styled':
         specifier: 11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.15)(react@18.3.1))(@types/react@19.2.15)(react@18.3.1)
+      '@iconify-icon/react':
+        specifier: ^3.0.3
+        version: 3.0.3(react@18.3.1)
+      '@iconify/icons-fa-brands':
+        specifier: ^1.2.4
+        version: 1.2.4
+      '@iconify/icons-fa-solid':
+        specifier: ^1.2.4
+        version: 1.2.4
       '@monaco-editor/react':
         specifier: ^4.7.0
         version: 4.7.0(monaco-editor@0.55.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -968,6 +977,32 @@ packages:
     resolution:
       {
         integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==,
+      }
+
+  '@iconify-icon/react@3.0.3':
+    resolution:
+      {
+        integrity: sha512-i4N/J0+UZWQu5Ty9Z+SxsNsuNdY7w2TnSuI65Qw9UrWudvnRodKfTUMvyg0hvxSZolqAE1YJVZu1HqgfpgPX9w==,
+      }
+    peerDependencies:
+      react: '>=18.0.0'
+
+  '@iconify/icons-fa-brands@1.2.4':
+    resolution:
+      {
+        integrity: sha512-MnUUfPhKJ6ECvVNxipBCmyuvJPDgRJcJ1f9nfgv0obikp6D9d6dGtMrR+bw4Gku6Gr/WCnS1e/Qd5gdmXlE84w==,
+      }
+
+  '@iconify/icons-fa-solid@1.2.4':
+    resolution:
+      {
+        integrity: sha512-gLH+zYl/Srpnlsb++vys7WNXNGPTXjd/BaUO0Q9Z52vpZnmdiHx420TzsGSS5Pi5AR3QL1wdbkopS3EIaSdsZg==,
+      }
+
+  '@iconify/types@2.0.0':
+    resolution:
+      {
+        integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==,
       }
 
   '@isaacs/fs-minipass@4.0.1':
@@ -3340,6 +3375,12 @@ packages:
       }
     engines: { node: '>= 0.8' }
 
+  iconify-icon@3.0.2:
+    resolution:
+      {
+        integrity: sha512-DYPAumiUeUeT/GHT8x2wrAVKn1FqZJqFH0Y5pBefapWRreV1BBvqBVMb0020YQ2njmbR59r/IathL2d2OrDrxA==,
+      }
+
   iconv-lite@0.7.2:
     resolution:
       {
@@ -5035,6 +5076,21 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
+  '@iconify-icon/react@3.0.3(react@18.3.1)':
+    dependencies:
+      iconify-icon: 3.0.2
+      react: 18.3.1
+
+  '@iconify/icons-fa-brands@1.2.4':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify/icons-fa-solid@1.2.4':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify/types@2.0.0': {}
+
   '@isaacs/fs-minipass@4.0.1':
     dependencies:
       minipass: 7.1.3
@@ -6586,6 +6642,10 @@ snapshots:
       setprototypeof: 1.2.0
       statuses: 2.0.2
       toidentifier: 1.0.1
+
+  iconify-icon@3.0.2:
+    dependencies:
+      '@iconify/types': 2.0.0
 
   iconv-lite@0.7.2:
     dependencies:

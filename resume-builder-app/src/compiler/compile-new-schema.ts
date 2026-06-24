@@ -166,6 +166,23 @@ function compileSection(section: Section, lang: string): RenderSection | null {
   }
 }
 
+/** Extract the last path segment from a URL-like username for display. */
+function cleanUsername(username: string): string {
+  const trimmed = username.trim().replace(/\/+$/, '')
+  if (!trimmed) return username
+  try {
+    // Prepend scheme if missing so URL parser works
+    const url = trimmed.includes('://')
+      ? new URL(trimmed)
+      : new URL(`https://${trimmed}`)
+    const last = url.pathname.split('/').filter(Boolean).pop()
+    return last ?? username
+  } catch {
+    // Not a URL — return as-is
+    return username
+  }
+}
+
 export function compileNewSchema(
   doc: ResumeDocument,
   langOverride?: string,
@@ -177,12 +194,23 @@ export function compileNewSchema(
   if (basics.phone) contactParts1.push(basics.phone)
   if (basics.email) contactParts1.push(basics.email)
 
-  const contactParts2: string[] = []
-  if (basics.url) contactParts2.push(basics.url)
   // profiles can be at basics.profiles or doc.profiles (yamlresume compat)
   const profiles = basics.profiles ?? doc.profiles
+  const socialLinks: { label: string; url: string }[] = []
+  // Personal website — always first, strip protocol only
+  if (basics.url) {
+    const displayUrl = basics.url
+      .replace(/^https?:\/\//, '')
+      .replace(/\/+$/, '')
+    socialLinks.push({ label: displayUrl, url: basics.url })
+  }
   if (profiles) {
-    contactParts2.push(...profiles.map((p) => `${p.network}: ${p.username}`))
+    for (const p of profiles) {
+      socialLinks.push({
+        label: `${p.network}: ${cleanUsername(p.username)}`,
+        url: p.url,
+      })
+    }
   }
 
   let sections: RenderSection[] = doc.sections
@@ -210,13 +238,15 @@ export function compileNewSchema(
   }
 
   return {
+    lang,
     fontFamily: getFontFamily(doc, lang),
     header: {
       name: basics.name,
       headline: basics.headline ?? '',
       contactLine1: contactParts1.join(' · '),
-      contactLine2: contactParts2.join(' · '),
+      contactLine2: '',
       summary: parseSummary(basics.summary),
+      socialLinks,
     },
     sections,
   }

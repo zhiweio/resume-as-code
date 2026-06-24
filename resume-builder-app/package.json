@@ -15,6 +15,9 @@
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
+    "@iconify-icon/react": "^3.0.3",
+    "@iconify/icons-fa-brands": "^1.2.4",
+    "@iconify/icons-fa-solid": "^1.2.4",
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "7.3.5",
     "@mui/material": "7.3.5",

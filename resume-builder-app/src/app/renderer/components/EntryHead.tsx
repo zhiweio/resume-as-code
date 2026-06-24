@@ -1,14 +1,19 @@
 import { Colors } from '../constants'
+import { formatDate } from '../format-date'
 
 export interface EntryHeadProps {
   title: string
   sub: string
   start: string
   end?: string
+  lang?: string
 }
 
 /** Compact header row: bold left label + right date, then italic subtitle. */
-export function EntryHead({ title, sub, start, end }: EntryHeadProps) {
+export function EntryHead({ title, sub, start, end, lang }: EntryHeadProps) {
+  const displayStart = lang ? formatDate(start, lang) : start
+  const displayEnd = lang && end ? formatDate(end, lang) : end
+
   return (
     <div style={{ marginBottom: 2 }}>
       <div
@@ -38,8 +43,8 @@ export function EntryHead({ title, sub, start, end }: EntryHeadProps) {
             lineHeight: 1.3,
           }}
         >
-          {start}
-          {end ? ` – ${end}` : ''}
+          {displayStart}
+          {displayEnd ? ` – ${displayEnd}` : ''}
         </span>
       </div>
       <p

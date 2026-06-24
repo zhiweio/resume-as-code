@@ -214,6 +214,7 @@ export default function App() {
   const [spacingScale, setSpacingScale] = useState(1.0)
   const [langOverride, setLangOverride] = useState<'zh' | 'en' | null>(null)
   const [previewZoom, setPreviewZoom] = useState(1.0)
+  const [showSocialIcons, setShowSocialIcons] = useState(true)
   const lastValidModel = useRef<RenderModel | null>(null)
   // Keep last parsed doc so language toggle can re-compile without re-parsing
   const lastParsedDoc = useRef<unknown>(null)
@@ -400,6 +401,20 @@ export default function App() {
 
         <div className="h-4 w-px bg-stone-200" />
 
+        {/* Social icons toggle */}
+        <button
+          onClick={() => setShowSocialIcons((v) => !v)}
+          className={`h-7 px-3 text-xs font-medium rounded-sm transition-colors ${
+            showSocialIcons
+              ? 'bg-stone-800 text-white'
+              : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-300'
+          }`}
+        >
+          {showSocialIcons ? '🔗 Icons' : '🔗 Text'}
+        </button>
+
+        <div className="h-4 w-px bg-stone-200" />
+
         {/* Optimize button */}
         <button
           onClick={() => {
@@ -457,11 +472,14 @@ export default function App() {
           <div className="h-full flex flex-col">
             {/* Diagnostics panel */}
             {diagnostics.length > 0 && (
-              <div className="px-3 py-2 bg-stone-50 border-b border-stone-200 max-h-24 overflow-auto">
+              <div
+                className="shrink-0 px-3 py-2 bg-stone-50 border-b border-stone-200 overflow-auto"
+                style={{ maxHeight: 160 }}
+              >
                 {diagnostics.map((d, i) => (
                   <div
                     key={i}
-                    className={`text-xs leading-relaxed ${
+                    className={`text-xs leading-relaxed break-words ${
                       d.severity === 'error'
                         ? 'text-red-600'
                         : d.severity === 'warning'
@@ -484,7 +502,7 @@ export default function App() {
                 ))}
               </div>
             )}
-            <div className="flex-1">
+            <div className="flex-1 min-h-0">
               <Editor
                 height="100%"
                 language="yaml"
@@ -526,6 +544,7 @@ export default function App() {
                   model={displayModel}
                   optimized={optimized}
                   spacingScale={spacingScale}
+                  showSocialIcons={showSocialIcons}
                 />
               </div>
             ) : (

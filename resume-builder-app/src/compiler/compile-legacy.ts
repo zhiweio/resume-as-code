@@ -86,6 +86,21 @@ function parseSummaryBullets(summary: string | undefined): string[] {
     .filter((line) => line.length > 0)
 }
 
+/** Extract the last path segment from a URL-like username for display. */
+function cleanUsername(username: string): string {
+  const trimmed = username.trim().replace(/\/+$/, '')
+  if (!trimmed) return username
+  try {
+    const url = trimmed.includes('://')
+      ? new URL(trimmed)
+      : new URL(`https://${trimmed}`)
+    const last = url.pathname.split('/').filter(Boolean).pop()
+    return last ?? username
+  } catch {
+    return username
+  }
+}
+
 export function compileLegacy(
   doc: LegacyResume,
   langOverride?: string,
@@ -108,12 +123,23 @@ export function compileLegacy(
   if (basics.phone) contactParts1.push(basics.phone)
   if (basics.email) contactParts1.push(basics.email)
 
-  const contactParts2: string[] = []
-  if (basics.url) contactParts2.push(basics.url)
   // profiles can be at content.basics.profiles or content.profiles
   const profiles = basics.profiles ?? content.profiles
+  const socialLinks: { label: string; url: string }[] = []
+  // Personal website — always first, strip protocol only
+  if (basics.url) {
+    const displayUrl = basics.url
+      .replace(/^https?:\/\//, '')
+      .replace(/\/+$/, '')
+    socialLinks.push({ label: displayUrl, url: basics.url })
+  }
   if (profiles) {
-    contactParts2.push(...profiles.map((p) => `${p.network}: ${p.username}`))
+    for (const p of profiles) {
+      socialLinks.push({
+        label: `${p.network}: ${cleanUsername(p.username)}`,
+        url: p.url,
+      })
+    }
   }
 
   // Helper to resolve section title: alias > language default
@@ -228,13 +254,15 @@ export function compileLegacy(
   }
 
   return {
+    lang,
     fontFamily,
     header: {
       name: basics.name,
       headline: '',
       contactLine1: contactParts1.join(' · '),
-      contactLine2: contactParts2.join(' · '),
+      contactLine2: '',
       summary: parseSummaryBullets(basics.summary),
+      socialLinks,
     },
     sections,
   }

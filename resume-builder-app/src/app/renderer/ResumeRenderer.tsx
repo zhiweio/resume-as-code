@@ -4,7 +4,30 @@ import { SecHead, EntryHead, Bullets, Keywords } from './components'
 import { PrintStyles } from './PrintStyles'
 import { PaginatedPaper } from './PaginatedPaper'
 import { inlineMdProps } from './inline-md'
+import { formatDate } from './format-date'
+import { resolveSocialIcon, type IconifyIconData } from './social-icon-map'
+import { useState, useEffect } from 'react'
+import { Icon } from '@iconify-icon/react'
 import type { ReactNode } from 'react'
+
+/** Lazily loads a Font Awesome Brands icon by network name and renders it inline. */
+function SocialIcon({ network }: { network: string }) {
+  const [icon, setIcon] = useState<IconifyIconData | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    resolveSocialIcon(network).then((mod) => {
+      if (!cancelled && mod) setIcon(mod)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [network])
+
+  if (!icon) return null
+
+  return <Icon icon={icon} style={{ width: 10, height: 10, flexShrink: 0 }} />
+}
 
 interface ResumeRendererProps {
   model: RenderModel
@@ -12,6 +35,8 @@ interface ResumeRendererProps {
   optimized?: boolean
   /** Spacing multiplier for optimization (default 1.0) */
   spacingScale?: number
+  /** Show Font Awesome brand icons next to social links */
+  showSocialIcons?: boolean
 }
 
 /**
@@ -28,8 +53,9 @@ export function ResumeRenderer({
   model,
   optimized,
   spacingScale = 1.0,
+  showSocialIcons = true,
 }: ResumeRendererProps) {
-  const { header, sections, fontFamily } = model
+  const { header, sections, fontFamily, lang } = model
 
   const sectionGap = (base: number) => Math.round(base * spacingScale)
 
@@ -47,7 +73,7 @@ export function ResumeRenderer({
           gap: 16,
         }}
       >
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
               fontSize: 22,
@@ -70,12 +96,47 @@ export function ResumeRenderer({
             {header.headline}
           </p>
         </div>
-        <div style={{ textAlign: 'right', flexShrink: 0, paddingTop: 2 }}>
+        <div
+          style={{
+            textAlign: 'right',
+            flexShrink: 1,
+            paddingTop: 2,
+            maxWidth: '50%',
+          }}
+        >
           <p style={{ fontSize: 9, color: Colors.meta, lineHeight: 1.7 }}>
             {header.contactLine1}
           </p>
-          <p style={{ fontSize: 9, color: Colors.meta, lineHeight: 1.7 }}>
-            {header.contactLine2}
+          <p
+            style={{
+              fontSize: 9,
+              color: Colors.meta,
+              lineHeight: 1.7,
+              overflowWrap: 'break-word',
+            }}
+          >
+            {header.socialLinks.map((link, i) => (
+              <span key={link.label}>
+                {i > 0 && ' · '}
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: Colors.meta,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 3,
+                  }}
+                >
+                  {showSocialIcons && (
+                    <SocialIcon network={link.label.split(':')[0]} />
+                  )}
+                  {link.label}
+                </a>
+              </span>
+            ))}
           </p>
         </div>
       </div>
@@ -97,7 +158,7 @@ export function ResumeRenderer({
   // For each section, emit fine-grained blocks
   for (const section of sections) {
     if (!section || !section.variant) continue
-    emitSectionBlocks(section, blocks, sectionGap)
+    emitSectionBlocks(section, blocks, sectionGap, lang)
   }
 
   return (
@@ -119,6 +180,7 @@ function emitSectionBlocks(
   section: RenderSection,
   blocks: ReactNode[],
   sectionGap: (base: number) => number,
+  lang: string,
 ) {
   if (section.variant === 'entries') {
     const entries = section.entries
@@ -142,6 +204,7 @@ function emitSectionBlocks(
             sub={entries[0].subtitle}
             start={entries[0].startDate}
             end={entries[0].endDate}
+            lang={lang}
           />
           {entries[0].bullets.length > 0 && (
             <Bullets items={entries[0].bullets} />
@@ -167,6 +230,7 @@ function emitSectionBlocks(
             sub={entry.subtitle}
             start={entry.startDate}
             end={entry.endDate}
+            lang={lang}
           />
           {entry.bullets.length > 0 && <Bullets items={entry.bullets} />}
           {entry.keywords.length > 0 && <Keywords items={entry.keywords} />}
@@ -266,7 +330,7 @@ function emitSectionBlocks(
                   flexShrink: 0,
                 }}
               >
-                {cert.issuer} · {cert.date}
+                {cert.issuer} · {formatDate(cert.date, lang)}
               </span>
             </div>
           ))}
@@ -338,6 +402,7 @@ function emitSectionBlocks(
             title={awards[0].name}
             sub={awards[0].awarder}
             start={awards[0].date}
+            lang={lang}
           />
           {awards[0].bullets.length > 0 && (
             <Bullets items={awards[0].bullets} />
@@ -359,6 +424,7 @@ function emitSectionBlocks(
             title={award.name}
             sub={award.awarder}
             start={award.date}
+            lang={lang}
           />
           {award.bullets.length > 0 && <Bullets items={award.bullets} />}
         </div>,
