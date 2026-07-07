@@ -3,7 +3,7 @@ import { Colors } from '../constants'
 /** Full-width section divider with label. */
 export function SecHead({ title }: { title: string }) {
   return (
-    <div className="sec-head" style={{ marginTop: 14, marginBottom: 5 }}>
+    <div className="sec-head" style={{ marginBottom: 5 }}>
       <p
         style={{
           fontSize: 8,

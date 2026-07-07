@@ -8,7 +8,7 @@ export function Keywords({ items }: { items: string[] }) {
       style={{
         fontSize: 8.5,
         color: Colors.subtle,
-        marginTop: 3,
+        paddingTop: 3,
         lineHeight: 1.4,
       }}
     >

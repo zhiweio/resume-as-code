@@ -2,57 +2,98 @@ import { useState, useEffect } from 'react'
 import { ResumeRenderer } from '../renderer'
 import type { RenderModel } from '../../models'
 
+export interface ExportRenderOptions {
+  optimized?: boolean
+  spacingScale?: number
+  showSocialIcons?: boolean
+}
+
+interface ExportPayload {
+  model: RenderModel
+  options?: ExportRenderOptions
+}
+
 /**
  * Print Route — dedicated route rendered by the Puppeteer export service.
  * No editor chrome. Same rendering components as preview.
- * Signals readiness via window.__RESUME_EXPORT_READY__ after model is loaded
- * and fonts have settled.
+ * Signals readiness via window.__RESUME_EXPORT_READY__ after model is loaded,
+ * fonts have settled, and PaginatedPaper has finished measuring.
  */
 export function PrintRoute() {
-  const [model, setModel] = useState<RenderModel | null>(null)
+  const [payload, setPayload] = useState<ExportPayload | null>(null)
 
   useEffect(() => {
-    // Listen for model injection from Puppeteer
+    const readPayload = (): ExportPayload | null => {
+      const win = window as unknown as Record<string, unknown>
+      const injected = win.__RESUME_MODEL__ as RenderModel | undefined
+      if (!injected) return null
+      return {
+        model: injected,
+        options: win.__RESUME_EXPORT_OPTIONS__ as
+          | ExportRenderOptions
+          | undefined,
+      }
+    }
+
     const handler = () => {
-      const injected = (window as unknown as Record<string, unknown>)
-        .__RESUME_MODEL__ as RenderModel | undefined
-      if (injected) {
+      const next = readPayload()
+      if (next) {
         console.log('[PrintRoute] Model received via event')
-        setModel(injected)
+        setPayload(next)
       }
     }
 
     window.addEventListener('resume-model-ready', handler)
 
-    // Check if model was already injected before listener was registered
-    const existing = (window as unknown as Record<string, unknown>)
-      .__RESUME_MODEL__ as RenderModel | undefined
+    const existing = readPayload()
     if (existing) {
       console.log('[PrintRoute] Model already present on window')
-      setModel(existing)
+      setPayload(existing)
     }
 
     return () => window.removeEventListener('resume-model-ready', handler)
   }, [])
 
   useEffect(() => {
-    if (!model) return
+    if (!payload) return
     console.log('[PrintRoute] Model set, waiting for fonts + layout...')
 
-    // Wait for fonts, then give layout time to measure and paginate.
-    // Use setTimeout (reliable in headless) instead of requestAnimationFrame.
-    document.fonts.ready.then(() => {
-      console.log('[PrintRoute] Fonts ready, waiting 500ms for pagination...')
-      setTimeout(() => {
+    const family = payload.model.fontFamily
+    const weights = [400, 500, 600, 700]
+
+    Promise.all(
+      weights.map((weight) =>
+        document.fonts.load(`${weight} 16px ${family}`).catch(() => undefined),
+      ),
+    )
+      .then(() => document.fonts.ready)
+      .then(() => {
+        const waitForLayout = () =>
+          new Promise<void>((resolve) => {
+            const check = () => {
+              if (
+                (window as unknown as Record<string, unknown>)
+                  .__RESUME_LAYOUT_READY__ === true
+              ) {
+                resolve()
+                return
+              }
+              setTimeout(check, 50)
+            }
+            check()
+          })
+
+        return waitForLayout()
+      })
+      .then(() => {
         console.log('[PrintRoute] Signaling __RESUME_EXPORT_READY__')
         ;(
           window as unknown as Record<string, unknown>
         ).__RESUME_EXPORT_READY__ = true
-      }, 500)
-    })
-  }, [model])
+      })
+  }, [payload])
 
-  if (!model) {
+  if (!payload) {
     return (
       <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
         Waiting for document…
@@ -60,5 +101,14 @@ export function PrintRoute() {
     )
   }
 
-  return <ResumeRenderer model={model} />
+  const { model, options } = payload
+
+  return (
+    <ResumeRenderer
+      model={model}
+      optimized={options?.optimized}
+      spacingScale={options?.spacingScale}
+      showSocialIcons={options?.showSocialIcons}
+    />
+  )
 }

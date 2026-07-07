@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Paper } from './constants'
+import { paperSheetStyle } from './constants'
 
 interface PaperShellProps {
   children: ReactNode
@@ -15,11 +15,7 @@ export function PaperShell({ children, fontFamily }: PaperShellProps) {
     >
       <div
         className="paper mx-auto bg-white shadow-lg"
-        style={{
-          width: Paper.widthPx,
-          padding: `${Paper.paddingTop}px ${Paper.paddingX}px ${Paper.paddingBottom}px`,
-          boxSizing: 'border-box',
-        }}
+        style={paperSheetStyle()}
       >
         {children}
       </div>

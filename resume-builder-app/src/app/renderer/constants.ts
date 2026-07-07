@@ -13,7 +13,32 @@ export const Colors = {
 /** A4 paper dimensions at 96 dpi. */
 export const Paper = {
   widthPx: 794,
-  paddingTop: 36,
-  paddingBottom: 32,
-  paddingX: 48,
+  heightPx: 1123,
+  /** Uniform margin on all four sides. */
+  marginPx: 40,
 } as const
+
+/** CSS padding value for the paper content inset. */
+export function paperPaddingCss(): string {
+  return `${Paper.marginPx}px`
+}
+
+/** Inline styles for a strict A4 sheet (794×1123 px at 96 dpi, border-box). */
+export function paperSheetStyle(): {
+  width: number
+  height: number
+  minHeight: number
+  padding: string
+  boxSizing: 'border-box'
+} {
+  return {
+    width: Paper.widthPx,
+    height: Paper.heightPx,
+    minHeight: Paper.heightPx,
+    padding: paperPaddingCss(),
+    boxSizing: 'border-box',
+  }
+}
+
+/** Vertical gap between resume sections (and after the header). */
+export const SectionSpacing = 9

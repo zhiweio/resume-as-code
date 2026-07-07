@@ -108,6 +108,8 @@ export type RenderSection =
 export interface RenderModel {
   /** BCP 47 language tag (e.g. 'en', 'zh-hans', 'zh', 'es', 'fr', 'no') */
   lang: string
+  /** Optional document title from YAML `document.title` */
+  documentTitle?: string
   /** Font family CSS value for the resume */
   fontFamily: string
   header: RenderHeader

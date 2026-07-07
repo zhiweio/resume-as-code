@@ -239,6 +239,7 @@ export function compileNewSchema(
 
   return {
     lang,
+    documentTitle: doc.document.title?.trim() || undefined,
     fontFamily: getFontFamily(doc, lang),
     header: {
       name: basics.name,

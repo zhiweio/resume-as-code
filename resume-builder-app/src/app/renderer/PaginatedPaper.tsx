@@ -3,18 +3,29 @@ import {
   useEffect,
   useState,
   type ReactNode,
+  type CSSProperties,
   Children,
   cloneElement,
   isValidElement,
 } from 'react'
-import { Paper } from './constants'
+import { Paper, paperPaddingCss, paperSheetStyle } from './constants'
+import { packBlocksToPages } from './paginate-pack'
 
-/**
- * A4 page dimensions at 96 dpi.
- * Total height: 1123px (297mm). Usable = total - paddingTop - paddingBottom.
- */
-const PAGE_HEIGHT_PX = 1123
-const USABLE_HEIGHT = PAGE_HEIGHT_PX - Paper.paddingTop - Paper.paddingBottom
+const PAGE_HEIGHT_PX = Paper.heightPx
+const PAPER_SHEET = paperSheetStyle()
+const PAPER_PADDING = paperPaddingCss()
+
+/** Strip block spacing at the top of a page; page margin provides the inset. */
+function renderPageBlock(child: ReactNode, blockIdx: number) {
+  if (!isValidElement(child) || blockIdx !== 0) return child
+
+  const style = (child.props.style as CSSProperties | undefined) ?? {}
+  if (!style.paddingTop) return child
+
+  return cloneElement(child, {
+    style: { ...style, paddingTop: 0 },
+  })
+}
 
 interface PaginatedPaperProps {
   children: ReactNode
@@ -48,6 +59,8 @@ export function PaginatedPaper({
   useEffect(() => {
     if (!measureRef.current) return
     setMeasured(false)
+    ;(window as unknown as Record<string, unknown>).__RESUME_LAYOUT_READY__ =
+      false
 
     const measure = () => {
       if (!measureRef.current) return
@@ -58,41 +71,35 @@ export function PaginatedPaper({
         return
       }
 
-      const pageList: PageData[] = []
-      let currentPageStart = 0
-      let currentHeight = 0
-
-      for (let i = 0; i < blocks.length; i++) {
-        const style = getComputedStyle(blocks[i])
-        const blockHeight =
-          blocks[i].offsetHeight +
-          parseFloat(style.marginTop) +
-          parseFloat(style.marginBottom)
-
-        // If adding this block exceeds the page and we have at least one block already
-        if (
-          currentHeight + blockHeight > USABLE_HEIGHT &&
-          i > currentPageStart
-        ) {
-          pageList.push({ startIdx: currentPageStart, endIdx: i })
-          currentPageStart = i
-          currentHeight = blockHeight
-        } else {
-          currentHeight += blockHeight
-        }
-      }
-
-      // Last page
-      pageList.push({ startIdx: currentPageStart, endIdx: blocks.length })
+      const pageList = packBlocksToPages(blocks)
       setPages(pageList)
       setMeasured(true)
+
+      // Let layout paint, then signal export readiness for Puppeteer.
+      setTimeout(() => {
+        ;(
+          window as unknown as Record<string, unknown>
+        ).__RESUME_LAYOUT_READY__ = true
+      }, 100)
     }
 
-    // Measure after fonts settle. Use setTimeout as reliable fallback
-    // (requestAnimationFrame can be unreliable in headless environments).
-    document.fonts.ready.then(() => {
+    const runMeasure = async () => {
+      const family = measureRef.current?.style.fontFamily
+      if (family) {
+        const weights = [400, 500, 600, 700]
+        await Promise.all(
+          weights.map((weight) =>
+            document.fonts
+              .load(`${weight} 16px ${family}`)
+              .catch(() => undefined),
+          ),
+        )
+      }
+      await document.fonts.ready
       setTimeout(measure, 50)
-    })
+    }
+
+    runMeasure()
   }, [children, spacingScale])
 
   return (
@@ -106,16 +113,16 @@ export function PaginatedPaper({
           visibility: 'hidden',
           pointerEvents: 'none',
           width: Paper.widthPx,
-          padding: `${Paper.paddingTop}px ${Paper.paddingX}px ${Paper.paddingBottom}px`,
+          padding: PAPER_PADDING,
           boxSizing: 'border-box',
           fontFamily,
         }}
       >
-        {childArray.map((child, i) => (
-          <div key={i} data-block-idx={i}>
-            {isValidElement(child) ? cloneElement(child) : child}
-          </div>
-        ))}
+        {childArray.map((child, i) =>
+          isValidElement(child)
+            ? cloneElement(child, { key: `m-${i}` })
+            : child,
+        )}
       </div>
 
       {/* Rendered pages */}
@@ -124,15 +131,9 @@ export function PaginatedPaper({
         style={{ backgroundColor: '#D6D4CF', fontFamily }}
       >
         {!measured ? (
-          // Before measurement: render single continuous page
           <div
-            className="paper mx-auto bg-white shadow-lg"
-            style={{
-              width: Paper.widthPx,
-              minHeight: PAGE_HEIGHT_PX,
-              padding: `${Paper.paddingTop}px ${Paper.paddingX}px ${Paper.paddingBottom}px`,
-              boxSizing: 'border-box',
-            }}
+            className="paper mx-auto bg-white shadow-lg print:shadow-none"
+            style={PAPER_SHEET}
           >
             {children}
           </div>
@@ -182,14 +183,13 @@ export function PaginatedPaper({
               {/* A4 page container */}
               <div
                 className="paper mx-auto bg-white shadow-lg print:shadow-none"
-                style={{
-                  width: Paper.widthPx,
-                  minHeight: PAGE_HEIGHT_PX,
-                  padding: `${Paper.paddingTop}px ${Paper.paddingX}px ${Paper.paddingBottom}px`,
-                  boxSizing: 'border-box',
-                }}
+                style={PAPER_SHEET}
               >
-                {childArray.slice(page.startIdx, page.endIdx)}
+                <div className="page-content">
+                  {childArray
+                    .slice(page.startIdx, page.endIdx)
+                    .map((child, blockIdx) => renderPageBlock(child, blockIdx))}
+                </div>
               </div>
             </div>
           ))
@@ -199,4 +199,5 @@ export function PaginatedPaper({
   )
 }
 
-export { USABLE_HEIGHT, PAGE_HEIGHT_PX }
+export { PAGE_HEIGHT_PX }
+export { USABLE_HEIGHT } from './paginate-pack'

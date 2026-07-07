@@ -4,6 +4,7 @@ import Editor from '@monaco-editor/react'
 import { ResumeRenderer } from './renderer'
 import { compileLegacy, compileNewSchema, isLegacyFormat } from '../compiler'
 import type { RenderModel } from '../models'
+import { buildExportFilename } from '../export/build-filename'
 import type { ResumeDocument } from '../schema'
 import {
   ResizablePanelGroup,
@@ -308,18 +309,27 @@ export default function App() {
       return
     }
     setIsExporting(true)
+    const filename = buildExportFilename(renderModel)
     try {
       const resp = await fetch('http://localhost:3001/api/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: renderModel, filename: 'resume.pdf' }),
+        body: JSON.stringify({
+          model: renderModel,
+          filename,
+          options: {
+            optimized,
+            spacingScale,
+            showSocialIcons,
+          },
+        }),
       })
       if (resp.ok) {
         const blob = await resp.blob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = 'resume.pdf'
+        a.download = filename
         a.click()
         URL.revokeObjectURL(url)
       } else if (resp.status === 429) {

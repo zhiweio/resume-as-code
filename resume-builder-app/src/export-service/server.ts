@@ -8,6 +8,10 @@
 import express from 'express'
 import cors from 'cors'
 import puppeteer, { type Browser } from 'puppeteer'
+import {
+  buildContentDisposition,
+  buildExportFilename,
+} from '../export/build-filename'
 
 const PORT = Number(process.env.EXPORT_PORT) || 3001
 const APP_URL = process.env.APP_URL || 'http://localhost:5173'
@@ -47,7 +51,7 @@ app.post('/api/export', async (req, res) => {
 
   exportInProgress = true
   const startTime = Date.now()
-  const { model, filename = 'resume.pdf' } = req.body
+  const { model, options } = req.body
 
   if (!model) {
     exportInProgress = false
@@ -55,11 +59,19 @@ app.post('/api/export', async (req, res) => {
     return
   }
 
+  const filename =
+    typeof req.body.filename === 'string' && req.body.filename.trim()
+      ? req.body.filename.trim()
+      : buildExportFilename(model)
+
   console.log(`[export] Starting export: ${filename}`)
 
   try {
     const b = await getBrowser()
     const page = await b.newPage()
+
+    // Match the preview paper width so print CSS and pagination stay aligned.
+    await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 })
 
     // Capture console from the browser page for debugging
     page.on('console', (msg) => {
@@ -77,12 +89,26 @@ app.post('/api/export', async (req, res) => {
       `[export] Page loaded (${Date.now() - startTime}ms). Injecting model...`,
     )
 
-    // Inject the render model into the page
-    await page.evaluate((modelData) => {
-      ;(window as unknown as Record<string, unknown>).__RESUME_MODEL__ =
-        modelData
-      window.dispatchEvent(new CustomEvent('resume-model-ready'))
-    }, model)
+    // Reset export flags before rendering a new document.
+    await page.evaluate(() => {
+      const win = window as unknown as Record<string, unknown>
+      win.__RESUME_EXPORT_READY__ = false
+      win.__RESUME_LAYOUT_READY__ = false
+    })
+
+    // Inject the render model and preview options into the page
+    await page.evaluate(
+      (modelData, exportOptions) => {
+        const win = window as unknown as Record<string, unknown>
+        win.__RESUME_MODEL__ = modelData
+        if (exportOptions) {
+          win.__RESUME_EXPORT_OPTIONS__ = exportOptions
+        }
+        window.dispatchEvent(new CustomEvent('resume-model-ready'))
+      },
+      model,
+      options ?? null,
+    )
     console.log(`[export] Model injected (${Date.now() - startTime}ms)`)
 
     // Wait for the app to signal export readiness (with extended timeout)
@@ -97,6 +123,9 @@ app.post('/api/export', async (req, res) => {
       `[export] Export ready signal received (${Date.now() - startTime}ms)`,
     )
 
+    // Align layout with print CSS before generating the PDF.
+    await page.emulateMediaType('print')
+
     // Wait for fonts to settle
     await page.evaluate(() => document.fonts.ready)
 
@@ -108,6 +137,7 @@ app.post('/api/export', async (req, res) => {
     const pdf = await page.pdf({
       format: 'A4',
       printBackground: true,
+      preferCSSPageSize: true,
       margin: { top: '0', right: '0', bottom: '0', left: '0' },
     })
 
@@ -119,7 +149,7 @@ app.post('/api/export', async (req, res) => {
     )
 
     res.setHeader('Content-Type', 'application/pdf')
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+    res.setHeader('Content-Disposition', buildContentDisposition(filename))
     res.send(Buffer.from(pdf))
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown export error'
