@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/favicon.svg" width="72" height="72" alt="Resume Builder logo" />
+</p>
+
 # Resume Builder App
 
 A local-first resume workbench with a split-pane Monaco YAML editor and pixel-perfect A4 preview, powered by React, Vite, and Puppeteer.

@@ -10,8 +10,8 @@ interface PaperShellProps {
 export function PaperShell({ children, fontFamily }: PaperShellProps) {
   return (
     <div
-      className="chrome min-h-screen py-8 print:py-0"
-      style={{ backgroundColor: '#D6D4CF', fontFamily }}
+      className="chrome min-h-screen bg-workspace py-8 print:bg-white print:py-0"
+      style={{ fontFamily }}
     >
       <div
         className="paper mx-auto bg-white shadow-lg"

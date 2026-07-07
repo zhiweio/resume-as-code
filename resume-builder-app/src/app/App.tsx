@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { parse as parseYaml } from 'yaml'
+import { AlertTriangle, CircleX, Info } from 'lucide-react'
 import Editor from '@monaco-editor/react'
 import { ResumeRenderer } from './renderer'
 import { compileLegacy, compileNewSchema, isLegacyFormat } from '../compiler'
@@ -11,18 +12,12 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from './components/ui/resizable'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from './components/ui/tooltip'
-import { AdvancedLayoutSheet } from './components/AdvancedLayoutSheet'
+import { AppToolbar } from './components/AppToolbar'
+import { PreviewZoomControls } from './components/PreviewZoomControls'
 import {
   DEFAULT_LAYOUT_OPTIONS,
-  applyLayoutPreset,
   type LayoutOptions,
 } from './layout/layout-options'
-import { cn } from './components/ui/utils'
 
 // ── Sample YAML (new schema format) ──────────────────────────────────────────
 const SAMPLE_NEW_SCHEMA = `schema:
@@ -305,13 +300,12 @@ export default function App() {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Re-compile when language override changes (without re-parsing)
-  const handleLangToggle = useCallback(
-    (lang: 'zh' | 'en') => {
-      const next = langOverride === lang ? null : lang
-      setLangOverride(next)
-      compile(yamlSource, next)
+  const handleLangChange = useCallback(
+    (lang: 'zh' | 'en' | null) => {
+      setLangOverride(lang)
+      compile(yamlSource, lang)
     },
-    [langOverride, yamlSource, compile],
+    [yamlSource, compile],
   )
 
   // Export to PDF via local service
@@ -371,124 +365,24 @@ export default function App() {
       className="h-screen flex flex-col"
       style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
     >
-      {/* ── Toolbar ── */}
-      <div className="no-print h-10 flex items-center gap-3 px-4 border-b border-stone-200 bg-white shrink-0">
-        <span className="text-sm font-semibold text-stone-800">
-          Resume Builder
-        </span>
-        <div className="h-4 w-px bg-stone-200" />
-
-        {/* Status badge */}
-        <span
-          className={`text-xs px-2 py-0.5 rounded-sm font-medium ${
-            sourceStatus === 'new-schema'
-              ? 'bg-emerald-100 text-emerald-700'
-              : sourceStatus === 'legacy-adapted'
-                ? 'bg-amber-100 text-amber-700'
-                : 'bg-red-100 text-red-700'
-          }`}
-        >
-          {sourceStatus === 'new-schema'
-            ? '✓ Valid'
-            : sourceStatus === 'legacy-adapted'
-              ? '⚠ Legacy Adapted'
-              : '✗ Invalid'}
-        </span>
-
-        {/* Diagnostics count */}
-        {diagnostics.length > 0 && (
-          <span className="text-xs text-stone-500">
-            {diagnostics.length} diagnostic{diagnostics.length > 1 ? 's' : ''}
-          </span>
-        )}
-
-        <div className="flex-1" />
-
-        {/* Language toggle */}
-        <div className="flex items-center rounded-sm border border-stone-300 overflow-hidden text-xs font-medium">
-          {(['zh', 'en'] as const).map((lang) => (
-            <button
-              key={lang}
-              onClick={() => handleLangToggle(lang)}
-              className={`h-7 px-3 transition-colors ${
-                langOverride === lang
-                  ? 'bg-stone-800 text-white'
-                  : 'bg-white text-stone-600 hover:bg-stone-100'
-              }`}
-            >
-              {lang === 'zh' ? '中文' : 'EN'}
-            </button>
-          ))}
-        </div>
-
-        <div className="h-4 w-px bg-stone-200" />
-
-        {/* Social icons toggle */}
-        <button
-          onClick={() => setShowSocialIcons((v) => !v)}
-          className={`h-7 px-3 text-xs font-medium rounded-sm transition-colors ${
-            showSocialIcons
-              ? 'bg-stone-800 text-white'
-              : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-300'
-          }`}
-        >
-          {showSocialIcons ? '🔗 Icons' : '🔗 Text'}
-        </button>
-
-        <div className="h-4 w-px bg-stone-200" />
-
-        <div className="flex items-center gap-1 rounded-sm border border-stone-200 bg-stone-50/80 p-0.5">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (layoutOptions.enabled) {
-                      setLayoutOptions({ ...DEFAULT_LAYOUT_OPTIONS })
-                    } else {
-                      setLayoutOptions(applyLayoutPreset('optimize'))
-                    }
-                  }}
-                  disabled={sourceStatus === 'invalid'}
-                  className={cn(
-                    'h-7 px-3 text-xs font-medium rounded-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed',
-                    layoutOptions.enabled
-                      ? 'bg-stone-900 text-white hover:bg-stone-800'
-                      : 'bg-white text-stone-700 hover:bg-stone-100',
-                  )}
-                >
-                  {layoutOptions.enabled ? 'Optimized' : 'Optimize'}
-                </button>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="bottom" className="max-w-56">
-              Quick compact preset. Open Layout for full controls.
-            </TooltipContent>
-          </Tooltip>
-
-          <AdvancedLayoutSheet
-            layout={layoutOptions}
-            onChange={setLayoutOptions}
-            disabled={sourceStatus === 'invalid'}
-          />
-        </div>
-
-        <div className="h-4 w-px bg-stone-200" />
-        <button
-          onClick={handleExport}
-          disabled={sourceStatus === 'invalid' || isExporting}
-          className="h-7 px-3 text-xs font-medium bg-stone-900 text-white rounded-sm hover:bg-stone-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          {isExporting ? 'Exporting…' : 'Export PDF'}
-        </button>
-      </div>
+      <AppToolbar
+        sourceStatus={sourceStatus}
+        diagnosticCount={diagnostics.length}
+        langOverride={langOverride}
+        onLangChange={handleLangChange}
+        showSocialIcons={showSocialIcons}
+        onShowSocialIconsChange={setShowSocialIcons}
+        layoutOptions={layoutOptions}
+        onLayoutChange={setLayoutOptions}
+        onExport={handleExport}
+        isExporting={isExporting}
+      />
 
       {/* ── Main split layout ── */}
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         {/* Left: Resume Preview */}
         <ResizablePanel defaultSize={55} minSize={30}>
-          <div className="h-full relative overflow-auto">
+          <div className="h-full relative overflow-auto bg-workspace">
             {displayModel ? (
               <div
                 style={{
@@ -504,39 +398,15 @@ export default function App() {
                 />
               </div>
             ) : (
-              <div className="h-full flex items-center justify-center text-stone-400 text-sm">
+              <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
                 Enter valid YAML to see preview
               </div>
             )}
 
-            {/* Floating zoom control — bottom-right of preview */}
-            <div className="no-print sticky bottom-3 float-right mr-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm border border-stone-200 rounded-md shadow-sm px-2 py-1.5 z-10">
-              <button
-                onClick={() =>
-                  setPreviewZoom((z) => Math.max(0.25, +(z - 0.1).toFixed(2)))
-                }
-                className="w-6 h-6 flex items-center justify-center text-stone-600 hover:bg-stone-100 rounded transition-colors text-sm font-medium"
-                title="Zoom out"
-              >
-                −
-              </button>
-              <button
-                onClick={() => setPreviewZoom(1.0)}
-                className="min-w-[40px] h-6 flex items-center justify-center text-xs text-stone-600 hover:bg-stone-100 rounded transition-colors font-medium tabular-nums"
-                title="Reset zoom"
-              >
-                {Math.round(previewZoom * 100)}%
-              </button>
-              <button
-                onClick={() =>
-                  setPreviewZoom((z) => Math.min(2.0, +(z + 0.1).toFixed(2)))
-                }
-                className="w-6 h-6 flex items-center justify-center text-stone-600 hover:bg-stone-100 rounded transition-colors text-sm font-medium"
-                title="Zoom in"
-              >
-                +
-              </button>
-            </div>
+            <PreviewZoomControls
+              zoom={previewZoom}
+              onZoomChange={setPreviewZoom}
+            />
           </div>
         </ResizablePanel>
 
@@ -544,37 +414,44 @@ export default function App() {
 
         {/* Right: YAML Editor */}
         <ResizablePanel defaultSize={45} minSize={25}>
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col bg-card">
             {/* Diagnostics panel */}
             {diagnostics.length > 0 && (
               <div
-                className="shrink-0 px-3 py-2 bg-stone-50 border-b border-stone-200 overflow-auto"
+                className="shrink-0 overflow-auto border-b border-border bg-muted/60 px-3 py-2"
                 style={{ maxHeight: 160 }}
               >
-                {diagnostics.map((d, i) => (
-                  <div
-                    key={i}
-                    className={`text-xs leading-relaxed break-words ${
-                      d.severity === 'error'
-                        ? 'text-red-600'
-                        : d.severity === 'warning'
-                          ? 'text-amber-600'
-                          : 'text-blue-600'
-                    }`}
-                  >
-                    {d.severity === 'error'
-                      ? '✗'
+                {diagnostics.map((d, i) => {
+                  const Icon =
+                    d.severity === 'error'
+                      ? CircleX
                       : d.severity === 'warning'
-                        ? '⚠'
-                        : 'ℹ'}{' '}
-                    {d.message}
-                    {d.line != null && (
-                      <span className="text-stone-400 ml-1">
-                        (line {d.line})
+                        ? AlertTriangle
+                        : Info
+                  const toneClass =
+                    d.severity === 'error'
+                      ? 'text-destructive'
+                      : d.severity === 'warning'
+                        ? 'text-amber-600'
+                        : 'text-blue-600'
+
+                  return (
+                    <div
+                      key={i}
+                      className={`flex items-start gap-1.5 text-xs leading-relaxed break-words ${toneClass}`}
+                    >
+                      <Icon className="mt-0.5 shrink-0" />
+                      <span>
+                        {d.message}
+                        {d.line != null && (
+                          <span className="ml-1 text-muted-foreground">
+                            (line {d.line})
+                          </span>
+                        )}
                       </span>
-                    )}
-                  </div>
-                ))}
+                    </div>
+                  )
+                })}
               </div>
             )}
             <div className="flex-1 min-h-0">

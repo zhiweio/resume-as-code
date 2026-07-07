@@ -1,5 +1,9 @@
 # Resume as Code
 
+<p align="center">
+  <img src="resume-builder-app/public/favicon.svg" width="72" height="72" alt="Resume Builder logo" />
+</p>
+
 <div align="center">
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) [![Node.js](https://img.shields.io/badge/Node.js-≥18-green.svg)](https://nodejs.org) [![pnpm](https://img.shields.io/badge/pnpm-≥9-orange.svg)](https://pnpm.io)
@@ -20,14 +24,23 @@
 
 ## Table of Contents
 
-- [Highlights](#highlights)
-- [Quick Start](#quick-start)
-- [Resume Builder App](#resume-builder-app)
-- [AI Agent Skills](#ai-agent-skills)
-- [Project Structure](#project-structure)
-- [YAML Resume Schema](#yaml-resume-schema)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+- [Resume as Code](#resume-as-code)
+  - [Table of Contents](#table-of-contents)
+  - [Highlights](#highlights)
+  - [Quick Start](#quick-start)
+    - [Prerequisites](#prerequisites)
+    - [1. Install skills for your agent](#1-install-skills-for-your-agent)
+    - [2. Build your timeline](#2-build-your-timeline)
+    - [3. Configure your profile](#3-configure-your-profile)
+    - [4. Generate a tailored resume](#4-generate-a-tailored-resume)
+    - [5. Preview and export PDF](#5-preview-and-export-pdf)
+  - [Resume Builder App](#resume-builder-app)
+  - [AI Agent Skills](#ai-agent-skills)
+    - [Agent compatibility](#agent-compatibility)
+  - [Project Structure](#project-structure)
+  - [YAML Resume Schema](#yaml-resume-schema)
+  - [License](#license)
+  - [Acknowledgments](#acknowledgments)
 
 ---
 

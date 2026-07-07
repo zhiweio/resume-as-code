@@ -137,8 +137,8 @@ export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
       </div>
 
       <div
-        className="chrome py-8 print:py-0 print:!bg-white"
-        style={{ backgroundColor: '#D6D4CF', fontFamily }}
+        className="chrome bg-workspace py-8 print:bg-white print:py-0"
+        style={{ fontFamily }}
       >
         {!measured ? (
           <div

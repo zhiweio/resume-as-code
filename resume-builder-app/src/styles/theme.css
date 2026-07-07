@@ -2,29 +2,31 @@
 
 :root {
   --font-size: 16px;
-  --background: #d6d4cf;
-  --foreground: #111111;
+  /* App chrome: crisp white navbar + cool gray workspace (print-studio) */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --workspace: #e8ebf0;
   --card: #ffffff;
-  --card-foreground: #111111;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #111111;
-  --primary: #111111;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
   --primary-foreground: #ffffff;
-  --secondary: #f5f5f5;
-  --secondary-foreground: #111111;
-  --muted: #eeeeee;
-  --muted-foreground: #888888;
-  --accent: #333333;
-  --accent-foreground: #ffffff;
-  --destructive: #d4183d;
+  --secondary: #f1f3f6;
+  --secondary-foreground: #0f172a;
+  --muted: #eef1f5;
+  --muted-foreground: #64748b;
+  --accent: #e2e8f0;
+  --accent-foreground: #0f172a;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.12);
+  --border: #e2e8f0;
   --input: transparent;
-  --input-background: #f5f5f5;
-  --switch-background: #cccccc;
+  --input-background: #f8fafc;
+  --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #333333;
+  --ring: #94a3b8;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -81,6 +83,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-workspace: var(--workspace);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
@@ -125,7 +128,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-secondary text-foreground;
   }
 
   /**
