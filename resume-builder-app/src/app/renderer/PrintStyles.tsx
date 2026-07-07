@@ -1,9 +1,12 @@
-import { Paper } from './constants'
-
-const { widthPx, heightPx, marginPx } = Paper
+import { Colors } from './constants'
+import { useLayoutTokensContext } from '../layout/LayoutOptionsContext'
 
 /** Print styles injected by the renderer. Isolates print behavior from screen CSS. */
 export function PrintStyles() {
+  const { page, spacing } = useLayoutTokensContext()
+  const { widthPx, heightPx, marginPx } = page
+  const continuationInset = spacing.continuationPaddingTop
+
   return (
     <style>{`
       @media print {
@@ -37,6 +40,10 @@ export function PrintStyles() {
           -webkit-box-decoration-break: clone;
           box-decoration-break: clone;
         }
+        .paginate-continuation {
+          padding-top: ${continuationInset}px !important;
+          border-top: 0.5px solid ${Colors.ruleLight};
+        }
         .sec-head { break-after: avoid; page-break-after: avoid; }
         p, li { orphans: 2; widows: 2; }
       }
@@ -57,6 +64,10 @@ export function PrintStyles() {
         page-break-inside: avoid;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
+      }
+      .paginate-continuation {
+        padding-top: ${continuationInset}px;
+        border-top: 0.5px solid ${Colors.ruleLight};
       }
       .md-inline strong { font-weight: 600; }
       .md-inline em { font-style: italic; }

@@ -9,6 +9,12 @@ import { resolveSocialIcon, type IconifyIconData } from './social-icon-map'
 import { useState, useEffect } from 'react'
 import { Icon } from '@iconify-icon/react'
 import type { ReactNode } from 'react'
+import {
+  DEFAULT_LAYOUT_OPTIONS,
+  type LayoutOptions,
+} from '../layout/layout-options'
+import { LayoutOptionsProvider } from '../layout/LayoutOptionsContext'
+import { useLayoutTokensContext } from '../layout/LayoutOptionsContext'
 
 /** Lazily loads a Font Awesome Brands icon by network name and renders it inline. */
 function SocialIcon({ network }: { network: string }) {
@@ -31,38 +37,50 @@ function SocialIcon({ network }: { network: string }) {
 
 interface ResumeRendererProps {
   model: RenderModel
-  /** Whether layout optimization is active */
+  layout?: LayoutOptions
+  /** @deprecated Use layout.enabled */
   optimized?: boolean
-  /** Spacing multiplier for optimization (default 1.0) */
+  /** @deprecated Use layout.spacingScale */
   spacingScale?: number
-  /** Show Font Awesome brand icons next to social links */
   showSocialIcons?: boolean
 }
 
-/**
- * Isolated preview renderer.
- * Consumes the normalized RenderModel and produces the exact Figma Make visual output.
- * This component owns no data-loading logic — it only renders.
- *
- * Pagination strategy:
- * - Sub-sections (one job, project, skill row, etc.) never split across pages.
- * - Sections may span pages only when taller than one A4 page.
- * - Sections that fit on one page are kept together.
- */
 export function ResumeRenderer({
   model,
+  layout,
   optimized,
-  spacingScale = 1.0,
+  spacingScale,
   showSocialIcons = true,
 }: ResumeRendererProps) {
+  const resolvedLayout =
+    layout ??
+    (optimized || spacingScale !== undefined
+      ? {
+          ...DEFAULT_LAYOUT_OPTIONS,
+          enabled: optimized ?? false,
+          spacingScale: spacingScale ?? 1.0,
+        }
+      : DEFAULT_LAYOUT_OPTIONS)
+
+  return (
+    <LayoutOptionsProvider options={resolvedLayout}>
+      <ResumeRendererBody model={model} showSocialIcons={showSocialIcons} />
+    </LayoutOptionsProvider>
+  )
+}
+
+function ResumeRendererBody({
+  model,
+  showSocialIcons,
+}: {
+  model: RenderModel
+  showSocialIcons: boolean
+}) {
   const { header, sections, fontFamily, lang } = model
-
-  const sectionGap = (base: number) => Math.round(base * spacingScale)
-
-  // Build a flat list of blocks for fine-grained pagination
+  const tokens = useLayoutTokensContext()
+  const { sectionGap, font, lineHeight, spacing, options } = tokens
   const blocks: ReactNode[] = []
 
-  // Block 0: header + summary
   blocks.push(
     <header key="header" className="paginate-block" style={{ marginBottom: 0 }}>
       <div
@@ -76,21 +94,21 @@ export function ResumeRenderer({
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             style={{
-              fontSize: 22,
+              fontSize: font.name,
               fontWeight: 700,
               color: Colors.name,
               letterSpacing: '-0.01em',
-              lineHeight: 1.1,
+              lineHeight: lineHeight.name,
             }}
           >
             {header.name}
           </p>
           <p
             style={{
-              fontSize: 10.5,
+              fontSize: font.headline,
               color: Colors.meta,
-              marginTop: 3,
-              lineHeight: 1.3,
+              marginTop: spacing.headlineMarginTop,
+              lineHeight: lineHeight.headline,
             }}
           >
             {header.headline}
@@ -100,18 +118,24 @@ export function ResumeRenderer({
           style={{
             textAlign: 'right',
             flexShrink: 1,
-            paddingTop: 2,
+            paddingTop: spacing.contactPaddingTop,
             maxWidth: '50%',
           }}
         >
-          <p style={{ fontSize: 9, color: Colors.meta, lineHeight: 1.7 }}>
+          <p
+            style={{
+              fontSize: font.contact,
+              color: Colors.meta,
+              lineHeight: lineHeight.contact,
+            }}
+          >
             {header.contactLine1}
           </p>
           <p
             style={{
-              fontSize: 9,
+              fontSize: font.contact,
               color: Colors.meta,
-              lineHeight: 1.7,
+              lineHeight: lineHeight.contact,
               overflowWrap: 'break-word',
             }}
           >
@@ -141,12 +165,16 @@ export function ResumeRenderer({
         </div>
       </div>
       {header.summary.length > 0 && (
-        <div style={{ marginTop: sectionGap(9) }}>
+        <div style={{ marginTop: spacing.summaryMarginTop }}>
           {header.summary.map((s, i) => (
             <p
               key={i}
               className="md-inline"
-              style={{ fontSize: 9.5, color: Colors.meta, lineHeight: 1.6 }}
+              style={{
+                fontSize: font.summary,
+                color: Colors.meta,
+                lineHeight: lineHeight.summary,
+              }}
               {...inlineMdProps(s)}
             />
           ))}
@@ -155,28 +183,22 @@ export function ResumeRenderer({
     </header>,
   )
 
-  // For each section, emit atomic sub-section blocks
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i]
     if (!section || !section.variant) continue
-    emitSectionBlocks(section, blocks, sectionGap, lang)
+    emitSectionBlocks(section, blocks, sectionGap, lang, options)
   }
 
   return (
     <>
       <PrintStyles />
-      <PaginatedPaper
-        fontFamily={fontFamily}
-        optimized={optimized}
-        spacingScale={spacingScale}
-      >
-        {blocks}
-      </PaginatedPaper>
+      <PaginatedPaper fontFamily={fontFamily}>{blocks}</PaginatedPaper>
     </>
   )
 }
 
-/** One atomic sub-section block; never splits across pages when printing. */
+type SubsectionPart = 'head' | 'bullets' | 'keywords' | 'full'
+
 function subsectionBlock(
   key: string,
   sectionId: string,
@@ -184,15 +206,27 @@ function subsectionBlock(
   options: {
     paddingTop?: number
     sectionStart?: boolean
+    subsectionId?: string
+    subsectionPart?: SubsectionPart
   } = {},
 ) {
-  const { paddingTop = 0, sectionStart = false } = options
+  const {
+    paddingTop = 0,
+    sectionStart = false,
+    subsectionId,
+    subsectionPart = 'full',
+  } = options
+
   return (
     <div
       key={key}
       className="paginate-block paginate-subsection"
       data-section-id={sectionId}
       data-section-start={sectionStart ? 'true' : undefined}
+      data-subsection-id={subsectionId}
+      data-subsection-part={
+        subsectionPart !== 'full' ? subsectionPart : undefined
+      }
       style={paddingTop > 0 ? { paddingTop } : undefined}
     >
       {children}
@@ -204,17 +238,14 @@ function sectionLeadPadding(sectionGap: (base: number) => number): number {
   return sectionGap(SectionSpacing)
 }
 
-function renderSkillRow(skill: {
-  id: string
-  name: string
-  level: string
-  keywords: string[]
+function SkillRow({
+  skill,
+}: {
+  skill: { id: string; name: string; level: string; keywords: string[] }
 }) {
+  const { font, lineHeight } = useLayoutTokensContext()
   return (
-    <div
-      key={skill.id}
-      style={{ display: 'flex', gap: 0, alignItems: 'baseline' }}
-    >
+    <div style={{ display: 'flex', gap: 0, alignItems: 'baseline' }}>
       <div
         style={{
           width: 196,
@@ -224,18 +255,24 @@ function renderSkillRow(skill: {
           gap: 4,
         }}
       >
-        <span style={{ fontSize: 9.5, fontWeight: 600, color: Colors.entry }}>
+        <span
+          style={{
+            fontSize: font.skillName,
+            fontWeight: 600,
+            color: Colors.entry,
+          }}
+        >
           {skill.name}
         </span>
-        <span style={{ fontSize: 8, color: Colors.subtle }}>
+        <span style={{ fontSize: font.skillLevel, color: Colors.subtle }}>
           ({skill.level})
         </span>
       </div>
       <p
         style={{
-          fontSize: 9,
+          fontSize: font.skillKeywords,
           color: Colors.meta,
-          lineHeight: 1.45,
+          lineHeight: lineHeight.skillKeywords,
           flex: 1,
         }}
       >
@@ -245,13 +282,16 @@ function renderSkillRow(skill: {
   )
 }
 
-function renderCertificateRow(
-  cert: { id: string; name: string; issuer: string; date: string },
-  lang: string,
-) {
+function CertificateRow({
+  cert,
+  lang,
+}: {
+  cert: { id: string; name: string; issuer: string; date: string }
+  lang: string
+}) {
+  const { font } = useLayoutTokensContext()
   return (
     <div
-      key={cert.id}
       style={{
         display: 'flex',
         justifyContent: 'space-between',
@@ -259,12 +299,18 @@ function renderCertificateRow(
         gap: 8,
       }}
     >
-      <span style={{ fontSize: 9.5, fontWeight: 500, color: Colors.entry }}>
+      <span
+        style={{
+          fontSize: font.certName,
+          fontWeight: 500,
+          color: Colors.entry,
+        }}
+      >
         {cert.name}
       </span>
       <span
         style={{
-          fontSize: 8.5,
+          fontSize: font.certMeta,
           color: Colors.subtle,
           whiteSpace: 'nowrap',
           flexShrink: 0,
@@ -276,8 +322,10 @@ function renderCertificateRow(
   )
 }
 
-function renderEntryBody(
+function emitEntryParts(
+  section: Extract<RenderSection, { variant: 'entries' }>,
   entry: {
+    id: string
     title: string
     subtitle: string
     startDate: string
@@ -285,29 +333,202 @@ function renderEntryBody(
     bullets: string[]
     keywords: string[]
   },
+  blocks: ReactNode[],
+  sectionGap: (base: number) => number,
   lang: string,
+  options: {
+    isFirst: boolean
+    paddingTop: number
+    sectionStart: boolean
+    allowSubsectionSplit: boolean
+  },
 ) {
+  const subsectionId = `${section.id}-entry-${entry.id}`
+  const gap = sectionGap(section.gap ?? SectionSpacing)
+
+  if (!options.allowSubsectionSplit) {
+    blocks.push(
+      subsectionBlock(
+        subsectionId,
+        section.id,
+        <>
+          {options.isFirst && <SecHead title={section.title} />}
+          <EntryHead
+            title={entry.title}
+            sub={entry.subtitle}
+            start={entry.startDate}
+            end={entry.endDate}
+            lang={lang}
+          />
+          {entry.bullets.length > 0 && <Bullets items={entry.bullets} />}
+          {entry.keywords.length > 0 && <Keywords items={entry.keywords} />}
+        </>,
+        {
+          paddingTop: options.paddingTop,
+          sectionStart: options.sectionStart,
+          subsectionId,
+        },
+      ),
+    )
+    return
+  }
+
+  blocks.push(
+    subsectionBlock(
+      `${subsectionId}-head`,
+      section.id,
+      <>
+        {options.isFirst && <SecHead title={section.title} />}
+        <EntryHead
+          title={entry.title}
+          sub={entry.subtitle}
+          start={entry.startDate}
+          end={entry.endDate}
+          lang={lang}
+        />
+      </>,
+      {
+        paddingTop: options.paddingTop,
+        sectionStart: options.sectionStart,
+        subsectionId,
+        subsectionPart: 'head',
+      },
+    ),
+  )
+
+  if (entry.bullets.length > 0) {
+    blocks.push(
+      subsectionBlock(
+        `${subsectionId}-bullets`,
+        section.id,
+        <Bullets items={entry.bullets} />,
+        { subsectionId, subsectionPart: 'bullets' },
+      ),
+    )
+  }
+
+  if (entry.keywords.length > 0) {
+    blocks.push(
+      subsectionBlock(
+        `${subsectionId}-keywords`,
+        section.id,
+        <Keywords items={entry.keywords} />,
+        { subsectionId, subsectionPart: 'keywords' },
+      ),
+    )
+  }
+}
+
+function emitAwardParts(
+  section: Extract<RenderSection, { variant: 'awards' }>,
+  award: {
+    id: string
+    name: string
+    awarder: string
+    date: string
+    bullets: string[]
+  },
+  blocks: ReactNode[],
+  sectionGap: (base: number) => number,
+  lang: string,
+  options: {
+    isFirst: boolean
+    paddingTop: number
+    sectionStart: boolean
+    allowSubsectionSplit: boolean
+  },
+) {
+  const subsectionId = `${section.id}-award-${award.id}`
+
+  if (!options.allowSubsectionSplit) {
+    blocks.push(
+      subsectionBlock(
+        subsectionId,
+        section.id,
+        <>
+          {options.isFirst && <SecHead title={section.title} />}
+          <EntryHead
+            title={award.name}
+            sub={award.awarder}
+            start={award.date}
+            lang={lang}
+          />
+          {award.bullets.length > 0 && <Bullets items={award.bullets} />}
+        </>,
+        {
+          paddingTop: options.paddingTop,
+          sectionStart: options.sectionStart,
+          subsectionId,
+        },
+      ),
+    )
+    return
+  }
+
+  blocks.push(
+    subsectionBlock(
+      `${subsectionId}-head`,
+      section.id,
+      <>
+        {options.isFirst && <SecHead title={section.title} />}
+        <EntryHead
+          title={award.name}
+          sub={award.awarder}
+          start={award.date}
+          lang={lang}
+        />
+      </>,
+      {
+        paddingTop: options.paddingTop,
+        sectionStart: options.sectionStart,
+        subsectionId,
+        subsectionPart: 'head',
+      },
+    ),
+  )
+
+  if (award.bullets.length > 0) {
+    blocks.push(
+      subsectionBlock(
+        `${subsectionId}-bullets`,
+        section.id,
+        <Bullets items={award.bullets} />,
+        { subsectionId, subsectionPart: 'bullets' },
+      ),
+    )
+  }
+}
+
+function LangRow({ label, values }: { label: string; values: string[] }) {
+  const { font } = useLayoutTokensContext()
   return (
-    <>
-      <EntryHead
-        title={entry.title}
-        sub={entry.subtitle}
-        start={entry.startDate}
-        end={entry.endDate}
-        lang={lang}
-      />
-      {entry.bullets.length > 0 && <Bullets items={entry.bullets} />}
-      {entry.keywords.length > 0 && <Keywords items={entry.keywords} />}
-    </>
+    <div style={{ display: 'flex', gap: 0, alignItems: 'baseline' }}>
+      <span
+        style={{
+          width: 80,
+          flexShrink: 0,
+          fontSize: font.langLabel,
+          fontWeight: 700,
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          color: Colors.meta,
+        }}
+      >
+        {label}
+      </span>
+      <span style={{ fontSize: font.langValue, color: Colors.body }}>
+        {values.join(' · ')}
+      </span>
+    </div>
   )
 }
 
-/** Emit atomic sub-section blocks for a YAML section. */
 function emitSectionBlocks(
   section: RenderSection,
   blocks: ReactNode[],
   sectionGap: (base: number) => number,
   lang: string,
+  layoutOptions: LayoutOptions,
 ) {
   const leadSpacing = {
     paddingTop: sectionLeadPadding(sectionGap),
@@ -328,28 +549,20 @@ function emitSectionBlocks(
       return
     }
 
-    blocks.push(
-      subsectionBlock(
-        `${section.id}-entry-${entries[0].id}`,
-        section.id,
-        <>
-          <SecHead title={section.title} />
-          {renderEntryBody(entries[0], lang)}
-        </>,
-        leadSpacing,
-      ),
-    )
+    emitEntryParts(section, entries[0], blocks, sectionGap, lang, {
+      isFirst: true,
+      paddingTop: leadSpacing.paddingTop,
+      sectionStart: true,
+      allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
+    })
 
     for (let i = 1; i < entries.length; i++) {
-      const entry = entries[i]
-      blocks.push(
-        subsectionBlock(
-          `${section.id}-entry-${entry.id}`,
-          section.id,
-          renderEntryBody(entry, lang),
-          { paddingTop: sectionGap(section.gap ?? SectionSpacing) },
-        ),
-      )
+      emitEntryParts(section, entries[i], blocks, sectionGap, lang, {
+        isFirst: false,
+        paddingTop: sectionGap(section.gap ?? SectionSpacing),
+        sectionStart: false,
+        allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
+      })
     }
   } else if (section.variant === 'skills') {
     const skills = section.skills
@@ -371,7 +584,7 @@ function emitSectionBlocks(
         section.id,
         <>
           <SecHead title={section.title} />
-          {renderSkillRow(skills[0])}
+          <SkillRow skill={skills[0]} />
         </>,
         leadSpacing,
       ),
@@ -382,7 +595,7 @@ function emitSectionBlocks(
         subsectionBlock(
           `${section.id}-skill-${skills[i].id}`,
           section.id,
-          renderSkillRow(skills[i]),
+          <SkillRow skill={skills[i]} />,
           { paddingTop: sectionGap(3) },
         ),
       )
@@ -407,7 +620,7 @@ function emitSectionBlocks(
         section.id,
         <>
           <SecHead title={section.title} />
-          {renderCertificateRow(certificates[0], lang)}
+          <CertificateRow cert={certificates[0]} lang={lang} />
         </>,
         leadSpacing,
       ),
@@ -418,7 +631,7 @@ function emitSectionBlocks(
         subsectionBlock(
           `${section.id}-cert-${certificates[i].id}`,
           section.id,
-          renderCertificateRow(certificates[i], lang),
+          <CertificateRow cert={certificates[i]} lang={lang} />,
           { paddingTop: sectionGap(2.5) },
         ),
       )
@@ -445,34 +658,13 @@ function emitSectionBlocks(
       return
     }
 
-    const renderLangRow = ([label, values]: [string, string[]]) => (
-      <div style={{ display: 'flex', gap: 0, alignItems: 'baseline' }}>
-        <span
-          style={{
-            width: 80,
-            flexShrink: 0,
-            fontSize: 8.5,
-            fontWeight: 700,
-            letterSpacing: '0.12em',
-            textTransform: 'uppercase',
-            color: Colors.meta,
-          }}
-        >
-          {label}
-        </span>
-        <span style={{ fontSize: 9.5, color: Colors.body }}>
-          {values.join(' · ')}
-        </span>
-      </div>
-    )
-
     blocks.push(
       subsectionBlock(
         `${section.id}-row-${rows[0][0]}`,
         section.id,
         <>
           <SecHead title={section.title} />
-          {renderLangRow(rows[0])}
+          <LangRow label={rows[0][0]} values={rows[0][1]} />
         </>,
         leadSpacing,
       ),
@@ -483,7 +675,7 @@ function emitSectionBlocks(
         subsectionBlock(
           `${section.id}-row-${rows[i][0]}`,
           section.id,
-          renderLangRow(rows[i]),
+          <LangRow label={rows[i][0]} values={rows[i][1]} />,
           { paddingTop: sectionGap(3) },
         ),
       )
@@ -502,44 +694,20 @@ function emitSectionBlocks(
       return
     }
 
-    blocks.push(
-      subsectionBlock(
-        `${section.id}-award-${awards[0].id}`,
-        section.id,
-        <>
-          <SecHead title={section.title} />
-          <EntryHead
-            title={awards[0].name}
-            sub={awards[0].awarder}
-            start={awards[0].date}
-            lang={lang}
-          />
-          {awards[0].bullets.length > 0 && (
-            <Bullets items={awards[0].bullets} />
-          )}
-        </>,
-        leadSpacing,
-      ),
-    )
+    emitAwardParts(section, awards[0], blocks, sectionGap, lang, {
+      isFirst: true,
+      paddingTop: leadSpacing.paddingTop,
+      sectionStart: true,
+      allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
+    })
 
     for (let i = 1; i < awards.length; i++) {
-      const award = awards[i]
-      blocks.push(
-        subsectionBlock(
-          `${section.id}-award-${award.id}`,
-          section.id,
-          <>
-            <EntryHead
-              title={award.name}
-              sub={award.awarder}
-              start={award.date}
-              lang={lang}
-            />
-            {award.bullets.length > 0 && <Bullets items={award.bullets} />}
-          </>,
-          { paddingTop: sectionGap(SectionSpacing) },
-        ),
-      )
+      emitAwardParts(section, awards[i], blocks, sectionGap, lang, {
+        isFirst: false,
+        paddingTop: sectionGap(SectionSpacing),
+        sectionStart: false,
+        allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
+      })
     }
   }
 }

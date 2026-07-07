@@ -4,12 +4,14 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "concurrently --names web,export --prefix-colors blue,green --kill-others-on-fail \"vite\" \"tsx watch src/export-service/server.ts\"",
-    "dev:web": "vite",
+    "dev": "concurrently --names web,export --prefix-colors blue,green --kill-others-on-fail \"ESBUILD_BINARY_PATH=./node_modules/esbuild/bin/esbuild vite\" \"tsx watch src/export-service/server.ts\"",
+    "dev:web": "ESBUILD_BINARY_PATH=./node_modules/esbuild/bin/esbuild vite",
+    "dev:clean": "rm -rf node_modules/.vite && ESBUILD_BINARY_PATH=./node_modules/esbuild/bin/esbuild vite",
     "dev:export": "tsx watch src/export-service/server.ts",
-    "build": "vite build",
+    "build": "ESBUILD_BINARY_PATH=./node_modules/esbuild/bin/esbuild vite build",
     "start": "concurrently --names web,export --prefix-colors blue,green --kill-others-on-fail \"vite preview\" \"tsx src/export-service/server.ts\"",
     "typecheck": "tsc --noEmit --skipLibCheck",
+    "test": "vitest run",
     "postinstall": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
@@ -63,9 +65,11 @@
     "motion": "12.23.24",
     "next-themes": "0.4.6",
     "puppeteer": "^25.0.4",
+    "react": "18.3.1",
     "react-day-picker": "8.10.1",
     "react-dnd": "16.0.1",
     "react-dnd-html5-backend": "16.0.1",
+    "react-dom": "18.3.1",
     "react-hook-form": "7.55.0",
     "react-popper": "2.3.0",
     "react-resizable-panels": "2.1.7",
@@ -86,10 +90,12 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.1",
     "@vitejs/plugin-react": "4.7.0",
+    "esbuild": "0.25.12",
     "tailwindcss": "4.1.12",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "vitest": "^4.1.10"
   },
   "peerDependencies": {
     "react": "18.3.1",

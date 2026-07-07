@@ -11,6 +11,18 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from './components/ui/resizable'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from './components/ui/tooltip'
+import { AdvancedLayoutSheet } from './components/AdvancedLayoutSheet'
+import {
+  DEFAULT_LAYOUT_OPTIONS,
+  applyLayoutPreset,
+  type LayoutOptions,
+} from './layout/layout-options'
+import { cn } from './components/ui/utils'
 
 // ── Sample YAML (new schema format) ──────────────────────────────────────────
 const SAMPLE_NEW_SCHEMA = `schema:
@@ -211,8 +223,9 @@ export default function App() {
   const [diagnostics, setDiagnostics] = useState<DiagnosticItem[]>([])
   const [sourceStatus, setSourceStatus] = useState<SourceStatus>('new-schema')
   const [isExporting, setIsExporting] = useState(false)
-  const [optimized, setOptimized] = useState(false)
-  const [spacingScale, setSpacingScale] = useState(1.0)
+  const [layoutOptions, setLayoutOptions] = useState<LayoutOptions>({
+    ...DEFAULT_LAYOUT_OPTIONS,
+  })
   const [langOverride, setLangOverride] = useState<'zh' | 'en' | null>(null)
   const [previewZoom, setPreviewZoom] = useState(1.0)
   const [showSocialIcons, setShowSocialIcons] = useState(true)
@@ -318,8 +331,7 @@ export default function App() {
           model: renderModel,
           filename,
           options: {
-            optimized,
-            spacingScale,
+            layout: layoutOptions,
             showSocialIcons,
           },
         }),
@@ -349,7 +361,7 @@ export default function App() {
     } finally {
       setIsExporting(false)
     }
-  }, [renderModel, sourceStatus, isExporting])
+  }, [renderModel, sourceStatus, isExporting, layoutOptions, showSocialIcons])
 
   // The model to render: current valid or last valid (graceful degradation)
   const displayModel = renderModel ?? lastValidModel.current
@@ -425,47 +437,44 @@ export default function App() {
 
         <div className="h-4 w-px bg-stone-200" />
 
-        {/* Optimize button */}
-        <button
-          onClick={() => {
-            if (optimized) {
-              setOptimized(false)
-              setSpacingScale(1.0)
-            } else {
-              setOptimized(true)
-              setSpacingScale(0.85)
-            }
-          }}
-          disabled={sourceStatus === 'invalid'}
-          className={`h-7 px-3 text-xs font-medium rounded-sm transition-colors ${
-            optimized
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-stone-100 text-stone-700 border border-stone-300 hover:bg-stone-200'
-          } disabled:opacity-40 disabled:cursor-not-allowed`}
-        >
-          {optimized ? '✓ Optimized' : '⚡ Optimize Layout'}
-        </button>
+        <div className="flex items-center gap-1 rounded-sm border border-stone-200 bg-stone-50/80 p-0.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-flex">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (layoutOptions.enabled) {
+                      setLayoutOptions({ ...DEFAULT_LAYOUT_OPTIONS })
+                    } else {
+                      setLayoutOptions(applyLayoutPreset('optimize'))
+                    }
+                  }}
+                  disabled={sourceStatus === 'invalid'}
+                  className={cn(
+                    'h-7 px-3 text-xs font-medium rounded-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed',
+                    layoutOptions.enabled
+                      ? 'bg-stone-900 text-white hover:bg-stone-800'
+                      : 'bg-white text-stone-700 hover:bg-stone-100',
+                  )}
+                >
+                  {layoutOptions.enabled ? 'Optimized' : 'Optimize'}
+                </button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-56">
+              Quick compact preset. Open Layout for full controls.
+            </TooltipContent>
+          </Tooltip>
 
-        {/* Spacing slider when optimized */}
-        {optimized && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-stone-500">Spacing</span>
-            <input
-              type="range"
-              min="0.7"
-              max="1.3"
-              step="0.05"
-              value={spacingScale}
-              onChange={(e) => setSpacingScale(parseFloat(e.target.value))}
-              className="w-16 h-1 accent-blue-600"
-            />
-            <span className="text-xs text-stone-400 w-8">
-              {Math.round(spacingScale * 100)}%
-            </span>
-          </div>
-        )}
+          <AdvancedLayoutSheet
+            layout={layoutOptions}
+            onChange={setLayoutOptions}
+            disabled={sourceStatus === 'invalid'}
+          />
+        </div>
 
-        {/* Export button */}
+        <div className="h-4 w-px bg-stone-200" />
         <button
           onClick={handleExport}
           disabled={sourceStatus === 'invalid' || isExporting}
@@ -477,7 +486,63 @@ export default function App() {
 
       {/* ── Main split layout ── */}
       <ResizablePanelGroup direction="horizontal" className="flex-1">
-        {/* Left: YAML Editor */}
+        {/* Left: Resume Preview */}
+        <ResizablePanel defaultSize={55} minSize={30}>
+          <div className="h-full relative overflow-auto">
+            {displayModel ? (
+              <div
+                style={{
+                  transform: `scale(${previewZoom})`,
+                  transformOrigin: 'top left',
+                  transition: 'transform 0.15s ease',
+                }}
+              >
+                <ResumeRenderer
+                  model={displayModel}
+                  layout={layoutOptions}
+                  showSocialIcons={showSocialIcons}
+                />
+              </div>
+            ) : (
+              <div className="h-full flex items-center justify-center text-stone-400 text-sm">
+                Enter valid YAML to see preview
+              </div>
+            )}
+
+            {/* Floating zoom control — bottom-right of preview */}
+            <div className="no-print sticky bottom-3 float-right mr-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm border border-stone-200 rounded-md shadow-sm px-2 py-1.5 z-10">
+              <button
+                onClick={() =>
+                  setPreviewZoom((z) => Math.max(0.25, +(z - 0.1).toFixed(2)))
+                }
+                className="w-6 h-6 flex items-center justify-center text-stone-600 hover:bg-stone-100 rounded transition-colors text-sm font-medium"
+                title="Zoom out"
+              >
+                −
+              </button>
+              <button
+                onClick={() => setPreviewZoom(1.0)}
+                className="min-w-[40px] h-6 flex items-center justify-center text-xs text-stone-600 hover:bg-stone-100 rounded transition-colors font-medium tabular-nums"
+                title="Reset zoom"
+              >
+                {Math.round(previewZoom * 100)}%
+              </button>
+              <button
+                onClick={() =>
+                  setPreviewZoom((z) => Math.min(2.0, +(z + 0.1).toFixed(2)))
+                }
+                className="w-6 h-6 flex items-center justify-center text-stone-600 hover:bg-stone-100 rounded transition-colors text-sm font-medium"
+                title="Zoom in"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </ResizablePanel>
+
+        <ResizableHandle withHandle />
+
+        {/* Right: YAML Editor */}
         <ResizablePanel defaultSize={45} minSize={25}>
           <div className="h-full flex flex-col">
             {/* Diagnostics panel */}
@@ -533,63 +598,6 @@ export default function App() {
                   renderWhitespace: 'selection',
                 }}
               />
-            </div>
-          </div>
-        </ResizablePanel>
-
-        <ResizableHandle withHandle />
-
-        {/* Right: Resume Preview */}
-        <ResizablePanel defaultSize={55} minSize={30}>
-          <div className="h-full relative overflow-auto">
-            {displayModel ? (
-              <div
-                style={{
-                  transform: `scale(${previewZoom})`,
-                  transformOrigin: 'top center',
-                  transition: 'transform 0.15s ease',
-                }}
-              >
-                <ResumeRenderer
-                  model={displayModel}
-                  optimized={optimized}
-                  spacingScale={spacingScale}
-                  showSocialIcons={showSocialIcons}
-                />
-              </div>
-            ) : (
-              <div className="h-full flex items-center justify-center text-stone-400 text-sm">
-                Enter valid YAML to see preview
-              </div>
-            )}
-
-            {/* Floating zoom control — bottom-right of preview */}
-            <div className="no-print sticky bottom-3 float-right mr-3 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm border border-stone-200 rounded-md shadow-sm px-2 py-1.5 z-10">
-              <button
-                onClick={() =>
-                  setPreviewZoom((z) => Math.max(0.25, +(z - 0.1).toFixed(2)))
-                }
-                className="w-6 h-6 flex items-center justify-center text-stone-600 hover:bg-stone-100 rounded transition-colors text-sm font-medium"
-                title="Zoom out"
-              >
-                −
-              </button>
-              <button
-                onClick={() => setPreviewZoom(1.0)}
-                className="min-w-[40px] h-6 flex items-center justify-center text-xs text-stone-600 hover:bg-stone-100 rounded transition-colors font-medium tabular-nums"
-                title="Reset zoom"
-              >
-                {Math.round(previewZoom * 100)}%
-              </button>
-              <button
-                onClick={() =>
-                  setPreviewZoom((z) => Math.min(2.0, +(z + 0.1).toFixed(2)))
-                }
-                className="w-6 h-6 flex items-center justify-center text-stone-600 hover:bg-stone-100 rounded transition-colors text-sm font-medium"
-                title="Zoom in"
-              >
-                +
-              </button>
             </div>
           </div>
         </ResizablePanel>

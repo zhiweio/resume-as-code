@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react'
 import { ResumeRenderer } from '../renderer'
 import type { RenderModel } from '../../models'
+import {
+  layoutFromLegacyOptions,
+  type LayoutOptions,
+} from '../layout/layout-options'
 
 export interface ExportRenderOptions {
+  layout?: LayoutOptions
+  /** @deprecated Use layout.enabled */
   optimized?: boolean
+  /** @deprecated Use layout.spacingScale */
   spacingScale?: number
   showSocialIcons?: boolean
 }
@@ -102,12 +109,12 @@ export function PrintRoute() {
   }
 
   const { model, options } = payload
+  const layout = layoutFromLegacyOptions(options)
 
   return (
     <ResumeRenderer
       model={model}
-      optimized={options?.optimized}
-      spacingScale={options?.spacingScale}
+      layout={layout}
       showSocialIcons={options?.showSocialIcons}
     />
   )

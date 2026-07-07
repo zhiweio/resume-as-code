@@ -1,5 +1,6 @@
 import { Colors } from '../constants'
 import { formatDate } from '../format-date'
+import { useLayoutTokensContext } from '../../layout/LayoutOptionsContext'
 
 export interface EntryHeadProps {
   title: string
@@ -11,11 +12,12 @@ export interface EntryHeadProps {
 
 /** Compact header row: bold left label + right date, then italic subtitle. */
 export function EntryHead({ title, sub, start, end, lang }: EntryHeadProps) {
+  const { font, lineHeight, spacing } = useLayoutTokensContext()
   const displayStart = lang ? formatDate(start, lang) : start
   const displayEnd = lang && end ? formatDate(end, lang) : end
 
   return (
-    <div style={{ marginBottom: 2 }}>
+    <div style={{ marginBottom: spacing.entryHeadMarginBottom }}>
       <div
         style={{
           display: 'flex',
@@ -26,21 +28,21 @@ export function EntryHead({ title, sub, start, end, lang }: EntryHeadProps) {
       >
         <span
           style={{
-            fontSize: 11,
+            fontSize: font.entryTitle,
             fontWeight: 600,
             color: Colors.entry,
-            lineHeight: 1.3,
+            lineHeight: lineHeight.entry,
           }}
         >
           {title}
         </span>
         <span
           style={{
-            fontSize: 9,
+            fontSize: font.entryDate,
             color: Colors.subtle,
             whiteSpace: 'nowrap',
             flexShrink: 0,
-            lineHeight: 1.3,
+            lineHeight: lineHeight.entry,
           }}
         >
           {displayStart}
@@ -49,11 +51,11 @@ export function EntryHead({ title, sub, start, end, lang }: EntryHeadProps) {
       </div>
       <p
         style={{
-          fontSize: 10,
+          fontSize: font.entrySub,
           color: Colors.meta,
           fontStyle: 'italic',
-          marginTop: 1,
-          lineHeight: 1.3,
+          marginTop: spacing.entrySubMarginTop,
+          lineHeight: lineHeight.entry,
         }}
       >
         {sub}

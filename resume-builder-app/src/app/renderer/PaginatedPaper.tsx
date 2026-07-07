@@ -8,37 +8,47 @@ import {
   cloneElement,
   isValidElement,
 } from 'react'
-import { Paper, paperPaddingCss, paperSheetStyle } from './constants'
+import { paperSheetStyle } from './constants'
 import { packBlocksToPages } from './paginate-pack'
-
-const PAGE_HEIGHT_PX = Paper.heightPx
-const PAPER_SHEET = paperSheetStyle()
-const PAPER_PADDING = paperPaddingCss()
+import { useLayoutTokensContext } from '../layout/LayoutOptionsContext'
 
 /** Strip block spacing at the top of a page; page margin provides the inset. */
-function renderPageBlock(child: ReactNode, blockIdx: number) {
-  if (!isValidElement(child) || blockIdx !== 0) return child
+function renderPageBlock(child: ReactNode, blockIdx: number, pageIdx: number) {
+  if (!isValidElement(child)) return child
 
-  const style = (child.props.style as CSSProperties | undefined) ?? {}
+  const props = child.props as {
+    style?: CSSProperties
+    className?: string
+    'data-section-start'?: string
+  }
+  const style = props.style ?? {}
+  const isSectionStart = props['data-section-start'] === 'true'
+  const isContinuation = pageIdx > 0 && blockIdx === 0 && !isSectionStart
+
+  let nextClassName = props.className ?? ''
+  if (isContinuation) {
+    nextClassName = `${nextClassName} paginate-continuation`.trim()
+  }
+
+  if (blockIdx !== 0) return child
+
+  if (isContinuation) {
+    return cloneElement(child, {
+      className: nextClassName,
+      style: { ...style, paddingTop: undefined },
+    } as { className: string; style: CSSProperties })
+  }
+
   if (!style.paddingTop) return child
 
   return cloneElement(child, {
     style: { ...style, paddingTop: 0 },
-  })
+  } as { style: CSSProperties })
 }
 
 interface PaginatedPaperProps {
   children: ReactNode
   fontFamily: string
-  /** Layout optimization adjustments */
-  optimized?: boolean
-  /** Spacing multiplier (default 1.0, range 0.7–1.3) */
-  spacingScale?: number
-}
-
-interface PageData {
-  startIdx: number
-  endIdx: number
 }
 
 /**
@@ -46,15 +56,14 @@ interface PageData {
  * Measures child blocks, packs them into explicit A4 page containers,
  * and renders stacked pages separated by visual page-break indicators.
  */
-export function PaginatedPaper({
-  children,
-  fontFamily,
-  spacingScale = 1.0,
-}: PaginatedPaperProps) {
+export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
+  const { page, options } = useLayoutTokensContext()
   const measureRef = useRef<HTMLDivElement>(null)
-  const [pages, setPages] = useState<PageData[]>([])
+  const [pages, setPages] = useState<{ startIdx: number; endIdx: number }[]>([])
   const [measured, setMeasured] = useState(false)
   const childArray = Children.toArray(children)
+  const paperSheet = paperSheetStyle(page.marginPx)
+  const paperPadding = `${page.marginPx}px`
 
   useEffect(() => {
     if (!measureRef.current) return
@@ -71,11 +80,14 @@ export function PaginatedPaper({
         return
       }
 
-      const pageList = packBlocksToPages(blocks)
+      const pageList = packBlocksToPages(blocks, {
+        usableHeight: page.usableHeight,
+        allowSectionSplit: options.allowSectionSplit,
+        allowSubsectionSplit: options.allowSubsectionSplit,
+      })
       setPages(pageList)
       setMeasured(true)
 
-      // Let layout paint, then signal export readiness for Puppeteer.
       setTimeout(() => {
         ;(
           window as unknown as Record<string, unknown>
@@ -100,11 +112,10 @@ export function PaginatedPaper({
     }
 
     runMeasure()
-  }, [children, spacingScale])
+  }, [children, page.usableHeight, options])
 
   return (
     <>
-      {/* Hidden measurement container — same width/padding as real pages */}
       <div
         ref={measureRef}
         aria-hidden="true"
@@ -112,8 +123,8 @@ export function PaginatedPaper({
           position: 'absolute',
           visibility: 'hidden',
           pointerEvents: 'none',
-          width: Paper.widthPx,
-          padding: PAPER_PADDING,
+          width: page.widthPx,
+          padding: paperPadding,
           boxSizing: 'border-box',
           fontFamily,
         }}
@@ -125,7 +136,6 @@ export function PaginatedPaper({
         )}
       </div>
 
-      {/* Rendered pages */}
       <div
         className="chrome py-8 print:py-0 print:!bg-white"
         style={{ backgroundColor: '#D6D4CF', fontFamily }}
@@ -133,19 +143,18 @@ export function PaginatedPaper({
         {!measured ? (
           <div
             className="paper mx-auto bg-white shadow-lg print:shadow-none"
-            style={PAPER_SHEET}
+            style={paperSheet}
           >
             {children}
           </div>
         ) : (
-          pages.map((page, pageIdx) => (
+          pages.map((pageData, pageIdx) => (
             <div key={pageIdx}>
-              {/* Page separator between pages */}
               {pageIdx > 0 && (
                 <div
                   className="no-print"
                   style={{
-                    width: Paper.widthPx,
+                    width: page.widthPx,
                     margin: '0 auto',
                     padding: '6px 0',
                     display: 'flex',
@@ -180,15 +189,16 @@ export function PaginatedPaper({
                 </div>
               )}
 
-              {/* A4 page container */}
               <div
                 className="paper mx-auto bg-white shadow-lg print:shadow-none"
-                style={PAPER_SHEET}
+                style={paperSheet}
               >
                 <div className="page-content">
                   {childArray
-                    .slice(page.startIdx, page.endIdx)
-                    .map((child, blockIdx) => renderPageBlock(child, blockIdx))}
+                    .slice(pageData.startIdx, pageData.endIdx)
+                    .map((child, blockIdx) =>
+                      renderPageBlock(child, blockIdx, pageIdx),
+                    )}
                 </div>
               </div>
             </div>
@@ -199,5 +209,5 @@ export function PaginatedPaper({
   )
 }
 
-export { PAGE_HEIGHT_PX }
+export { Paper } from './constants'
 export { USABLE_HEIGHT } from './paginate-pack'

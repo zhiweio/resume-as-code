@@ -1,17 +1,30 @@
-import { Paper } from './constants'
+import { Paper, usablePageHeight } from './constants'
 
-/** A4 usable content height at 96 dpi. */
-export const USABLE_HEIGHT = Paper.heightPx - Paper.marginPx * 2
+/** A4 usable content height at default 40px margins. */
+export const USABLE_HEIGHT = usablePageHeight()
 
 export interface PageData {
   startIdx: number
   endIdx: number
 }
 
+export interface PackOptions {
+  usableHeight?: number
+  allowSectionSplit?: boolean
+  allowSubsectionSplit?: boolean
+}
+
+export const DEFAULT_PACK_OPTIONS: Required<PackOptions> = {
+  usableHeight: USABLE_HEIGHT,
+  allowSectionSplit: true,
+  allowSubsectionSplit: false,
+}
+
 interface BlockMeta {
   index: number
   height: number
   sectionId: string | null
+  subsectionId: string | null
 }
 
 interface SingleUnit {
@@ -34,16 +47,21 @@ export function measureBlockHeight(el: HTMLElement): number {
   return Math.max(el.offsetHeight, el.scrollHeight)
 }
 
+function resolvePackOptions(options?: PackOptions): Required<PackOptions> {
+  return { ...DEFAULT_PACK_OPTIONS, ...options }
+}
+
 function shouldStartNewPage(
   blockHeight: number,
   currentHeight: number,
   pageHasBlocks: boolean,
   atomic: boolean,
+  usableHeight: number,
 ): boolean {
   if (!pageHasBlocks) return false
 
-  const remaining = USABLE_HEIGHT - currentHeight
-  if (currentHeight + blockHeight > USABLE_HEIGHT) return true
+  const remaining = usableHeight - currentHeight
+  if (currentHeight + blockHeight > usableHeight) return true
   if (atomic && blockHeight > remaining) return true
 
   return false
@@ -54,6 +72,7 @@ function buildBlockMeta(blocks: HTMLElement[]): BlockMeta[] {
     index,
     height: measureBlockHeight(el),
     sectionId: el.dataset.sectionId ?? null,
+    subsectionId: el.dataset.subsectionId ?? null,
   }))
 }
 
@@ -95,6 +114,85 @@ function buildPackUnits(meta: BlockMeta[]): PackUnit[] {
   return units
 }
 
+function packSectionUnit(
+  unit: SectionUnit,
+  state: {
+    pageStartIdx: number
+    currentHeight: number
+    pages: PageData[]
+    usableHeight: number
+    allowSectionSplit: boolean
+  },
+): { pageStartIdx: number; currentHeight: number } {
+  const { usableHeight, allowSectionSplit } = state
+  let { pageStartIdx, currentHeight } = state
+
+  const startNewPage = (nextIdx: number) => {
+    if (nextIdx > pageStartIdx) {
+      state.pages.push({ startIdx: pageStartIdx, endIdx: nextIdx })
+    }
+    pageStartIdx = nextIdx
+    currentHeight = 0
+  }
+
+  const firstIdx = unit.indices[0]
+  const fitsInRemaining = currentHeight + unit.totalHeight <= usableHeight
+
+  if (!allowSectionSplit) {
+    const pageHasBlocks = firstIdx > pageStartIdx
+    if (
+      shouldStartNewPage(
+        unit.totalHeight,
+        currentHeight,
+        pageHasBlocks,
+        true,
+        usableHeight,
+      )
+    ) {
+      startNewPage(firstIdx)
+    }
+    currentHeight += unit.totalHeight
+    return { pageStartIdx, currentHeight }
+  }
+
+  if (fitsInRemaining) {
+    const pageHasBlocks = firstIdx > pageStartIdx
+    if (
+      shouldStartNewPage(
+        unit.totalHeight,
+        currentHeight,
+        pageHasBlocks,
+        true,
+        usableHeight,
+      )
+    ) {
+      startNewPage(firstIdx)
+    }
+    currentHeight += unit.totalHeight
+    return { pageStartIdx, currentHeight }
+  }
+
+  for (let j = 0; j < unit.indices.length; j++) {
+    const idx = unit.indices[j]
+    const height = unit.heights[j]
+    const pageHasBlocks = idx > pageStartIdx
+    if (
+      shouldStartNewPage(
+        height,
+        currentHeight,
+        pageHasBlocks,
+        true,
+        usableHeight,
+      )
+    ) {
+      startNewPage(idx)
+    }
+    currentHeight += height
+  }
+
+  return { pageStartIdx, currentHeight }
+}
+
 /**
  * Pack measured blocks into pages.
  *
@@ -104,9 +202,13 @@ function buildPackUnits(meta: BlockMeta[]): PackUnit[] {
  *   together on that page.
  * - Otherwise pack sub-sections greedily so trailing page space is used first.
  */
-export function packBlocksToPages(blocks: HTMLElement[]): PageData[] {
+export function packBlocksToPages(
+  blocks: HTMLElement[],
+  options?: PackOptions,
+): PageData[] {
   if (blocks.length === 0) return [{ startIdx: 0, endIdx: 0 }]
 
+  const { usableHeight, allowSectionSplit } = resolvePackOptions(options)
   const units = buildPackUnits(buildBlockMeta(blocks))
   const pages: PageData[] = []
   let pageStartIdx = 0
@@ -124,7 +226,13 @@ export function packBlocksToPages(blocks: HTMLElement[]): PageData[] {
     if (unit.type === 'single') {
       const pageHasBlocks = unit.index > pageStartIdx
       if (
-        shouldStartNewPage(unit.height, currentHeight, pageHasBlocks, false)
+        shouldStartNewPage(
+          unit.height,
+          currentHeight,
+          pageHasBlocks,
+          false,
+          usableHeight,
+        )
       ) {
         startNewPage(unit.index)
       }
@@ -132,29 +240,15 @@ export function packBlocksToPages(blocks: HTMLElement[]): PageData[] {
       continue
     }
 
-    const firstIdx = unit.indices[0]
-    const fitsInRemaining = currentHeight + unit.totalHeight <= USABLE_HEIGHT
-
-    if (fitsInRemaining) {
-      const pageHasBlocks = firstIdx > pageStartIdx
-      if (
-        shouldStartNewPage(unit.totalHeight, currentHeight, pageHasBlocks, true)
-      ) {
-        startNewPage(firstIdx)
-      }
-      currentHeight += unit.totalHeight
-      continue
-    }
-
-    for (let j = 0; j < unit.indices.length; j++) {
-      const idx = unit.indices[j]
-      const height = unit.heights[j]
-      const pageHasBlocks = idx > pageStartIdx
-      if (shouldStartNewPage(height, currentHeight, pageHasBlocks, true)) {
-        startNewPage(idx)
-      }
-      currentHeight += height
-    }
+    const result = packSectionUnit(unit, {
+      pageStartIdx,
+      currentHeight,
+      pages,
+      usableHeight,
+      allowSectionSplit,
+    })
+    pageStartIdx = result.pageStartIdx
+    currentHeight = result.currentHeight
   }
 
   if (pageStartIdx < blocks.length) {
@@ -162,4 +256,25 @@ export function packBlocksToPages(blocks: HTMLElement[]): PageData[] {
   }
 
   return pages
+}
+
+/** Test helper: pack blocks described by height metadata without a DOM. */
+export function packMockBlocks(
+  blocks: Array<{
+    height: number
+    sectionId?: string
+    subsectionId?: string
+  }>,
+  options?: PackOptions,
+): PageData[] {
+  const elements = blocks.map((block) => ({
+    offsetHeight: block.height,
+    scrollHeight: block.height,
+    dataset: {
+      sectionId: block.sectionId ?? '',
+      subsectionId: block.subsectionId ?? '',
+    },
+  })) as HTMLElement[]
+
+  return packBlocksToPages(elements, options)
 }
