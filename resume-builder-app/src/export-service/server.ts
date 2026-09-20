@@ -12,6 +12,8 @@ import {
   buildContentDisposition,
   buildExportFilename,
 } from '../export/build-filename'
+import { PAPER_SIZES } from '../app/renderer/constants'
+import { DEFAULT_PAPER_SIZE, PAPER_SIZE_IDS, type PaperSizeId } from '../models'
 
 const PORT = Number(process.env.EXPORT_PORT) || 3001
 const APP_URL = process.env.APP_URL || 'http://localhost:5173'
@@ -70,8 +72,20 @@ app.post('/api/export', async (req, res) => {
     const b = await getBrowser()
     const page = await b.newPage()
 
-    // Match the preview paper width so print CSS and pagination stay aligned.
-    await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 })
+    const rawPaperSize = options?.layout?.paperSize
+    const paperSize: PaperSizeId = PAPER_SIZE_IDS.includes(
+      rawPaperSize as PaperSizeId,
+    )
+      ? (rawPaperSize as PaperSizeId)
+      : DEFAULT_PAPER_SIZE
+    const { widthPx, heightPx } = PAPER_SIZES[paperSize]
+
+    // Match the preview paper size so print CSS and pagination stay aligned.
+    await page.setViewport({
+      width: widthPx,
+      height: heightPx,
+      deviceScaleFactor: 1,
+    })
 
     // Capture console from the browser page for debugging
     page.on('console', (msg) => {
@@ -134,8 +148,10 @@ app.post('/api/export', async (req, res) => {
 
     // Generate PDF
     console.log(`[export] Generating PDF...`)
+    // preferCSSPageSize gives the @page CSS rule (set dynamically in
+    // PrintStyles.tsx) priority; `format` here is just a matching fallback.
     const pdf = await page.pdf({
-      format: 'A4',
+      format: PAPER_SIZES[paperSize].pdfFormat,
       printBackground: true,
       preferCSSPageSize: true,
       margin: { top: '0', right: '0', bottom: '0', left: '0' },

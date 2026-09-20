@@ -1,3 +1,6 @@
+import type { PaperFormat } from 'puppeteer'
+import { DEFAULT_PAPER_SIZE, type PaperSizeId } from '../../models/render-model'
+
 /** Design tokens frozen from the Figma Make template baseline. */
 export const Colors = {
   name: '#000000',
@@ -10,10 +13,39 @@ export const Colors = {
   ruleLight: '#CCCCCC',
 } as const
 
-/** A4 paper dimensions at 96 dpi. */
+export type { PaperSizeId }
+export { DEFAULT_PAPER_SIZE }
+
+/**
+ * Physical paper dimensions and per-consumer format spellings, keyed by
+ * paper size id. Single source of truth for CSS `@page` keywords and
+ * Puppeteer's `page.pdf({ format })` values, so adding a size only means
+ * adding one entry here (TypeScript enforces every PaperSizeId has one).
+ */
+export const PAPER_SIZES: Record<
+  PaperSizeId,
+  {
+    widthPx: number
+    heightPx: number
+    /** CSS `@page { size: ... }` keyword. */
+    cssPageSize: string
+    /** Puppeteer `page.pdf({ format })` value. */
+    pdfFormat: PaperFormat
+  }
+> = {
+  a4: { widthPx: 794, heightPx: 1123, cssPageSize: 'A4', pdfFormat: 'A4' },
+  /** US Letter: 8.5in x 11in @ 96dpi. */
+  letter: {
+    widthPx: 816,
+    heightPx: 1056,
+    cssPageSize: 'letter',
+    pdfFormat: 'Letter',
+  },
+}
+
+/** A4 paper dimensions at 96 dpi. Kept as the default/back-compat export. */
 export const Paper = {
-  widthPx: 794,
-  heightPx: 1123,
+  ...PAPER_SIZES.a4,
   /** Default uniform margin on all four sides. */
   marginPx: 40,
 } as const
@@ -23,18 +55,22 @@ export function paperPaddingCss(marginPx = Paper.marginPx): string {
   return `${marginPx}px`
 }
 
-/** Inline styles for a strict A4 sheet (794×1123 px at 96 dpi, border-box). */
-export function paperSheetStyle(marginPx = Paper.marginPx): {
+/** Inline styles for a paper sheet at the given size (border-box). */
+export function paperSheetStyle(
+  marginPx = Paper.marginPx,
+  paperSize: PaperSizeId = DEFAULT_PAPER_SIZE,
+): {
   width: number
   height: number
   minHeight: number
   padding: string
   boxSizing: 'border-box'
 } {
+  const { widthPx, heightPx } = PAPER_SIZES[paperSize]
   return {
-    width: Paper.widthPx,
-    height: Paper.heightPx,
-    minHeight: Paper.heightPx,
+    width: widthPx,
+    height: heightPx,
+    minHeight: heightPx,
     padding: paperPaddingCss(marginPx),
     boxSizing: 'border-box',
   }
@@ -43,6 +79,9 @@ export function paperSheetStyle(marginPx = Paper.marginPx): {
 /** Vertical gap between resume sections (and after the header). */
 export const SectionSpacing = 9
 
-export function usablePageHeight(marginPx = Paper.marginPx): number {
-  return Paper.heightPx - marginPx * 2
+export function usablePageHeight(
+  marginPx = Paper.marginPx,
+  paperSize: PaperSizeId = DEFAULT_PAPER_SIZE,
+): number {
+  return PAPER_SIZES[paperSize].heightPx - marginPx * 2
 }

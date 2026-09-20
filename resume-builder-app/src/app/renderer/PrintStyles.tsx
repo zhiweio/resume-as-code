@@ -1,16 +1,17 @@
-import { Colors } from './constants'
+import { Colors, PAPER_SIZES } from './constants'
 import { useLayoutTokensContext } from '../layout/LayoutOptionsContext'
 
 /** Print styles injected by the renderer. Isolates print behavior from screen CSS. */
 export function PrintStyles() {
-  const { page, spacing } = useLayoutTokensContext()
+  const { page, spacing, options } = useLayoutTokensContext()
   const { widthPx, heightPx, marginPx } = page
   const continuationInset = spacing.continuationPaddingTop
+  const cssPageSize = PAPER_SIZES[options.paperSize].cssPageSize
 
   return (
     <style>{`
       @media print {
-        @page { size: A4 portrait; margin: 0; }
+        @page { size: ${cssPageSize} portrait; margin: 0; }
         html, body {
           background: white !important;
           -webkit-print-color-adjust: exact;

@@ -1,5 +1,8 @@
+export { DEFAULT_PAPER_SIZE, PAPER_SIZE_IDS } from './render-model'
+
 export type {
   RenderModel,
+  PaperSizeId,
   RenderHeader,
   RenderSection,
   RenderEntry,

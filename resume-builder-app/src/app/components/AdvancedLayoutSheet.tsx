@@ -15,6 +15,8 @@ import {
   type LayoutOptions,
   type LayoutPresetId,
 } from '../layout/layout-options'
+import { PAPER_SIZES, type PaperSizeId } from '../renderer/constants'
+import { PAPER_SIZE_IDS } from '../../models'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import {
@@ -81,14 +83,27 @@ const PRESET_LABELS: Record<Exclude<LayoutPresetId, 'custom'>, string> = {
   airy: 'Airy',
 }
 
-function MarginPreview({ marginPx }: { marginPx: number }) {
-  const hInset = (marginPx / 794) * 100
-  const vInset = (marginPx / 1123) * 100
+const PAPER_SIZE_LABELS: Record<PaperSizeId, string> = {
+  a4: 'A4',
+  letter: 'US Letter',
+}
+
+function MarginPreview({
+  marginPx,
+  paperSize,
+}: {
+  marginPx: number
+  paperSize: PaperSizeId
+}) {
+  const { widthPx, heightPx } = PAPER_SIZES[paperSize]
+  const hInset = (marginPx / widthPx) * 100
+  const vInset = (marginPx / heightPx) * 100
 
   return (
     <div className="flex items-center gap-3 rounded-md border border-border/80 bg-muted/30 p-3">
       <div
-        className="relative aspect-[794/1123] h-[88px] shrink-0 rounded-sm border border-border bg-white shadow-sm"
+        className="relative h-[88px] shrink-0 rounded-sm border border-border bg-white shadow-sm"
+        style={{ aspectRatio: `${widthPx} / ${heightPx}` }}
         aria-hidden
       >
         <div
@@ -243,7 +258,7 @@ export function AdvancedLayoutSheet({
             <div className="flex flex-col gap-1">
               <SheetTitle className="text-base">Layout controls</SheetTitle>
               <SheetDescription className="text-xs leading-relaxed">
-                Adjust how the resume fills each A4 page. Preview and PDF export
+                Adjust how the resume fills each page. Preview and PDF export
                 update as you change settings.
               </SheetDescription>
             </div>
@@ -289,6 +304,32 @@ export function AdvancedLayoutSheet({
               Custom mix — pick a preset or adjust sliders below.
             </p>
           )}
+        </div>
+
+        <div className="border-b border-border px-6 py-4">
+          <p className="mb-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+            Paper size
+          </p>
+          <ToggleGroup
+            type="single"
+            value={layout.paperSize}
+            onValueChange={(value) => {
+              if (!value) return
+              onChange({ ...layout, paperSize: value as PaperSizeId })
+            }}
+            variant="outline"
+            size="sm"
+            className="grid w-full"
+            style={{
+              gridTemplateColumns: `repeat(${PAPER_SIZE_IDS.length}, minmax(0, 1fr))`,
+            }}
+          >
+            {PAPER_SIZE_IDS.map((id) => (
+              <ToggleGroupItem key={id} value={id} className="h-8 text-xs">
+                {PAPER_SIZE_LABELS[id]}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </div>
 
         <Tabs
@@ -369,7 +410,10 @@ export function AdvancedLayoutSheet({
               </TabsContent>
 
               <TabsContent value="spacing" className="mt-0 flex flex-col gap-4">
-                <MarginPreview marginPx={layout.pageMarginPx} />
+                <MarginPreview
+                  marginPx={layout.pageMarginPx}
+                  paperSize={layout.paperSize}
+                />
 
                 <Card className="gap-0 rounded-md py-0 shadow-none">
                   <CardHeader className="border-b border-border/60 px-4 py-3">

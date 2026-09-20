@@ -2,7 +2,11 @@
  * Legacy adapter: yamlresume-style YAML → RenderModel.
  * Detects the legacy shape and produces the normalized render model.
  */
-import type { RenderModel, RenderSection } from '../models'
+import {
+  DEFAULT_PAPER_SIZE,
+  type RenderModel,
+  type RenderSection,
+} from '../models'
 
 // Shape of a yamlresume-style YAML file (content section)
 export interface LegacyContent {
@@ -256,6 +260,7 @@ export function compileLegacy(
   return {
     lang,
     fontFamily,
+    paperSize: DEFAULT_PAPER_SIZE,
     header: {
       name: basics.name,
       headline: '',

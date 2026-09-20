@@ -2,7 +2,13 @@
  * Compiler: ResumeDocument (new schema) → RenderModel
  */
 import type { ResumeDocument, Section } from '../schema'
-import type { RenderModel, RenderSection } from '../models'
+import {
+  DEFAULT_PAPER_SIZE,
+  PAPER_SIZE_IDS,
+  type RenderModel,
+  type RenderSection,
+  type PaperSizeId,
+} from '../models'
 
 function getFontFamily(doc: ResumeDocument, langOverride?: string): string {
   const lang = langOverride ?? doc.document.language
@@ -237,10 +243,18 @@ export function compileNewSchema(
     sections = ordered
   }
 
+  const rawPaperSize = doc.layout?.page?.size
+  const paperSize: PaperSizeId = PAPER_SIZE_IDS.includes(
+    rawPaperSize as PaperSizeId,
+  )
+    ? (rawPaperSize as PaperSizeId)
+    : DEFAULT_PAPER_SIZE
+
   return {
     lang,
     documentTitle: doc.document.title?.trim() || undefined,
     fontFamily: getFontFamily(doc, lang),
+    paperSize,
     header: {
       name: basics.name,
       headline: basics.headline ?? '',

@@ -1,5 +1,9 @@
+import { DEFAULT_PAPER_SIZE, type PaperSizeId } from '../../models/render-model'
+
 /** UI-driven layout optimization options for preview and PDF export. */
 export interface LayoutOptions {
+  /** Physical paper size for preview and PDF export. */
+  paperSize: PaperSizeId
   /** Whether layout optimization mode is active. */
   enabled: boolean
   /** Macro gaps between sections and entries (0.7–1.3). */
@@ -21,6 +25,7 @@ export interface LayoutOptions {
 }
 
 export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
+  paperSize: DEFAULT_PAPER_SIZE,
   enabled: false,
   spacingScale: 1.0,
   fontScale: 1.0,

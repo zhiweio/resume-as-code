@@ -1,3 +1,5 @@
+import type { PaperSizeId } from '../models'
+
 /**
  * Resume Schema v1 — the new versioned YAML specification owned by resume-builder-app.
  *
@@ -192,6 +194,8 @@ export type Section =
 export interface LayoutConfig {
   template?: string
   page?: {
+    /** Physical paper size for the app's own React/Puppeteer rendering path. */
+    size?: PaperSizeId
     margins?: { top?: string; left?: string; right?: string; bottom?: string }
     showPageNumbers?: boolean
   }

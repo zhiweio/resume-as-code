@@ -230,7 +230,7 @@ export default function App() {
 
   // Compile YAML → RenderModel
   const compile = useCallback(
-    (source: string, forceLang?: 'zh' | 'en' | null) => {
+    (source: string, forceLang?: 'zh' | 'en' | null): RenderModel | null => {
       const newDiagnostics: DiagnosticItem[] = []
 
       try {
@@ -242,7 +242,7 @@ export default function App() {
           })
           setDiagnostics(newDiagnostics)
           setSourceStatus('invalid')
-          return
+          return null
         }
 
         lastParsedDoc.current = parsed
@@ -258,6 +258,8 @@ export default function App() {
             severity: 'info',
             message: 'Legacy yamlresume format detected and adapted',
           })
+          setDiagnostics(newDiagnostics)
+          return model
         } else if (
           parsed.schema &&
           parsed.document &&
@@ -271,6 +273,8 @@ export default function App() {
           setRenderModel(model)
           lastValidModel.current = model
           setSourceStatus('new-schema')
+          setDiagnostics(newDiagnostics)
+          return model
         } else {
           newDiagnostics.push({
             severity: 'error',
@@ -290,13 +294,20 @@ export default function App() {
       }
 
       setDiagnostics(newDiagnostics)
+      return null
     },
     [langOverride],
   )
 
-  // Initial compile
+  // Initial compile. Seed paperSize from the loaded YAML's layout.page.size
+  // (if present) as a one-time default — later edits to layoutOptions via the
+  // Advanced Layout panel are session-only and are not re-seeded on every
+  // keystroke recompile.
   useEffect(() => {
-    compile(yamlSource)
+    const model = compile(yamlSource)
+    if (model) {
+      setLayoutOptions((prev) => ({ ...prev, paperSize: model.paperSize }))
+    }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Re-compile when language override changes (without re-parsing)

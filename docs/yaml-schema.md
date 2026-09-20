@@ -119,6 +119,7 @@ order:
 layout:
   template: jake
   page:
+    size: a4 # a4 | letter 
     margins: { top: 1.5cm, left: 1.5cm, right: 1.5cm, bottom: 1.5cm }
     showPageNumbers: true
   typography:
@@ -129,6 +130,8 @@ themeOverrides:
     sectionGap: 12
     entryGap: 8
 ```
+
+**`layout.page.size`**: controls the physical paper size used by the resume-builder-app's own React preview and Puppeteer PDF export (not the Legacy/LaTeX engine, which has no paper-size concept). Valid values are `a4` (default) and `letter` (US Letter, 8.5in x 11in). This field is optional — omitting it (or the whole `layout` block) is equivalent to `a4`. Toggling paper size live in the app's Advanced Layout panel does not write back into the YAML; this field only sets the *initial* default when a resume is loaded.
 
 ---
 

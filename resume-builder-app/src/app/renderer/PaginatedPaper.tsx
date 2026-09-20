@@ -62,7 +62,7 @@ export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
   const [pages, setPages] = useState<{ startIdx: number; endIdx: number }[]>([])
   const [measured, setMeasured] = useState(false)
   const childArray = Children.toArray(children)
-  const paperSheet = paperSheetStyle(page.marginPx)
+  const paperSheet = paperSheetStyle(page.marginPx, options.paperSize)
   const paperPadding = `${page.marginPx}px`
 
   useEffect(() => {

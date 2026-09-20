@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Paper } from '../renderer/constants'
+import { PAPER_SIZES } from '../renderer/constants'
 import { TypographyBaseline } from '../renderer/typography-baseline'
 import type { LayoutOptions } from './layout-options'
 
@@ -128,10 +128,10 @@ export function computeLayoutTokens(options: LayoutOptions): LayoutTokens {
       continuationPaddingTop: componentGap(b.spacing.continuationPaddingTop),
     },
     page: {
-      widthPx: Paper.widthPx,
-      heightPx: Paper.heightPx,
+      widthPx: PAPER_SIZES[options.paperSize].widthPx,
+      heightPx: PAPER_SIZES[options.paperSize].heightPx,
       marginPx,
-      usableHeight: Paper.heightPx - marginPx * 2,
+      usableHeight: PAPER_SIZES[options.paperSize].heightPx - marginPx * 2,
     },
   }
 }

@@ -105,6 +105,23 @@ export type RenderSection =
 
 // ── Root Model ──────────────────────────────────────────────────────────────
 
+/** Physical paper size, shared by the schema, compiler, and renderer layers. */
+export type PaperSizeId = 'a4' | 'letter'
+
+/** Fallback used whenever a paper size is absent or fails validation. */
+export const DEFAULT_PAPER_SIZE: PaperSizeId = 'a4'
+
+/** tracks the valid paper size IDs for runtime validation; see PAPER_SIZE_IDS below */
+const PAPER_SIZE_ID_WITNESS: Record<PaperSizeId, true> = {
+  a4: true,
+  letter: true,
+}
+
+/** Runtime-checkable list of every valid PaperSizeId, for input validation. */
+export const PAPER_SIZE_IDS = Object.keys(
+  PAPER_SIZE_ID_WITNESS,
+) as PaperSizeId[]
+
 export interface RenderModel {
   /** BCP 47 language tag (e.g. 'en', 'zh-hans', 'zh', 'es', 'fr', 'no') */
   lang: string
@@ -112,6 +129,8 @@ export interface RenderModel {
   documentTitle?: string
   /** Font family CSS value for the resume */
   fontFamily: string
+  /** Physical paper size from YAML `layout.page.size`, defaults to 'a4' at the compiler boundary. */
+  paperSize: PaperSizeId
   header: RenderHeader
   sections: RenderSection[]
 }
