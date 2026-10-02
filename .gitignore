@@ -172,3 +172,6 @@ data/repo/
 .cursor/rules/resume-as-code.mdc
 .windsurf/rules/resume-as-code.md
 .clinerules
+
+# Local agent workspace state (session plans and scratch files)
+.zcode/

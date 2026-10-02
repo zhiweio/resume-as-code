@@ -1,2 +1,5 @@
 # Machine-generated files
 pnpm-lock.yaml
+
+# Agent workspace state
+.zcode/
