@@ -4,7 +4,7 @@
   "scripts": {
     "check": "pnpm check:tsc && pnpm format",
     "check:ci": "pnpm check:tsc && pnpm format:check",
-    "check:tsc": "tsc --noEmit",
+    "check:tsc": "pnpm --dir resume-builder-app typecheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
