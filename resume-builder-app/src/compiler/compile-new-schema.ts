@@ -255,6 +255,7 @@ export function compileNewSchema(
     documentTitle: doc.document.title?.trim() || undefined,
     fontFamily: getFontFamily(doc, lang),
     paperSize,
+    showPageNumbers: doc.layout?.page?.showPageNumbers === true,
     header: {
       name: basics.name,
       headline: basics.headline ?? '',

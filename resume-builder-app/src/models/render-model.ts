@@ -131,6 +131,8 @@ export interface RenderModel {
   fontFamily: string
   /** Physical paper size from YAML `layout.page.size`, defaults to 'a4' at the compiler boundary. */
   paperSize: PaperSizeId
+  /** Page furniture toggle from YAML `layout.page.showPageNumbers`. */
+  showPageNumbers?: boolean
   header: RenderHeader
   sections: RenderSection[]
 }

@@ -2,28 +2,34 @@ import { Colors } from '../constants'
 import { inlineMdProps } from '../inline-md'
 import { useLayoutTokensContext } from '../../layout/LayoutOptionsContext'
 
-/** Bullet list for summaries/descriptions. */
-export function Bullets({ items }: { items: string[] }) {
+/**
+ * One bullet row. Each row is its own pagination block so the packer can
+ * break between bullets; the inter-row gap moves from li margin-bottom to
+ * padding-top (gapAbove) so page-leading rows can strip it cleanly.
+ */
+export function BulletRow({
+  item,
+  gapAbove = 0,
+}: {
+  item: string
+  gapAbove?: number
+}) {
   const { font, lineHeight, spacing } = useLayoutTokensContext()
 
   return (
-    <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
-      {items.map((item, i) => (
-        <li
-          key={i}
-          style={{
-            display: 'flex',
-            gap: spacing.bulletGap,
-            fontSize: font.body,
-            color: Colors.body,
-            lineHeight: lineHeight.body,
-            marginBottom: spacing.bulletMarginBottom,
-          }}
-        >
-          <span style={{ flexShrink: 0, marginTop: '0.15em' }}>•</span>
-          <span className="md-inline" {...inlineMdProps(item)} />
-        </li>
-      ))}
-    </ul>
+    <div
+      role="listitem"
+      style={{
+        display: 'flex',
+        gap: spacing.bulletGap,
+        paddingTop: gapAbove > 0 ? gapAbove : undefined,
+        fontSize: font.body,
+        color: Colors.body,
+        lineHeight: lineHeight.body,
+      }}
+    >
+      <span style={{ flexShrink: 0, marginTop: '0.15em' }}>•</span>
+      <span className="md-inline" {...inlineMdProps(item)} />
+    </div>
   )
 }

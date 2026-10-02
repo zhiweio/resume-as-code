@@ -1,6 +1,6 @@
 import type { RenderModel, RenderSection } from '../../models/render-model'
 import { Colors, SectionSpacing } from './constants'
-import { SecHead, EntryHead, Bullets, Keywords } from './components'
+import { SecHead, EntryHead, BulletRow, Keywords } from './components'
 import { PrintStyles } from './PrintStyles'
 import { PaginatedPaper } from './PaginatedPaper'
 import { inlineMdProps } from './inline-md'
@@ -30,7 +30,21 @@ function SocialIcon({ network }: { network: string }) {
     }
   }, [network])
 
-  if (!icon) return null
+  // Reserve the final box before the async icon resolves so the measured
+  // header height does not drift between the measure pass and the render.
+  if (!icon) {
+    return (
+      <span
+        aria-hidden
+        style={{
+          width: 10,
+          height: 10,
+          flexShrink: 0,
+          display: 'inline-block',
+        }}
+      />
+    )
+  }
 
   return <Icon icon={icon} style={{ width: 10, height: 10, flexShrink: 0 }} />
 }
@@ -78,7 +92,7 @@ function ResumeRendererBody({
 }) {
   const { header, sections, fontFamily, lang } = model
   const tokens = useLayoutTokensContext()
-  const { sectionGap, font, lineHeight, spacing, options } = tokens
+  const { sectionGap, font, lineHeight, spacing } = tokens
   const blocks: ReactNode[] = []
 
   blocks.push(
@@ -186,7 +200,13 @@ function ResumeRendererBody({
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i]
     if (!section || !section.variant) continue
-    emitSectionBlocks(section, blocks, sectionGap, lang, options)
+    emitSectionBlocks(
+      section,
+      blocks,
+      sectionGap,
+      lang,
+      spacing.bulletMarginBottom,
+    )
   }
 
   return (
@@ -197,9 +217,10 @@ function ResumeRendererBody({
   )
 }
 
-type SubsectionPart = 'head' | 'bullets' | 'keywords' | 'full'
+/** Semantic role of a pagination block, consumed by the page packer. */
+type BlockPart = 'sec-head' | 'head' | 'bullet' | 'keywords' | 'row'
 
-function subsectionBlock(
+function paginationBlock(
   key: string,
   sectionId: string,
   children: ReactNode,
@@ -207,14 +228,16 @@ function subsectionBlock(
     paddingTop?: number
     sectionStart?: boolean
     subsectionId?: string
-    subsectionPart?: SubsectionPart
+    part?: BlockPart
+    keepWithNext?: boolean
   } = {},
 ) {
   const {
     paddingTop = 0,
     sectionStart = false,
     subsectionId,
-    subsectionPart = 'full',
+    part,
+    keepWithNext = false,
   } = options
 
   return (
@@ -224,9 +247,8 @@ function subsectionBlock(
       data-section-id={sectionId}
       data-section-start={sectionStart ? 'true' : undefined}
       data-subsection-id={subsectionId}
-      data-subsection-part={
-        subsectionPart !== 'full' ? subsectionPart : undefined
-      }
+      data-block-part={part}
+      data-keep-with-next={keepWithNext ? 'true' : undefined}
       style={paddingTop > 0 ? { paddingTop } : undefined}
     >
       {children}
@@ -238,6 +260,28 @@ function sectionLeadPadding(sectionGap: (base: number) => number): number {
   return sectionGap(SectionSpacing)
 }
 
+/** Standalone section header; the packer's keep-with-next rule binds it to
+ * the first block that follows, so it can never strand at a page bottom. */
+function emitSecHead(
+  section: RenderSection,
+  blocks: ReactNode[],
+  leadPadding: number,
+) {
+  blocks.push(
+    paginationBlock(
+      `${section.id}-sec-head`,
+      section.id,
+      <SecHead title={section.title} />,
+      {
+        paddingTop: leadPadding,
+        sectionStart: true,
+        part: 'sec-head',
+        keepWithNext: true,
+      },
+    ),
+  )
+}
+
 function SkillRow({
   skill,
 }: {
@@ -246,24 +290,19 @@ function SkillRow({
   const { font, lineHeight } = useLayoutTokensContext()
   return (
     <div style={{ display: 'flex', gap: 0, alignItems: 'baseline' }}>
+      {/* Inline text flow inside the fixed label column: a long label wraps
+          within the column instead of flex-overflowing into the value. */}
       <div
         style={{
           width: 196,
           flexShrink: 0,
-          display: 'flex',
-          alignItems: 'baseline',
-          gap: 4,
+          fontSize: font.skillName,
+          lineHeight: lineHeight.skillKeywords,
         }}
       >
-        <span
-          style={{
-            fontSize: font.skillName,
-            fontWeight: 600,
-            color: Colors.entry,
-          }}
-        >
+        <span style={{ fontWeight: 600, color: Colors.entry }}>
           {skill.name}
-        </span>
+        </span>{' '}
         <span style={{ fontSize: font.skillLevel, color: Colors.subtle }}>
           ({skill.level})
         </span>
@@ -322,7 +361,7 @@ function CertificateRow({
   )
 }
 
-function emitEntryParts(
+function emitEntryBlocks(
   section: Extract<RenderSection, { variant: 'entries' }>,
   entry: {
     id: string
@@ -336,90 +375,54 @@ function emitEntryParts(
   blocks: ReactNode[],
   sectionGap: (base: number) => number,
   lang: string,
-  options: {
-    isFirst: boolean
-    paddingTop: number
-    sectionStart: boolean
-    allowSubsectionSplit: boolean
-  },
+  options: { gapAbove: number; bulletGap: number },
 ) {
   const subsectionId = `${section.id}-entry-${entry.id}`
-  const gap = sectionGap(section.gap ?? SectionSpacing)
-
-  if (!options.allowSubsectionSplit) {
-    blocks.push(
-      subsectionBlock(
-        subsectionId,
-        section.id,
-        <>
-          {options.isFirst && <SecHead title={section.title} />}
-          <EntryHead
-            title={entry.title}
-            sub={entry.subtitle}
-            start={entry.startDate}
-            end={entry.endDate}
-            lang={lang}
-          />
-          {entry.bullets.length > 0 && <Bullets items={entry.bullets} />}
-          {entry.keywords.length > 0 && <Keywords items={entry.keywords} />}
-        </>,
-        {
-          paddingTop: options.paddingTop,
-          sectionStart: options.sectionStart,
-          subsectionId,
-        },
-      ),
-    )
-    return
-  }
 
   blocks.push(
-    subsectionBlock(
+    paginationBlock(
       `${subsectionId}-head`,
       section.id,
-      <>
-        {options.isFirst && <SecHead title={section.title} />}
-        <EntryHead
-          title={entry.title}
-          sub={entry.subtitle}
-          start={entry.startDate}
-          end={entry.endDate}
-          lang={lang}
-        />
-      </>,
+      <EntryHead
+        title={entry.title}
+        sub={entry.subtitle}
+        start={entry.startDate}
+        end={entry.endDate}
+        lang={lang}
+      />,
       {
-        paddingTop: options.paddingTop,
-        sectionStart: options.sectionStart,
+        paddingTop: options.gapAbove,
         subsectionId,
-        subsectionPart: 'head',
+        part: 'head',
+        keepWithNext: true,
       },
     ),
   )
 
-  if (entry.bullets.length > 0) {
+  entry.bullets.forEach((item, k) => {
     blocks.push(
-      subsectionBlock(
-        `${subsectionId}-bullets`,
+      paginationBlock(
+        `${subsectionId}-bullet-${entry.id}-${k}`,
         section.id,
-        <Bullets items={entry.bullets} />,
-        { subsectionId, subsectionPart: 'bullets' },
+        <BulletRow item={item} gapAbove={k > 0 ? options.bulletGap : 0} />,
+        { subsectionId, part: 'bullet' },
       ),
     )
-  }
+  })
 
   if (entry.keywords.length > 0) {
     blocks.push(
-      subsectionBlock(
+      paginationBlock(
         `${subsectionId}-keywords`,
         section.id,
         <Keywords items={entry.keywords} />,
-        { subsectionId, subsectionPart: 'keywords' },
+        { subsectionId, part: 'keywords' },
       ),
     )
   }
 }
 
-function emitAwardParts(
+function emitAwardBlocks(
   section: Extract<RenderSection, { variant: 'awards' }>,
   award: {
     id: string
@@ -429,74 +432,40 @@ function emitAwardParts(
     bullets: string[]
   },
   blocks: ReactNode[],
-  sectionGap: (base: number) => number,
   lang: string,
-  options: {
-    isFirst: boolean
-    paddingTop: number
-    sectionStart: boolean
-    allowSubsectionSplit: boolean
-  },
+  options: { gapAbove: number; bulletGap: number },
 ) {
   const subsectionId = `${section.id}-award-${award.id}`
 
-  if (!options.allowSubsectionSplit) {
-    blocks.push(
-      subsectionBlock(
-        subsectionId,
-        section.id,
-        <>
-          {options.isFirst && <SecHead title={section.title} />}
-          <EntryHead
-            title={award.name}
-            sub={award.awarder}
-            start={award.date}
-            lang={lang}
-          />
-          {award.bullets.length > 0 && <Bullets items={award.bullets} />}
-        </>,
-        {
-          paddingTop: options.paddingTop,
-          sectionStart: options.sectionStart,
-          subsectionId,
-        },
-      ),
-    )
-    return
-  }
-
   blocks.push(
-    subsectionBlock(
+    paginationBlock(
       `${subsectionId}-head`,
       section.id,
-      <>
-        {options.isFirst && <SecHead title={section.title} />}
-        <EntryHead
-          title={award.name}
-          sub={award.awarder}
-          start={award.date}
-          lang={lang}
-        />
-      </>,
+      <EntryHead
+        title={award.name}
+        sub={award.awarder}
+        start={award.date}
+        lang={lang}
+      />,
       {
-        paddingTop: options.paddingTop,
-        sectionStart: options.sectionStart,
+        paddingTop: options.gapAbove,
         subsectionId,
-        subsectionPart: 'head',
+        part: 'head',
+        keepWithNext: true,
       },
     ),
   )
 
-  if (award.bullets.length > 0) {
+  award.bullets.forEach((item, k) => {
     blocks.push(
-      subsectionBlock(
-        `${subsectionId}-bullets`,
+      paginationBlock(
+        `${subsectionId}-bullet-${award.id}-${k}`,
         section.id,
-        <Bullets items={award.bullets} />,
-        { subsectionId, subsectionPart: 'bullets' },
+        <BulletRow item={item} gapAbove={k > 0 ? options.bulletGap : 0} />,
+        { subsectionId, part: 'bullet' },
       ),
     )
-  }
+  })
 }
 
 function LangRow({ label, values }: { label: string; values: string[] }) {
@@ -528,114 +497,42 @@ function emitSectionBlocks(
   blocks: ReactNode[],
   sectionGap: (base: number) => number,
   lang: string,
-  layoutOptions: LayoutOptions,
+  bulletGap: number,
 ) {
-  const leadSpacing = {
-    paddingTop: sectionLeadPadding(sectionGap),
-    sectionStart: true,
-  }
+  const leadPadding = sectionLeadPadding(sectionGap)
 
   if (section.variant === 'entries') {
-    const entries = section.entries
-    if (entries.length === 0) {
-      blocks.push(
-        subsectionBlock(
-          section.id,
-          section.id,
-          <SecHead title={section.title} />,
-          leadSpacing,
-        ),
-      )
-      return
-    }
-
-    emitEntryParts(section, entries[0], blocks, sectionGap, lang, {
-      isFirst: true,
-      paddingTop: leadSpacing.paddingTop,
-      sectionStart: true,
-      allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
-    })
-
-    for (let i = 1; i < entries.length; i++) {
-      emitEntryParts(section, entries[i], blocks, sectionGap, lang, {
-        isFirst: false,
-        paddingTop: sectionGap(section.gap ?? SectionSpacing),
-        sectionStart: false,
-        allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
+    emitSecHead(section, blocks, leadPadding)
+    for (let i = 0; i < section.entries.length; i++) {
+      emitEntryBlocks(section, section.entries[i], blocks, sectionGap, lang, {
+        gapAbove: i === 0 ? 0 : sectionGap(section.gap ?? SectionSpacing),
+        bulletGap,
       })
     }
   } else if (section.variant === 'skills') {
-    const skills = section.skills
-    if (skills.length === 0) {
+    emitSecHead(section, blocks, leadPadding)
+    section.skills.forEach((skill, i) => {
       blocks.push(
-        subsectionBlock(
+        paginationBlock(
+          `${section.id}-skill-${skill.id}`,
           section.id,
-          section.id,
-          <SecHead title={section.title} />,
-          leadSpacing,
+          <SkillRow skill={skill} />,
+          { paddingTop: i > 0 ? sectionGap(3) : 0, part: 'row' },
         ),
       )
-      return
-    }
-
-    blocks.push(
-      subsectionBlock(
-        `${section.id}-skill-${skills[0].id}`,
-        section.id,
-        <>
-          <SecHead title={section.title} />
-          <SkillRow skill={skills[0]} />
-        </>,
-        leadSpacing,
-      ),
-    )
-
-    for (let i = 1; i < skills.length; i++) {
-      blocks.push(
-        subsectionBlock(
-          `${section.id}-skill-${skills[i].id}`,
-          section.id,
-          <SkillRow skill={skills[i]} />,
-          { paddingTop: sectionGap(3) },
-        ),
-      )
-    }
+    })
   } else if (section.variant === 'certificates') {
-    const certificates = section.certificates
-    if (certificates.length === 0) {
+    emitSecHead(section, blocks, leadPadding)
+    section.certificates.forEach((cert, i) => {
       blocks.push(
-        subsectionBlock(
+        paginationBlock(
+          `${section.id}-cert-${cert.id}`,
           section.id,
-          section.id,
-          <SecHead title={section.title} />,
-          leadSpacing,
+          <CertificateRow cert={cert} lang={lang} />,
+          { paddingTop: i > 0 ? sectionGap(2.5) : 0, part: 'row' },
         ),
       )
-      return
-    }
-
-    blocks.push(
-      subsectionBlock(
-        `${section.id}-cert-${certificates[0].id}`,
-        section.id,
-        <>
-          <SecHead title={section.title} />
-          <CertificateRow cert={certificates[0]} lang={lang} />
-        </>,
-        leadSpacing,
-      ),
-    )
-
-    for (let i = 1; i < certificates.length; i++) {
-      blocks.push(
-        subsectionBlock(
-          `${section.id}-cert-${certificates[i].id}`,
-          section.id,
-          <CertificateRow cert={certificates[i]} lang={lang} />,
-          { paddingTop: sectionGap(2.5) },
-        ),
-      )
-    }
+    })
   } else if (section.variant === 'langAndInterests') {
     const rows = Array.from(
       section.rows.reduce((map, row) => {
@@ -646,68 +543,24 @@ function emitSectionBlocks(
       }, new Map<string, string[]>()),
     )
 
-    if (rows.length === 0) {
+    emitSecHead(section, blocks, leadPadding)
+    rows.forEach(([label, values], i) => {
       blocks.push(
-        subsectionBlock(
+        paginationBlock(
+          `${section.id}-row-${label}`,
           section.id,
-          section.id,
-          <SecHead title={section.title} />,
-          leadSpacing,
+          <LangRow label={label} values={values} />,
+          { paddingTop: i > 0 ? sectionGap(3) : 0, part: 'row' },
         ),
       )
-      return
-    }
-
-    blocks.push(
-      subsectionBlock(
-        `${section.id}-row-${rows[0][0]}`,
-        section.id,
-        <>
-          <SecHead title={section.title} />
-          <LangRow label={rows[0][0]} values={rows[0][1]} />
-        </>,
-        leadSpacing,
-      ),
-    )
-
-    for (let i = 1; i < rows.length; i++) {
-      blocks.push(
-        subsectionBlock(
-          `${section.id}-row-${rows[i][0]}`,
-          section.id,
-          <LangRow label={rows[i][0]} values={rows[i][1]} />,
-          { paddingTop: sectionGap(3) },
-        ),
-      )
-    }
-  } else if (section.variant === 'awards') {
-    const awards = section.awards
-    if (awards.length === 0) {
-      blocks.push(
-        subsectionBlock(
-          section.id,
-          section.id,
-          <SecHead title={section.title} />,
-          leadSpacing,
-        ),
-      )
-      return
-    }
-
-    emitAwardParts(section, awards[0], blocks, sectionGap, lang, {
-      isFirst: true,
-      paddingTop: leadSpacing.paddingTop,
-      sectionStart: true,
-      allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
     })
-
-    for (let i = 1; i < awards.length; i++) {
-      emitAwardParts(section, awards[i], blocks, sectionGap, lang, {
-        isFirst: false,
-        paddingTop: sectionGap(SectionSpacing),
-        sectionStart: false,
-        allowSubsectionSplit: layoutOptions.allowSubsectionSplit,
+  } else if (section.variant === 'awards') {
+    emitSecHead(section, blocks, leadPadding)
+    section.awards.forEach((award, i) => {
+      emitAwardBlocks(section, award, blocks, lang, {
+        gapAbove: i > 0 ? sectionGap(SectionSpacing) : 0,
+        bulletGap,
       })
-    }
+    })
   }
 }

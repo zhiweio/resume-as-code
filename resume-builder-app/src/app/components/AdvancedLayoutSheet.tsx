@@ -494,10 +494,19 @@ export function AdvancedLayoutSheet({
                     <PaginationOption
                       id="allow-subsection-split"
                       label="Split entries across pages"
-                      description="Breaks at title, bullets, and keywords. Individual bullet lines stay intact."
+                      description="Breaks between bullets while keeping entry titles attached to their content and avoiding single orphaned bullets."
                       checked={layout.allowSubsectionSplit}
                       onCheckedChange={(allowSubsectionSplit) =>
                         patch({ allowSubsectionSplit })
+                      }
+                    />
+                    <PaginationOption
+                      id="show-page-numbers"
+                      label="Show page numbers"
+                      description="Renders “n / m” in the bottom margin of multi-page resumes."
+                      checked={layout.showPageNumbers}
+                      onCheckedChange={(showPageNumbers) =>
+                        patch({ showPageNumbers })
                       }
                     />
                   </CardContent>

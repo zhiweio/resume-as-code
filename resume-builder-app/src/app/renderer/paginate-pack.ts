@@ -1,279 +1,477 @@
-import { Paper, usablePageHeight } from './constants'
+import { usablePageHeight } from './constants'
 
-/** A4 usable content height at default 40px margins. */
-export const USABLE_HEIGHT = usablePageHeight()
+/**
+ * Block-level page packer.
+ *
+ * Break-point model follows the same preference order as paged.js and the
+ * TeX page builder: keep rules first (a heading never strands at a page
+ * bottom), then break-cost ranking among the feasible points (section
+ * boundary < entry boundary < inside an entry), with a page-fullness
+ * badness term so equally legal breaks favor the fuller page.
+ */
 
-export interface PageData {
-  startIdx: number
-  endIdx: number
+/** Semantic role of a block, stamped by the renderer via data-block-part. */
+export type BlockPart =
+  | 'sec-head'
+  | 'head'
+  | 'bullet'
+  | 'keywords'
+  | 'full'
+  | 'row'
+
+export interface BlockMeta {
+  /** Position in the flat block list. */
+  index: number
+  /** Measured height in place (including the block's own paddingTop). */
+  height: number
+  /** The block's own inline paddingTop; stripped when the block leads a page. */
+  paddingTop: number
+  sectionId: string | null
+  /** True for the first block of a section (kept out of continuation styling). */
+  sectionStart: boolean
+  subsectionId: string | null
+  part: BlockPart
+  /** Hard keep rule: the block must not be the last one on a page. */
+  keepWithNext: boolean
 }
 
 export interface PackOptions {
   usableHeight?: number
   allowSectionSplit?: boolean
   allowSubsectionSplit?: boolean
+  /** Padding a continuation block gets when it leads a page (budgeted exactly). */
+  continuationPaddingPx?: number
 }
 
-export const DEFAULT_PACK_OPTIONS: Required<PackOptions> = {
-  usableHeight: USABLE_HEIGHT,
-  allowSectionSplit: true,
-  allowSubsectionSplit: false,
+export interface PageData {
+  startIdx: number
+  endIdx: number
 }
 
-interface BlockMeta {
-  index: number
-  height: number
-  sectionId: string | null
-  subsectionId: string | null
-}
+/** Extra height of the continuation top rule (0.5px) added by print CSS. */
+export const CONTINUATION_BORDER_PX = 0.5
 
-interface SingleUnit {
-  type: 'single'
-  index: number
-  height: number
-}
-
-interface SectionUnit {
-  type: 'section'
-  sectionId: string
-  indices: number[]
-  heights: number[]
-  totalHeight: number
-}
-
-type PackUnit = SingleUnit | SectionUnit
-
-export function measureBlockHeight(el: HTMLElement): number {
-  return Math.max(el.offsetHeight, el.scrollHeight)
-}
+// Break penalties, TeX club/widow magnitude, in strict dominance tiers:
+// keep-rule violation > nearly-empty page > single orphan/widow > pair >
+// clean boundaries. Keep-rule violations must dominate the page-fullness
+// badness term (capped at BADNESS_CAP).
+const PENALTY_ENTRY_BOUNDARY = 50
+const PENALTY_KEYWORDS_SPLIT = 200
+const PENALTY_ORPHAN_2 = 300
+const PENALTY_WIDOW_2 = 300
+const PENALTY_ORPHAN_1 = 3000
+const PENALTY_WIDOW_1 = 3000
+const PENALTY_UNDERFULL = 4000
+const PENALTY_KEEP_WITH_NEXT = 5000
+const BADNESS_SCALE = 100
+const BADNESS_CAP = 2000
+/** A non-final page holding less than this share of usable height reads as
+ * broken (paged.js never leaves a near-empty fragmentainer either). */
+const UNDERFULL_RATIO = 0.5
 
 function resolvePackOptions(options?: PackOptions): Required<PackOptions> {
-  return { ...DEFAULT_PACK_OPTIONS, ...options }
+  return {
+    usableHeight: options?.usableHeight ?? usablePageHeight(),
+    allowSectionSplit: options?.allowSectionSplit ?? true,
+    allowSubsectionSplit: options?.allowSubsectionSplit ?? true,
+    continuationPaddingPx: options?.continuationPaddingPx ?? 0,
+  }
 }
 
-function shouldStartNewPage(
-  blockHeight: number,
-  currentHeight: number,
-  pageHasBlocks: boolean,
-  atomic: boolean,
-  usableHeight: number,
-): boolean {
-  if (!pageHasBlocks) return false
-
-  const remaining = usableHeight - currentHeight
-  if (currentHeight + blockHeight > usableHeight) return true
-  if (atomic && blockHeight > remaining) return true
-
-  return false
+/** Height of a block when it leads a page (spacing re-styled by render). */
+export function leadingBlockHeight(
+  meta: BlockMeta,
+  continuationPaddingPx: number,
+): number {
+  const stripped = meta.height - meta.paddingTop
+  if (meta.index === 0 || meta.sectionStart) return stripped
+  // Continuation blocks trade their padding for the continuation padding
+  // plus the 0.5px top rule (only when continuation styling is active).
+  const continuation =
+    continuationPaddingPx > 0
+      ? continuationPaddingPx + CONTINUATION_BORDER_PX
+      : 0
+  return stripped + continuation
 }
 
-function buildBlockMeta(blocks: HTMLElement[]): BlockMeta[] {
-  return blocks.map((el, index) => ({
-    index,
-    height: measureBlockHeight(el),
-    sectionId: el.dataset.sectionId ?? null,
-    subsectionId: el.dataset.subsectionId ?? null,
+// ── Fusion ──────────────────────────────────────────────────────────────────
+
+type UnitKind =
+  | 'sec-head'
+  | 'head'
+  | 'bullet'
+  | 'keywords'
+  | 'row'
+  | 'full'
+  | 'entry'
+  | 'section'
+
+interface PackUnit {
+  kind: UnitKind
+  blocks: BlockMeta[]
+  sectionId: string | null
+  subsectionId: string | null
+  /** 1-based position within the bullet run, for orphan/widow penalties. */
+  bulletIndex?: number
+  bulletRunLength?: number
+}
+
+function unitOf(meta: BlockMeta): PackUnit {
+  return {
+    kind: meta.part,
+    blocks: [meta],
+    sectionId: meta.sectionId,
+    subsectionId: meta.subsectionId,
+  }
+}
+
+function bulletRunOf(meta: BlockMeta[]): PackUnit[] {
+  return meta.map((m, k) => ({
+    kind: 'bullet' as const,
+    blocks: [m],
+    sectionId: m.sectionId,
+    subsectionId: m.subsectionId,
+    bulletIndex: k + 1,
+    bulletRunLength: meta.length,
   }))
 }
 
-function buildPackUnits(meta: BlockMeta[]): PackUnit[] {
-  const units: PackUnit[] = []
+function fuseEntries(units: PackUnit[]): PackUnit[] {
+  const fused: PackUnit[] = []
   let i = 0
-
-  while (i < meta.length) {
-    const sectionId = meta[i].sectionId
-    if (!sectionId) {
-      units.push({
-        type: 'single',
-        index: meta[i].index,
-        height: meta[i].height,
-      })
+  while (i < units.length) {
+    const u = units[i]
+    const fusable =
+      u.subsectionId !== null &&
+      (u.kind === 'head' ||
+        u.kind === 'bullet' ||
+        u.kind === 'keywords' ||
+        u.kind === 'full')
+    if (!fusable) {
+      fused.push(u)
       i++
       continue
     }
-    const indices: number[] = []
-    const heights: number[] = []
-
-    while (i < meta.length && meta[i].sectionId === sectionId) {
-      indices.push(meta[i].index)
-      heights.push(meta[i].height)
-      i++
+    const group = [u]
+    let j = i + 1
+    while (j < units.length && units[j].subsectionId === u.subsectionId) {
+      group.push(units[j])
+      j++
     }
-
-    const totalHeight = heights.reduce((sum, height) => sum + height, 0)
-    units.push({
-      type: 'section',
-      sectionId,
-      indices,
-      heights,
-      totalHeight,
+    fused.push({
+      kind: 'entry',
+      blocks: group.flatMap((g) => g.blocks),
+      sectionId: u.sectionId,
+      subsectionId: u.subsectionId,
     })
+    i = j
   }
-
-  return units
+  return fused
 }
 
-function packSectionUnit(
-  unit: SectionUnit,
-  state: {
-    pageStartIdx: number
-    currentHeight: number
-    pages: PageData[]
-    usableHeight: number
-    allowSectionSplit: boolean
-  },
-): { pageStartIdx: number; currentHeight: number } {
-  const { usableHeight, allowSectionSplit } = state
-  let { pageStartIdx, currentHeight } = state
-
-  const startNewPage = (nextIdx: number) => {
-    if (nextIdx > pageStartIdx) {
-      state.pages.push({ startIdx: pageStartIdx, endIdx: nextIdx })
+function fuseSections(units: PackUnit[]): PackUnit[] {
+  const fused: PackUnit[] = []
+  let i = 0
+  while (i < units.length) {
+    const u = units[i]
+    if (u.sectionId === null) {
+      fused.push(u)
+      i++
+      continue
     }
-    pageStartIdx = nextIdx
-    currentHeight = 0
+    const group = [u]
+    let j = i + 1
+    while (j < units.length && units[j].sectionId === u.sectionId) {
+      group.push(units[j])
+      j++
+    }
+    fused.push({
+      kind: 'section',
+      blocks: group.flatMap((g) => g.blocks),
+      sectionId: u.sectionId,
+      subsectionId: null,
+    })
+    i = j
   }
+  return fused
+}
 
-  const firstIdx = unit.indices[0]
-  const fitsInRemaining = currentHeight + unit.totalHeight <= usableHeight
-
-  if (!allowSectionSplit) {
-    const pageHasBlocks = firstIdx > pageStartIdx
-    if (
-      shouldStartNewPage(
-        unit.totalHeight,
-        currentHeight,
-        pageHasBlocks,
-        true,
-        usableHeight,
+/** Group fine-grained blocks into atomic units per the split options. */
+function fuseUnits(meta: BlockMeta[], opts: Required<PackOptions>): PackUnit[] {
+  const granular: PackUnit[] = []
+  let i = 0
+  while (i < meta.length) {
+    if (meta[i].part === 'bullet') {
+      let j = i
+      while (
+        j < meta.length &&
+        meta[j].part === 'bullet' &&
+        meta[j].subsectionId === meta[i].subsectionId
       )
-    ) {
-      startNewPage(firstIdx)
+        j++
+      granular.push(...bulletRunOf(meta.slice(i, j)))
+      i = j
+      continue
     }
-    currentHeight += unit.totalHeight
-    return { pageStartIdx, currentHeight }
+    granular.push(unitOf(meta[i]))
+    i++
   }
 
-  if (fitsInRemaining) {
-    const pageHasBlocks = firstIdx > pageStartIdx
-    if (
-      shouldStartNewPage(
-        unit.totalHeight,
-        currentHeight,
-        pageHasBlocks,
-        true,
-        usableHeight,
-      )
-    ) {
-      startNewPage(firstIdx)
+  const entryLevel = opts.allowSubsectionSplit
+    ? granular
+    : fuseEntries(granular)
+  return opts.allowSectionSplit ? entryLevel : fuseSections(entryLevel)
+}
+
+/** Progressively finer units for force-splitting an oversized fused unit. */
+function splitUnit(unit: PackUnit, opts: Required<PackOptions>): PackUnit[] {
+  if (unit.kind === 'section') {
+    return fuseUnits(unit.blocks, { ...opts, allowSectionSplit: true })
+  }
+  if (unit.kind === 'entry') {
+    return fuseUnits(unit.blocks, {
+      ...opts,
+      allowSectionSplit: true,
+      allowSubsectionSplit: true,
+    })
+  }
+  return [unit]
+}
+
+// ── Costs ───────────────────────────────────────────────────────────────────
+
+function unitHeight(
+  unit: PackUnit,
+  leadsPage: boolean,
+  continuationPaddingPx: number,
+): number {
+  const [first, ...rest] = unit.blocks
+  let total = leadsPage
+    ? leadingBlockHeight(first, continuationPaddingPx)
+    : first.height
+  for (const b of rest) total += b.height
+  return total
+}
+
+function fillBadness(filled: number, usableHeight: number): number {
+  const remaining = Math.max(0, usableHeight - filled)
+  const badness = BADNESS_SCALE * Math.pow(remaining / usableHeight, 3)
+  return Math.min(BADNESS_CAP, Math.round(badness))
+}
+
+/** Break cost between two units on the same page, Infinity if forbidden. */
+function breakPenalty(last: PackUnit, next: PackUnit): number {
+  const lastBlock = last.blocks[last.blocks.length - 1]
+  if (lastBlock.keepWithNext) return PENALTY_KEEP_WITH_NEXT
+  if (last.sectionId !== next.sectionId) return 0 // section boundary
+
+  if (last.kind === 'bullet') {
+    const i = last.bulletIndex ?? 1
+    const n = last.bulletRunLength ?? 1
+    if (i === n) {
+      // Tail of the run: keywords split-off vs a clean entry boundary.
+      return next.kind === 'keywords'
+        ? PENALTY_KEYWORDS_SPLIT
+        : PENALTY_ENTRY_BOUNDARY
     }
-    currentHeight += unit.totalHeight
-    return { pageStartIdx, currentHeight }
+    const orphan = i === 1 ? PENALTY_ORPHAN_1 : i === 2 ? PENALTY_ORPHAN_2 : 0
+    const carried = n - i
+    const widow =
+      carried === 1 ? PENALTY_WIDOW_1 : carried === 2 ? PENALTY_WIDOW_2 : 0
+    return Math.max(orphan, widow)
   }
 
-  for (let j = 0; j < unit.indices.length; j++) {
-    const idx = unit.indices[j]
-    const height = unit.heights[j]
-    const pageHasBlocks = idx > pageStartIdx
-    if (
-      shouldStartNewPage(
-        height,
-        currentHeight,
-        pageHasBlocks,
-        true,
-        usableHeight,
-      )
-    ) {
-      startNewPage(idx)
-    }
-    currentHeight += height
-  }
-
-  return { pageStartIdx, currentHeight }
+  // Entry rows, keyword lines, whole fused entries: a mid-section boundary.
+  return PENALTY_ENTRY_BOUNDARY
 }
 
 /**
- * Pack measured blocks into pages.
- *
- * Rules:
- * - Sub-sections are atomic (never split).
- * - When a whole section fits in the remaining space on the current page, keep it
- *   together on that page.
- * - Otherwise pack sub-sections greedily so trailing page space is used first.
+ * Pick the page-end unit index among [startUnit, lastPlaced] minimizing
+ * keep-rule penalties plus page-fullness badness. Later breaks win ties.
+ * Returns the chosen index, or null when every candidate violates a
+ * keep-with-next rule (the caller decides whether to relax or force-split).
  */
-export function packBlocksToPages(
-  blocks: HTMLElement[],
+function chooseBreak(
+  units: PackUnit[],
+  startUnit: number,
+  lastPlaced: number,
+  usableHeight: number,
+  continuationPaddingPx: number,
+): { index: number; keepWithNextViolation: boolean } | null {
+  let filled = 0
+  let clean: number | null = null
+  let cleanCost = Infinity
+  let any: number | null = null
+  let anyCost = Infinity
+  for (let e = startUnit; e < lastPlaced; e++) {
+    filled += unitHeight(units[e], e === startUnit, continuationPaddingPx)
+    const penalty = breakPenalty(units[e], units[e + 1])
+    const underfull =
+      filled < usableHeight * UNDERFULL_RATIO ? PENALTY_UNDERFULL : 0
+    const cost = penalty + underfull + fillBadness(filled, usableHeight)
+    const violation = penalty >= PENALTY_KEEP_WITH_NEXT
+    if (violation) {
+      if (cost <= anyCost) {
+        anyCost = cost
+        any = e
+      }
+    } else if (cost <= cleanCost) {
+      cleanCost = cost
+      clean = e
+    }
+  }
+  if (clean !== null) return { index: clean, keepWithNextViolation: false }
+  if (any !== null) return { index: any, keepWithNextViolation: true }
+  return null
+}
+
+// ── Packing ─────────────────────────────────────────────────────────────────
+
+function unitRange(units: PackUnit[], from: number, to: number): PageData {
+  const first = units[from].blocks[0]
+  const lastUnit = units[to - 1]
+  const lastBlock = lastUnit.blocks[lastUnit.blocks.length - 1]
+  return { startIdx: first.index, endIdx: lastBlock.index + 1 }
+}
+
+/** Pack metadata blocks into pages. Pure; the seam for headless tests. */
+export function packBlockMetas(
+  meta: BlockMeta[],
   options?: PackOptions,
 ): PageData[] {
-  if (blocks.length === 0) return [{ startIdx: 0, endIdx: 0 }]
+  if (meta.length === 0) return [{ startIdx: 0, endIdx: 0 }]
 
-  const { usableHeight, allowSectionSplit } = resolvePackOptions(options)
-  const units = buildPackUnits(buildBlockMeta(blocks))
+  const opts = resolvePackOptions(options)
+  let units = fuseUnits(meta, opts)
   const pages: PageData[] = []
-  let pageStartIdx = 0
-  let currentHeight = 0
+  let pageStart = 0
 
-  const startNewPage = (nextIdx: number) => {
-    if (nextIdx > pageStartIdx) {
-      pages.push({ startIdx: pageStartIdx, endIdx: nextIdx })
-    }
-    pageStartIdx = nextIdx
-    currentHeight = 0
-  }
+  while (pageStart < units.length) {
+    let filled = 0
+    let j = pageStart
 
-  for (const unit of units) {
-    if (unit.type === 'single') {
-      const pageHasBlocks = unit.index > pageStartIdx
+    while (j < units.length) {
+      const h = unitHeight(
+        units[j],
+        j === pageStart,
+        opts.continuationPaddingPx,
+      )
+      if (j > pageStart && filled + h > opts.usableHeight) break
       if (
-        shouldStartNewPage(
-          unit.height,
-          currentHeight,
-          pageHasBlocks,
-          false,
-          usableHeight,
-        )
+        j === pageStart &&
+        h > opts.usableHeight &&
+        units[j].blocks.length > 1
       ) {
-        startNewPage(unit.index)
+        // An oversized fused unit would be clipped: force-split it and retry
+        // (css-break-3 relaxation — break-inside yields before content loss).
+        units.splice(j, 1, ...splitUnit(units[j], opts))
+        continue
       }
-      currentHeight += unit.height
+      filled += h
+      j++
+    }
+
+    if (j === units.length) {
+      pages.push(unitRange(units, pageStart, j))
+      break
+    }
+
+    // Overflow before units[j]: choose the best page end among the placed
+    // units. When only keep-with-next violations remain and the overflowing
+    // unit is still fused, force-split it instead (paged.js relaxes the same
+    // way: avoid rules yield before content is stranded).
+    const choice = chooseBreak(
+      units,
+      pageStart,
+      j,
+      opts.usableHeight,
+      opts.continuationPaddingPx,
+    )
+    if (
+      (choice === null || choice.keepWithNextViolation) &&
+      units[j].blocks.length > 1
+    ) {
+      units.splice(j, 1, ...splitUnit(units[j], opts))
       continue
     }
-
-    const result = packSectionUnit(unit, {
-      pageStartIdx,
-      currentHeight,
-      pages,
-      usableHeight,
-      allowSectionSplit,
-    })
-    pageStartIdx = result.pageStartIdx
-    currentHeight = result.currentHeight
-  }
-
-  if (pageStartIdx < blocks.length) {
-    pages.push({ startIdx: pageStartIdx, endIdx: blocks.length })
+    if (choice === null) {
+      // Degenerate page (should not happen): flush progress to guarantee
+      // termination.
+      pages.push(unitRange(units, pageStart, j))
+      pageStart = j
+      continue
+    }
+    pages.push(unitRange(units, pageStart, choice.index + 1))
+    pageStart = choice.index + 1
   }
 
   return pages
 }
 
-/** Test helper: pack blocks described by height metadata without a DOM. */
-export function packMockBlocks(
-  blocks: Array<{
-    height: number
-    sectionId?: string
-    subsectionId?: string
-  }>,
+// ── DOM adapter ─────────────────────────────────────────────────────────────
+
+export function measureBlockHeight(el: HTMLElement): number {
+  return Math.max(el.offsetHeight, el.scrollHeight)
+}
+
+function parseBlockPart(value: string | undefined): BlockPart {
+  switch (value) {
+    case 'sec-head':
+    case 'head':
+    case 'bullet':
+    case 'keywords':
+    case 'row':
+      return value
+    default:
+      return 'full'
+  }
+}
+
+export function buildBlockMeta(blocks: HTMLElement[]): BlockMeta[] {
+  return blocks.map((el, index) => ({
+    index,
+    height: measureBlockHeight(el),
+    paddingTop: Number.parseFloat(el.style.paddingTop) || 0,
+    sectionId: el.dataset.sectionId ?? null,
+    sectionStart: el.dataset.sectionStart === 'true',
+    subsectionId: el.dataset.subsectionId ?? null,
+    part: parseBlockPart(el.dataset.blockPart),
+    keepWithNext: el.dataset.keepWithNext === 'true',
+  }))
+}
+
+/** Measure DOM blocks and pack them into pages. */
+export function packBlocksToPages(
+  blocks: HTMLElement[],
   options?: PackOptions,
 ): PageData[] {
-  const elements = blocks.map((block) => ({
-    offsetHeight: block.height,
-    scrollHeight: block.height,
-    dataset: {
-      sectionId: block.sectionId ?? '',
-      subsectionId: block.subsectionId ?? '',
-    },
-  })) as unknown as HTMLElement[]
+  return packBlockMetas(buildBlockMeta(blocks), options)
+}
 
-  return packBlocksToPages(elements, options)
+/** Test helper: pack blocks described by height metadata without a DOM. */
+export interface MockBlock {
+  height: number
+  paddingTop?: number
+  sectionId?: string | null
+  sectionStart?: boolean
+  subsectionId?: string | null
+  part?: BlockPart
+  keepWithNext?: boolean
+}
+
+export function packMockBlocks(
+  blocks: MockBlock[],
+  options?: PackOptions,
+): PageData[] {
+  const meta: BlockMeta[] = blocks.map((b, index) => ({
+    index,
+    height: b.height,
+    paddingTop: b.paddingTop ?? 0,
+    sectionId: b.sectionId ?? null,
+    sectionStart: b.sectionStart ?? false,
+    subsectionId: b.subsectionId ?? null,
+    part: b.part ?? 'full',
+    keepWithNext: b.keepWithNext ?? false,
+  }))
+  return packBlockMetas(meta, options)
 }

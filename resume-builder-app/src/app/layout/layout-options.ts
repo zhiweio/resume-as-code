@@ -20,8 +20,10 @@ export interface LayoutOptions {
   componentSpacingScale: number
   /** When false, never split a section across pages. */
   allowSectionSplit: boolean
-  /** When true, split entries into head / bullets / keywords blocks. */
+  /** When true, the packer may break between individual bullets. */
   allowSubsectionSplit: boolean
+  /** Render "n / m" page furniture on multi-page resumes. */
+  showPageNumbers: boolean
 }
 
 export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
@@ -35,6 +37,7 @@ export const DEFAULT_LAYOUT_OPTIONS: LayoutOptions = {
   componentSpacingScale: 1.0,
   allowSectionSplit: true,
   allowSubsectionSplit: false,
+  showPageNumbers: false,
 }
 
 export const OPTIMIZE_PRESET: Partial<LayoutOptions> = {
@@ -88,6 +91,7 @@ const PRESET_MATCHERS: Array<{
 
 function layoutsEqual(a: LayoutOptions, b: LayoutOptions): boolean {
   return (
+    a.paperSize === b.paperSize &&
     a.enabled === b.enabled &&
     a.spacingScale === b.spacingScale &&
     a.fontScale === b.fontScale &&
@@ -96,7 +100,8 @@ function layoutsEqual(a: LayoutOptions, b: LayoutOptions): boolean {
     a.pageMarginPx === b.pageMarginPx &&
     a.componentSpacingScale === b.componentSpacingScale &&
     a.allowSectionSplit === b.allowSectionSplit &&
-    a.allowSubsectionSplit === b.allowSubsectionSplit
+    a.allowSubsectionSplit === b.allowSubsectionSplit &&
+    a.showPageNumbers === b.showPageNumbers
   )
 }
 

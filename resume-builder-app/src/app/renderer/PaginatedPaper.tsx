@@ -13,7 +13,11 @@ import { packBlocksToPages } from './paginate-pack'
 import { useLayoutTokensContext } from '../layout/LayoutOptionsContext'
 
 /** Strip block spacing at the top of a page; page margin provides the inset. */
-function renderPageBlock(child: ReactNode, blockIdx: number, pageIdx: number) {
+export function renderPageBlock(
+  child: ReactNode,
+  blockIdx: number,
+  pageIdx: number,
+) {
   if (!isValidElement(child)) return child
 
   const props = child.props as {
@@ -57,7 +61,7 @@ interface PaginatedPaperProps {
  * and renders stacked pages separated by visual page-break indicators.
  */
 export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
-  const { page, options } = useLayoutTokensContext()
+  const { page, spacing, options } = useLayoutTokensContext()
   const measureRef = useRef<HTMLDivElement>(null)
   const [pages, setPages] = useState<{ startIdx: number; endIdx: number }[]>([])
   const [measured, setMeasured] = useState(false)
@@ -84,6 +88,7 @@ export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
         usableHeight: page.usableHeight,
         allowSectionSplit: options.allowSectionSplit,
         allowSubsectionSplit: options.allowSubsectionSplit,
+        continuationPaddingPx: spacing.continuationPaddingTop,
       })
       setPages(pageList)
       setMeasured(true)
@@ -191,7 +196,7 @@ export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
 
               <div
                 className="paper mx-auto bg-white shadow-lg print:shadow-none"
-                style={paperSheet}
+                style={{ ...paperSheet, position: 'relative' }}
               >
                 <div className="page-content">
                   {childArray
@@ -200,6 +205,21 @@ export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
                       renderPageBlock(child, blockIdx, pageIdx),
                     )}
                 </div>
+                {options.showPageNumbers && pages.length > 1 && (
+                  <div
+                    aria-hidden
+                    style={{
+                      position: 'absolute',
+                      bottom: Math.max(8, page.marginPx / 2),
+                      right: page.marginPx,
+                      fontSize: 8,
+                      lineHeight: 1,
+                      color: 'rgba(0,0,0,0.4)',
+                    }}
+                  >
+                    {pageIdx + 1} / {pages.length}
+                  </div>
+                )}
               </div>
             </div>
           ))
@@ -210,4 +230,3 @@ export function PaginatedPaper({ children, fontFamily }: PaginatedPaperProps) {
 }
 
 export { Paper } from './constants'
-export { USABLE_HEIGHT } from './paginate-pack'

@@ -133,6 +133,8 @@ themeOverrides:
 
 **`layout.page.size`**: controls the physical paper size used by the resume-builder-app's own React preview and Puppeteer PDF export (not the Legacy/LaTeX engine, which has no paper-size concept). Valid values are `a4` (default) and `letter` (US Letter, 8.5in x 11in). This field is optional — omitting it (or the whole `layout` block) is equivalent to `a4`. Toggling paper size live in the app's Advanced Layout panel does not write back into the YAML; this field only sets the _initial_ default when a resume is loaded.
 
+**`layout.page.showPageNumbers`**: renders “n / m” page furniture in the bottom margin of multi-page resumes (preview and PDF export; single-page resumes stay clean). Defaults to `false`; like `size`, it only seeds the session default when a resume is loaded.
+
 ---
 
 ## Legacy Format (YAMLResume)
