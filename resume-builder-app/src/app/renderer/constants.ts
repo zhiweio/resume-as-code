@@ -51,13 +51,13 @@ export const Paper = {
 } as const
 
 /** CSS padding value for the paper content inset. */
-export function paperPaddingCss(marginPx = Paper.marginPx): string {
+export function paperPaddingCss(marginPx: number = Paper.marginPx): string {
   return `${marginPx}px`
 }
 
 /** Inline styles for a paper sheet at the given size (border-box). */
 export function paperSheetStyle(
-  marginPx = Paper.marginPx,
+  marginPx: number = Paper.marginPx,
   paperSize: PaperSizeId = DEFAULT_PAPER_SIZE,
 ): {
   width: number
@@ -80,7 +80,7 @@ export function paperSheetStyle(
 export const SectionSpacing = 9
 
 export function usablePageHeight(
-  marginPx = Paper.marginPx,
+  marginPx: number = Paper.marginPx,
   paperSize: PaperSizeId = DEFAULT_PAPER_SIZE,
 ): number {
   return PAPER_SIZES[paperSize].heightPx - marginPx * 2

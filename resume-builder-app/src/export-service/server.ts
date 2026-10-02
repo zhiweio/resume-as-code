@@ -92,7 +92,9 @@ app.post('/api/export', async (req, res) => {
       console.log(`[export:page] ${msg.type()}: ${msg.text()}`)
     })
     page.on('pageerror', (err) => {
-      console.error(`[export:page] PAGE ERROR: ${err.message}`)
+      console.error(
+        `[export:page] PAGE ERROR: ${err instanceof Error ? err.message : err}`,
+      )
     })
 
     // Navigate to the print route

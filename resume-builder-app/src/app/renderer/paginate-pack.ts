@@ -81,7 +81,8 @@ function buildPackUnits(meta: BlockMeta[]): PackUnit[] {
   let i = 0
 
   while (i < meta.length) {
-    if (!meta[i].sectionId) {
+    const sectionId = meta[i].sectionId
+    if (!sectionId) {
       units.push({
         type: 'single',
         index: meta[i].index,
@@ -90,8 +91,6 @@ function buildPackUnits(meta: BlockMeta[]): PackUnit[] {
       i++
       continue
     }
-
-    const sectionId = meta[i].sectionId
     const indices: number[] = []
     const heights: number[] = []
 
@@ -274,7 +273,7 @@ export function packMockBlocks(
       sectionId: block.sectionId ?? '',
       subsectionId: block.subsectionId ?? '',
     },
-  })) as HTMLElement[]
+  })) as unknown as HTMLElement[]
 
   return packBlocksToPages(elements, options)
 }
