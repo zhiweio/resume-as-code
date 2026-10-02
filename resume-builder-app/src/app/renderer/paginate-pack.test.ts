@@ -4,7 +4,7 @@ import {
   packMockBlocks,
   USABLE_HEIGHT,
 } from './paginate-pack'
-import { usablePageHeight } from './constants'
+import { PAPER_SIZES, usablePageHeight } from './constants'
 
 describe('packMockBlocks', () => {
   it('packs a single header block on one page', () => {
@@ -51,7 +51,24 @@ describe('packMockBlocks', () => {
   it('uses custom usable height from margin changes', () => {
     const marginPx = 56
     const usableHeight = usablePageHeight(marginPx)
-    expect(usableHeight).toBe(1123 - marginPx * 2)
+    expect(usableHeight).toBe(PAPER_SIZES.a4.heightPx - marginPx * 2)
+
+    const pages = packMockBlocks(
+      [{ height: usableHeight - 10 }, { height: 50, sectionId: 'work' }],
+      { usableHeight },
+    )
+    expect(pages).toEqual([
+      { startIdx: 0, endIdx: 1 },
+      { startIdx: 1, endIdx: 2 },
+    ])
+  })
+
+  it('uses letter paper dimensions when paper size is letter', () => {
+    expect(PAPER_SIZES.letter).toMatchObject({ widthPx: 816, heightPx: 1056 })
+
+    const marginPx = 40
+    const usableHeight = usablePageHeight(marginPx, 'letter')
+    expect(usableHeight).toBe(PAPER_SIZES.letter.heightPx - marginPx * 2)
 
     const pages = packMockBlocks(
       [{ height: usableHeight - 10 }, { height: 50, sectionId: 'work' }],
